@@ -1,0 +1,16 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+pylint = "*"
+
+[packages]
+python-docx = "*"
+flask = "*"
+python-dotenv = "*"
+flask-uploads = "*"
+
+[requires]
+python_version = "3.7"

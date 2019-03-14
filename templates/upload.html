@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+</head>
+<body>
+
+    <form method="POST" enctype="multipart/form-data" action="{{ url_for('upload') }}">
+        <input type="file" name="document">
+        <button type="submit">Submit</button>
+    </form>
+    {% if processed %}
+        <h1>Report for {{ processed }}</h1>
+        <pre>
+        {%- for status, message in report %}
+        {% if status %}✓{% else %}✗{% endif %}&nbsp;{{ message }}
+        {%- endfor -%}
+        </pre>
+        <h3>References</h3>
+        <p>{{ references }}</p>
+        <h3>Figures</h3>
+        <p>{{ figures_refs }}</p>
+        <p>{{ figures_titles }}</p>
+    {% endif %}
+</body>
+</html>
