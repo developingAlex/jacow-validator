@@ -40,7 +40,7 @@ def get_page_size(section):
     else:
         raise Exception('Unknown Page Size')
 
-RE_REFS = re.compile(r'\[([\d,-])\]')
+RE_REFS = re.compile(r'\[([\d,-]+)\]')
 RE_FIG_TITLES = re.compile(r'(^Figure \d+:)')
 RE_FIG_INTEXT = re.compile(r'(Fig.\s?\d+|Figure\s?\d+\s+)')
 
