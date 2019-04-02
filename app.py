@@ -4,7 +4,7 @@ from docx import Document
 from flask import Flask, request, render_template, redirect, url_for
 from flask_uploads import UploadSet, configure_uploads
 
-from utils import check_jacow_styles, get_page_size, check_margins
+from utils import check_jacow_styles, get_page_size, check_margins, get_margins
 from utils import RE_REFS, RE_FIG_INTEXT, RE_FIG_TITLES
 
 documents = UploadSet("document", ("docx"))
@@ -32,38 +32,43 @@ def upload():
         fullpath = documents.path(filename)
         try:
             doc = Document(fullpath)
-            report = []
             references = []
             figures_refs = []
             figures_titles = []
 
-            report.append((check_jacow_styles(doc), "JACoW Styles"))
-            report.append((True, f"Found {len(doc.sections)} sections"))
+            jacow_styles_ok = check_jacow_styles(doc)
 
+            # get page size and margin details
+            sections = []
             for i, section in enumerate(doc.sections):
-                report.append((True, f"Section {i} page size {get_page_size(section)}"))
-                report.append((check_margins(section), f"Section {i} margins"))
+                sections.append((get_page_size(section), check_margins(section), get_margins(section)))
+
+            # get title and title syle details
+            title = {
+                'text': doc.paragraphs[0].text,
+                'style': doc.paragraphs[0].style.name,
+                'style_ok': doc.paragraphs[0].style.name in ['JACoW_Paper Title']
+            }
 
             for i, p in enumerate(doc.paragraphs):
-                if i == 0:
-                    # title
-                    report.append(
-                        (p.style.name == "JACoW_Paper Title", "Paper Title Style")
-                    )
-                if i == 1:
-                    # author list
-                    report.append(
-                        (p.style.name == "JACoW_Author List", "Author List Style")
-                    )
-                if i == 2:
-                    # abstract heading
-                    report.append(
-                        (
-                            p.style.name == "JACoW_Abstract_Heading",
-                            "Abstract Heading Style",
-                        )
-                    )
+                if p.text.strip().lower() == 'abstract':
+                    abstract = {
+                        'start': i,
+                        'text': p.text,
+                        'style': p.style.name,
+                        'style_ok': p.style.name in 'JACoW_Abstract_Heading'
+                    }
+                if p.text.strip().lower() == 'references':
+                    references_start = i
+            
+            author_paragraphs = doc.paragraphs[1:abstract['start']]
+            authors = {
+                'text': ''.join(p.text for p in author_paragraphs),
+                'style': set(p.style.name for p in author_paragraphs if p.text.strip()),
+                'style_ok': all(p.style.name in ['JACoW_Author List'] for p in author_paragraphs if p.text.strip())
+            }
 
+            for i, p in enumerate(doc.paragraphs):
                 # find reference markers in text
                 for ref in RE_REFS.findall(p.text):
                     references.append(ref)
@@ -76,11 +81,8 @@ def upload():
 
             return render_template(
                 "upload.html",
-                report=report,
-                processed=filename,
-                references=references,
-                figures_refs=figures_refs,
-                figures_titles=figures_titles,
+                processed=True,
+                **locals()
             )
         finally:
             os.remove(fullpath)

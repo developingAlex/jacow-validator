@@ -13,15 +13,47 @@
         <button type="submit">Submit</button>
     </form>
     {% if processed %}
-        <h1>Report for {{ processed }}</h1>
-        <pre>
-        {%- for status, message in report %}
-        {{ status|tick_cross }}&nbsp;{{ message }}
-        {%- endfor -%}
-        </pre>
-        <h3>References</h3>
+        <h1>Report for {{ filename }}</h1>
+        <h2>JACoW Styles </h2>
+        <p>{{ jacow_styles_ok|tick_cross }} JACoW styles found in document?</p>
+
+        <h2>Page Size and Margins</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Section</th>
+                    <th>Page Size</th>
+                    <th>Margins</th>
+                    <th>Margins Ok?</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for page_size, margins_ok, margins in sections %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ page_size }}</td>
+                <td>{{ margins }}</td>
+                <td>{{ margins_ok|tick_cross }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+        <h2>Title</h2>
+        <p><b>Title: </b>{{ title.text }}</p>
+        <p><b>Style: </b> {{ title.style }} {{ title.style_ok|tick_cross }}</p>
+
+        <h2>Authors</h2>
+        <p><b>Authors: </b>{{ authors.text }}</p>
+        <p><b>Style: </b>{{ authors.style }} {{ authors.style_ok|tick_cross }}</p>
+
+        <h2>Abstract Heading</h2>
+        <p><b>Style:</b> {{ abstract.style }} {{ abstract.style_ok|tick_cross }}</p>
+
+
+        <h2>References</h2>
         <p>{{ references }}</p>
-        <h3>Figures</h3>
+        <h2>Figures</h2>
         <p>{{ figures_refs }}</p>
         <p>{{ figures_titles }}</p>
     {% endif %}
