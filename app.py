@@ -1,7 +1,7 @@
 import os
 from docx import Document
 
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, redirect, url_for
 from flask_uploads import UploadSet, configure_uploads
 
 from utils import check_jacow_styles, get_page_size, check_margins
@@ -23,8 +23,7 @@ def tick_cross(s):
 
 @app.route("/")
 def hello():
-    return "Hello, World!"
-
+    return redirect(url_for('upload'))
 
 @app.route("/upload", methods=["GET", "POST"])
 def upload():
