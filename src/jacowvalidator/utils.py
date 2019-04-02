@@ -6,13 +6,11 @@ import re
 from glob import glob
 
 def check_margins_A4(section):
-
-
     return all([
-        int(section.top_margin.mm) == 37,
-        int(section.bottom_margin.mm) == 19,
-        int(section.left_margin.mm) == 20,
-        int(section.right_margin.mm) == 20,
+        round(section.top_margin.mm) == 37,
+        round(section.bottom_margin.mm) == 19,
+        round(section.left_margin.mm) == 20,
+        round(section.right_margin.mm) == 20,
     ])
 
 def check_margins_letter(section):
