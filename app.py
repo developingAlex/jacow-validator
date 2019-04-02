@@ -16,6 +16,10 @@ app.config.update(
 
 configure_uploads(app, (documents,))
 
+@app.template_filter('tick_cross')
+def tick_cross(s):
+    return "✓" if s else "✗"
+
 
 @app.route("/")
 def hello():

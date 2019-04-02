@@ -16,7 +16,7 @@
         <h1>Report for {{ processed }}</h1>
         <pre>
         {%- for status, message in report %}
-        {% if status %}✓{% else %}✗{% endif %}&nbsp;{{ message }}
+        {{ status|tick_cross }}&nbsp;{{ message }}
         {%- endfor -%}
         </pre>
         <h3>References</h3>
