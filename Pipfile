@@ -11,6 +11,8 @@ python-docx = "*"
 flask = "*"
 python-dotenv = "*"
 flask-uploads = "*"
+tox = "*"
+pytest = "*"
 
 [requires]
 python_version = "3.7"
