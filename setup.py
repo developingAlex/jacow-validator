@@ -1,3 +1,4 @@
+import os
 import setuptools
 
 with open("README.md", "r") as fh:
@@ -14,7 +15,7 @@ setuptools.setup(
     url="https://github.com/AustralianSynchrotron/jacow-validator",
     packages=setuptools.find_packages(where="src"),
     package_dir={"": "src"},
-    install_requires=['python-docx'],
+    install_requires=['python-docx', 'python-dotenv', 'flask', 'flask-uploads'],
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: BSD 3 Clause",

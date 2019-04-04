@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "e5a6a7250f44a814b6f2d8f37bec3d1c09fe26aa0d8e63ef705cdf80024a7d57"
+            "sha256": "aab9e31496b9389739fb6173d9d00f3deae786fc7f5b351555a5f13f1c6374a8"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -28,14 +28,12 @@
                 "sha256:2271c0070dbcb5275fad4a82e29f23ab92682dc45f9dfbc22c02ba9b9322ce48",
                 "sha256:a080b744b7e345ccfcbc77954861cb05b3c63786e93f2b3875e0913d44b43f05"
             ],
-            "index": "pypi",
             "version": "==1.0.2"
         },
         "flask-uploads": {
             "hashes": [
                 "sha256:53ecbd6033667d50ae02b63adebbaa33c7fc56c09e5293025810cf9d841ecb02"
             ],
-            "index": "pypi",
             "version": "==0.2.1"
         },
         "itsdangerous": {
@@ -124,7 +122,6 @@
             "hashes": [
                 "sha256:bc76ecac6b2d00ce6442a69d03a6f35c71cd72293cd8405a7472dfe317920024"
             ],
-            "index": "pypi",
             "version": "==0.8.10"
         },
         "python-dotenv": {
@@ -132,7 +129,6 @@
                 "sha256:a84569d0e00d178bc5b957f7ff208bf49287cbf61857c31c258c4a91f571527b",
                 "sha256:c9b1ddd3cdbe75c7d462cb84674d87130f4b948f090f02c7d7144779afb99ae0"
             ],
-            "index": "pypi",
             "version": "==0.10.1"
         },
         "werkzeug": {

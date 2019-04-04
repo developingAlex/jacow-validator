@@ -9,10 +9,6 @@ tox = "*"
 pytest = "*"
 
 [packages]
-python-docx = "*"
-flask = "*"
-python-dotenv = "*"
-flask-uploads = "*"
 jacowvalidator = {editable = true,path = "."}
 
 [requires]
