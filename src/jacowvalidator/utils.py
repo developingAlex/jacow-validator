@@ -80,6 +80,24 @@ RE_REFS = re.compile(r'\[([\d ,-]+)\]')
 RE_FIG_TITLES = re.compile(r'(^Figure \d+:)')
 RE_FIG_INTEXT = re.compile(r'(Fig.\s?\d+|Figure\s?\d+\s+)')
 
+def extract_references(doc):
+    data = iter(doc.paragraphs)
+    references_in_text = []
+    for p in data:
+        for ref in RE_REFS.findall(p.text):
+            references_in_text.append(ref)
+        if p.text.strip().lower() == 'references':
+            break
+    else:
+        return references_in_text, []
+    
+    references_list = []
+    for p in data:
+        for ref in RE_REFS.findall(p.text):
+            references_list.append(ref)
+    
+    return references_in_text, references_list
+
 # These are in the jacow templates so may be in docs created from them
 # Caption and Normal for table title and figure title
 # 'Body Text Indent' instead of 'JACoW_Body Text Indent' in a few places
