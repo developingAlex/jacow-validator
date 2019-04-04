@@ -15,4 +15,4 @@ jacowvalidator = {editable = true,path = "."}
 python_version = "3.7"
 
 [scripts]
-app = "flask run"
+app = "jv run"

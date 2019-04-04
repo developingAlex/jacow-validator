@@ -15,10 +15,16 @@ setuptools.setup(
     url="https://github.com/AustralianSynchrotron/jacow-validator",
     packages=setuptools.find_packages(where="src"),
     package_dir={"": "src"},
+    include_package_data=True,
     install_requires=['python-docx', 'python-dotenv', 'flask', 'flask-uploads'],
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: BSD 3 Clause",
         "Operating System :: OS Independent",
     ],
+    entry_points={
+        'console_scripts': [
+            'jv=jacowvalidator.cli:cli'
+        ],
+    },
 )
