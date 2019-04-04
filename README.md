@@ -1,14 +1,20 @@
 # jacow_validator
 Scripts to validate JACoW docx proceedings against the official template.
 
-To setup dev virtual environment:
+## Setup
 
+    git clone git@github.com:AustralianSynchrotron/jacow-validator.git
+    cd jacow-validator
     pipenv install --dev
 
-To run app webserver:
+## Running
+
+(for development mode create a .env file with FLASK_ENV=development)
 
     pipenv run app
 
-To run tests:
+open http://localhost:5000/
+
+## Testing
     
     pipenv run tox
