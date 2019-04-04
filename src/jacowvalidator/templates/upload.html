@@ -52,7 +52,27 @@
 
 
         <h2>References</h2>
-        <p>{{ references }}</p>
+        {% for reference in references_list if not reference.style_ok %}
+        {% if loop.index0 == 0 %}<h3>References with wrong style</h3>{% endif %}
+        <p>[{{ reference.id }}] <b>Style:</b> {{ reference.style }}</p>
+        {% else %}
+        <p>{{ true|tick_cross }} reference styles okay</p>
+        {% endfor %}
+
+        {% for reference in references_list if not reference.used %}
+        {% if loop.index0 == 0 %}<h3>Unused references</h3>{% endif %}
+        <p>{{ reference.text }}</p>
+        {% else %}
+        <p>{{ true|tick_cross }} all references used</p>
+        {% endfor %}
+
+        {% for reference in references_list if not reference.order_ok %}
+        {% if loop.index0 == 0 %}<h3>Out of order references</h3>{% endif %}
+        <p>{{ reference.text }}</p>
+        {% else %}
+        <p>{{ true|tick_cross }} all references are in correct order</p>
+        {% endfor %}
+
         <h2>Figures</h2>
         <p>{{ figures_refs }}</p>
         <p>{{ figures_titles }}</p>

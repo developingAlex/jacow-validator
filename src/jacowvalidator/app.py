@@ -4,7 +4,7 @@ from docx import Document
 from flask import Flask, request, render_template, redirect, url_for
 from flask_uploads import UploadSet, configure_uploads
 
-from .utils import check_jacow_styles, get_page_size, check_margins, get_margins
+from .utils import check_jacow_styles, get_page_size, check_margins, get_margins, extract_references
 from .utils import RE_REFS, RE_FIG_INTEXT, RE_FIG_TITLES
 
 documents = UploadSet("document", ("docx"))
@@ -78,6 +78,8 @@ def upload():
                     figures_refs.append(f)
                 for f in RE_FIG_TITLES.findall(p.text):
                     figures_titles.append(f)
+
+            references_in_text, references_list = extract_references(doc)
 
             return render_template(
                 "upload.html",
