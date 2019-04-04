@@ -5,14 +5,18 @@ verify_ssl = true
 
 [dev-packages]
 pylint = "*"
+tox = "*"
+pytest = "*"
 
 [packages]
 python-docx = "*"
 flask = "*"
 python-dotenv = "*"
 flask-uploads = "*"
-tox = "*"
-pytest = "*"
+jacowvalidator = {editable = true,path = "."}
 
 [requires]
 python_version = "3.7"
+
+[scripts]
+app = "flask run"

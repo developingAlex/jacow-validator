@@ -1,0 +1,1 @@
+from jacowvalidator.app import app
