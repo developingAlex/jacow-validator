@@ -4,7 +4,7 @@ from docx import Document
 from flask import Flask, request, render_template, redirect, url_for
 from flask_uploads import UploadSet, configure_uploads
 
-from .utils import check_jacow_styles, get_page_size, check_margins, get_margins, extract_references
+from .utils import check_jacow_styles, get_page_size, check_margins, get_margins, extract_references, extract_figures
 from .utils import RE_REFS, RE_FIG_INTEXT, RE_FIG_TITLES
 
 documents = UploadSet("document", ("docx"))
@@ -32,9 +32,6 @@ def upload():
         fullpath = documents.path(filename)
         try:
             doc = Document(fullpath)
-            references = []
-            figures_refs = []
-            figures_titles = []
 
             jacow_styles_ok = check_jacow_styles(doc)
 
@@ -68,17 +65,7 @@ def upload():
                 'style_ok': all(p.style.name in ['JACoW_Author List'] for p in author_paragraphs if p.text.strip())
             }
 
-            for i, p in enumerate(doc.paragraphs):
-                # find reference markers in text
-                for ref in RE_REFS.findall(p.text):
-                    references.append(ref)
-
-                # find figures
-                for f in RE_FIG_INTEXT.findall(p.text):
-                    figures_refs.append(f)
-                for f in RE_FIG_TITLES.findall(p.text):
-                    figures_titles.append(f)
-
+            figures = extract_figures(doc)
             references_in_text, references_list = extract_references(doc)
 
             return render_template(

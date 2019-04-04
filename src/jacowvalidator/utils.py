@@ -5,6 +5,7 @@ from pprint import pprint
 import re
 from glob import glob
 from itertools import chain
+from collections import OrderedDict
 
 def check_margins_A4(section):
     return get_margins_A4(section) == [37, 19, 20, 20]
@@ -157,6 +158,49 @@ def extract_references(doc):
                 ref['style_ok'] = ref['style'] == 'JACoW_Reference #10 onwards'
     
     return references_in_text, references_list
+
+def _fig_to_int(s):
+    return int(''.join(filter(str.isdigit, s)))
+
+def extract_figures(doc):
+    figures_refs = []
+    figures_captions = []
+
+    for p in doc.paragraphs:
+        # find references to figures
+        for f in RE_FIG_INTEXT.findall(p.text):
+            figures_refs.append(dict(
+                id=_fig_to_int(f),
+                name=f.strip()
+            ))
+
+        # find figure captions
+        for f in RE_FIG_TITLES.findall(p.text.strip()):
+            _id=_fig_to_int(f)
+            figures_captions.append(dict(
+                id=_id,
+                name=f,
+                text=p.text.strip(),
+                style=p.style.name,
+                style_ok=p.style.name in ['Figure Caption', 'Caption Multi Line'],
+            ))
+
+    figures = OrderedDict()
+    _last = max(chain.from_iterable([(fig['id'] for fig in figures_captions), (fig['id'] for fig in figures_refs)]))
+
+    for i in range(1, _last+1):
+        caption = [c for c in figures_captions if c['id'] == i]
+
+        figures[i] = {
+            'refs': list(f['name'] for f in figures_refs if f['id'] == i),
+            'duplicate': len(caption) != 1,
+            'found': len(caption) > 0
+        }
+        figures[i]['used'] = len(figures[i]['refs']) > 0
+        if caption:
+            figures[i].update(**caption[0])
+
+    return figures
 
 # These are in the jacow templates so may be in docs created from them
 # Caption and Normal for table title and figure title
