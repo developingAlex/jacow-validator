@@ -1,10 +1,20 @@
 import os
+
 from docx import Document
 
-from flask import Flask, request, render_template, redirect, url_for
+from flask import Flask, redirect, render_template, request, url_for
+
 from flask_uploads import UploadSet, configure_uploads
 
-from .utils import check_jacow_styles, get_page_size, check_margins, get_margins, extract_references, extract_figures
+from .utils import (
+    check_jacow_styles,
+    check_margins,
+    extract_figures,
+    extract_references,
+    extract_title,
+    get_margins,
+    get_page_size,
+)
 
 documents = UploadSet("document", ("docx"))
 
@@ -15,6 +25,7 @@ app.config.update(
 
 configure_uploads(app, (documents,))
 
+
 @app.template_filter('tick_cross')
 def tick_cross(s):
     return "✓" if s else "✗"
@@ -23,6 +34,7 @@ def tick_cross(s):
 @app.route("/")
 def hello():
     return redirect(url_for('upload'))
+
 
 @app.route("/upload", methods=["GET", "POST"])
 def upload():
@@ -37,7 +49,13 @@ def upload():
             # get page size and margin details
             sections = []
             for i, section in enumerate(doc.sections):
-                sections.append((get_page_size(section), check_margins(section), get_margins(section)))
+                sections.append(
+                    (
+                        get_page_size(section),
+                        check_margins(section),
+                        get_margins(section),
+                    )
+                )
 
             # get title and title syle details
             title = {
@@ -52,26 +70,26 @@ def upload():
                         'start': i,
                         'text': p.text,
                         'style': p.style.name,
-                        'style_ok': p.style.name in 'JACoW_Abstract_Heading'
+                        'style_ok': p.style.name in 'JACoW_Abstract_Heading',
                     }
                 if p.text.strip().lower() == 'references':
                     references_start = i
-            
-            author_paragraphs = doc.paragraphs[1:abstract['start']]
+
+            author_paragraphs = doc.paragraphs[1 : abstract['start']]
             authors = {
                 'text': ''.join(p.text for p in author_paragraphs),
                 'style': set(p.style.name for p in author_paragraphs if p.text.strip()),
-                'style_ok': all(p.style.name in ['JACoW_Author List'] for p in author_paragraphs if p.text.strip())
+                'style_ok': all(
+                    p.style.name in ['JACoW_Author List']
+                    for p in author_paragraphs
+                    if p.text.strip()
+                ),
             }
 
             figures = extract_figures(doc)
             references_in_text, references_list = extract_references(doc)
 
-            return render_template(
-                "upload.html",
-                processed=True,
-                **locals()
-            )
+            return render_template("upload.html", processed=True, **locals())
         finally:
             os.remove(fullpath)
 
