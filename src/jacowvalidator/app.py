@@ -58,11 +58,7 @@ def upload():
                 )
 
             # get title and title syle details
-            title = {
-                'text': doc.paragraphs[0].text,
-                'style': doc.paragraphs[0].style.name,
-                'style_ok': doc.paragraphs[0].style.name in ['JACoW_Paper Title']
-            }
+            title = extract_title(doc)
 
             for i, p in enumerate(doc.paragraphs):
                 if p.text.strip().lower() == 'abstract':

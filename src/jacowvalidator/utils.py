@@ -56,6 +56,19 @@ def get_jacow_styles(doc):
     return [s.name for s in doc.styles if s.name.startswith('JACoW')]
 
 
+def extract_title(doc):
+    return {
+        'text': doc.paragraphs[0].text,
+        'style': doc.paragraphs[0].style.name,
+        'style_ok': doc.paragraphs[0].style.name in ['JACoW_Paper Title'],
+        'case_ok': check_title_case(doc.paragraphs[0].text)
+    }
+
+
+def check_title_case(title):
+    return (sum(map(str.isupper, title)) / len(title)) > 0.7
+
+
 def get_page_size(section):
     width = round(section.page_width, -4)
     if width == round(Mm(210), -4):
