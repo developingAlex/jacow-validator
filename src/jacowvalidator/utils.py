@@ -85,10 +85,10 @@ def _ref_to_int(ref):
     try:
         return [int(ref), ]
     except ValueError:
-        if '-' in ref:
+        if ',' in ref:
+            return list(chain.from_iterable(_ref_to_int(i) for i in ref.split(',')))
+        elif '-' in ref:
             return list(range(*(int(v)+i for i, v in enumerate(ref.split('-')))))
-        elif ',' in ref:
-            return list(int(i) for i in ref.split(','))
         raise
 
 def extract_references(doc):
