@@ -1,1 +1,2 @@
-include src/jacowvalidator/templates/*.html
+recursive-include src/jacowvalidator/templates *
+recursive-include src/jacowvalidator/static *

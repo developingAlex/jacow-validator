@@ -5,26 +5,31 @@
     <title></title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <link rel="stylesheet" href="{{ url_for('static', filename='vendor/bulma/css/bulma.min.css')}}">
 </head>
 <body>
-
+    <section class="section">
+        <div class="container box">
     <form method="POST" enctype="multipart/form-data" action="{{ url_for('upload') }}">
         <input type="file" name="document">
         <button type="submit">Submit</button>
     </form>
+    </div>
     {% if processed %}
-        <h1>Report for {{ filename }}</h1>
-        <h2>JACoW Styles </h2>
+    <div class="container">
+        <h1 class="title">Report for {{ filename }}</h1>
+        <div class="box">
+        <h2 class="subtitle">JACoW Styles </h2>
         <p>{{ jacow_styles_ok|tick_cross }} JACoW styles found in document?</p>
-
-        <h2>Page Size and Margins</h2>
-        <table>
+    </div>
+    <div class="box">
+        <h2 class="subtitle">Page Size and Margins</h2>
+        <table class="table is-bordered">
             <thead>
                 <tr>
                     <th>Section</th>
                     <th>Page Size</th>
-                    <th>Margins</th>
-                    <th>Margins Ok?</th>
+                    <th colspan="2">Margins</th>
                 </tr>
             </thead>
             <tbody>
@@ -38,20 +43,24 @@
             {% endfor %}
             </tbody>
         </table>
-
-        <h2>Title</h2>
+    </div>
+    <div class="box">
+        <h2 class="subtitle">Title</h2>
         <p><b>Title: </b>{{ title.text }}</p>
         <p><b>Style: </b> {{ title.style }} {{ title.style_ok|tick_cross }}</p>
-
-        <h2>Authors</h2>
+    </div>
+    <div class="box">
+        <h2 class="subtitle">Authors</h2>
         <p><b>Authors: </b>{{ authors.text }}</p>
         <p><b>Style: </b>{{ authors.style }} {{ authors.style_ok|tick_cross }}</p>
-
-        <h2>Abstract Heading</h2>
+    </div>
+    <div class="box">
+        <h2 class="subtitle">Abstract Heading</h2>
         <p><b>Style:</b> {{ abstract.style }} {{ abstract.style_ok|tick_cross }}</p>
+    </div>
+    <div class="box">
 
-
-        <h2>References</h2>
+        <h2 class="subtitle">References</h2>
         {% for reference in references_list if not reference.style_ok %}
         {% if loop.index0 == 0 %}<h3>References with wrong style</h3>{% endif %}
         <p>[{{ reference.id }}] <b>Style:</b> {{ reference.style }}</p>
@@ -72,9 +81,10 @@
         {% else %}
         <p>{{ true|tick_cross }} all references are in correct order</p>
         {% endfor %}
-
-        <h2>Figures</h2>
-        <table>
+    </div>
+    <div class="box">
+        <h2 class="subtitle">Figures</h2>
+        <table class="table is-bordered">
             <thead>
                 <tr>
                     <th>No.</th>
@@ -97,6 +107,9 @@
         {% endfor %}
             </tbody>
         </table>
+    </div>
+</div>
     {% endif %}
+</section>
 </body>
 </html>
