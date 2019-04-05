@@ -5,7 +5,6 @@ from flask import Flask, request, render_template, redirect, url_for
 from flask_uploads import UploadSet, configure_uploads
 
 from .utils import check_jacow_styles, get_page_size, check_margins, get_margins, extract_references, extract_figures
-from .utils import RE_REFS, RE_FIG_INTEXT, RE_FIG_TITLES
 
 documents = UploadSet("document", ("docx"))
 

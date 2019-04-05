@@ -77,7 +77,8 @@ def get_paragraph_style_exceptions(doc):
     return exceptions
 
 
-RE_REFS = re.compile(r'\[([\d ,-]+)\]')
+RE_REFS_LIST = re.compile(r'^\[([\d]+)\]')
+RE_REFS_INTEXT = re.compile(r'(?<!^)\[([\d ,-]+)\]')
 RE_FIG_TITLES = re.compile(r'(^Figure \d+:)')
 RE_FIG_INTEXT = re.compile(r'(Fig.\s?\d+|Figure\s?\d+\s+)')
 
@@ -86,7 +87,7 @@ def _ref_to_int(ref):
         return [int(ref), ]
     except ValueError:
         if ',' in ref:
-            return list(chain.from_iterable(_ref_to_int(i) for i in ref.split(',')))
+            return list(chain.from_iterable(_ref_to_int(i) for i in ref.split(',') if i.strip()))
         elif '-' in ref:
             return list(range(*(int(v)+i for i, v in enumerate(ref.split('-')))))
         raise
@@ -102,19 +103,13 @@ def extract_references(doc):
     else:
         raise Exception('Abstract header not found')
 
-    # find all references until references header
-    for p in data:
-        for ref in RE_REFS.findall(p.text):
-            references_in_text.append(_ref_to_int(ref))
-        if p.text.strip().lower() in ['references', 'reference']:
-            break
-    else:
-        raise Exception('No reference list found at end of document')
-    
-    # find references at end of document
+    # find all references in text and references list
     references_list = []
     for p in data:
-        for ref in RE_REFS.findall(p.text):
+        for ref in RE_REFS_INTEXT.findall(p.text):
+            references_in_text.append(_ref_to_int(ref))
+
+        for ref in RE_REFS_LIST.findall(p.text.strip()):
             references_list.append(dict(
                 id=int(ref),
                 text=p.text.strip(),
