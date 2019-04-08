@@ -1,5 +1,7 @@
 [![Build Status](https://travis-ci.com/AustralianSynchrotron/jacow-validator.svg?branch=master)](https://travis-ci.com/AustralianSynchrotron/jacow-validator)
 
+[![codecov](https://codecov.io/gh/AustralianSynchrotron/jacow-validator/branch/master/graph/badge.svg)](https://codecov.io/gh/gh/AustralianSynchrotron/jacow-validator/)
+
 # jacow_validator
 Scripts to validate JACoW docx proceedings against the official template.
 
