@@ -143,7 +143,7 @@ def extract_references(doc):
                 dict(id=int(ref), text=p.text.strip(), style=p.style.name)
             )
 
-    # check refences in body are in correct order
+    # check references in body are in correct order
     stack = [0]
     seen = []
     out_of_order = set()
@@ -233,9 +233,35 @@ def extract_figures(doc):
     return figures
 
 
+# move abstract and author logic here so can be tested.
+# original logic left in app, so won't cause conflict, but should be changed to use this function or similar
+def get_abstract_and_author(doc):
+    for i, p in enumerate(doc.paragraphs):
+        if p.text.strip().lower() == 'abstract':
+            abstract = {
+                'start': i,
+                'text': p.text,
+                'style': p.style.name,
+                'style_ok': p.style.name in 'JACoW_Abstract_Heading',
+            }
+        if p.text.strip().lower() == 'references':
+            references_start = i
+
+    author_paragraphs = doc.paragraphs[1: abstract['start']]
+    authors = {
+        'text': ''.join(p.text for p in author_paragraphs),
+        'style': set(p.style.name for p in author_paragraphs if p.text.strip()),
+        'style_ok': all(
+            p.style.name in ['JACoW_Author List']
+            for p in author_paragraphs
+            if p.text.strip()
+        ),
+    }
+    return abstract, authors
+
+
 # These are in the jacow templates so may be in docs created from them
 # Caption and Normal for table title and figure title
 # 'Body Text Indent' instead of 'JACoW_Body Text Indent' in a few places
 # 'Heading 3' for Acronyms header
 OTHER_VALID_STYLES = ['Body Text Indent', 'Normal', 'Caption', 'Heading 3']
-
