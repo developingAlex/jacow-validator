@@ -17,6 +17,7 @@ setuptools.setup(
     package_dir={"": "src"},
     include_package_data=True,
     install_requires=['python-docx', 'python-dotenv', 'flask>=1.0.2', 'flask-uploads'],
+    test_requires=['pytest', 'pytest-cov'],
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: BSD 3 Clause",
