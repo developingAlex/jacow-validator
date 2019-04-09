@@ -260,6 +260,50 @@ def get_abstract_and_author(doc):
     return abstract, authors
 
 
+# replace text using same case
+def replace_text_with_blah(text):
+    # temp solution to saving table and figure
+    save_text = [
+        {'text': 'Table ', 'replace': '******'},
+        {'text': 'Figure ', 'replace': '@@@@@@'},
+        {'text': 'Fig ', 'replace': '######'},
+        {'text': 'Fig.', 'replace': '&&&&&&'},
+    ]
+
+    for t in save_text:
+        text = text.replace(t['text'], t['replace'])
+    new_text = []
+    for c in text:
+        new_char = c
+        if c.isupper():
+            new_char = 'A'
+        elif c.islower():
+            new_char = 'a'
+        new_text.append(new_char)
+
+    new_text = ''.join(new_text)
+    for t in save_text:
+        new_text = new_text.replace(t['replace'], t['text'])
+
+    return new_text
+
+
+# at the moment, this will replace character formatting within the paragraph
+def replace_identifying_text(doc, filename):
+    for paragraph in doc.paragraphs:
+        # leave headings so can still see abstract and reference sections
+        if paragraph.style.name not in [
+            'JACoW_Abstract_Heading',
+            'JACoW_Section Heading',
+            'JACoW_Subsection Heading',
+            'J_Section Heading',
+            'J_Abstract Title',
+        ]:
+            paragraph.text = replace_text_with_blah(paragraph.text)
+
+    doc.save(filename)
+
+
 # These are in the jacow templates so may be in docs created from them
 # Caption and Normal for table title and figure title
 # 'Body Text Indent' instead of 'JACoW_Body Text Indent' in a few places

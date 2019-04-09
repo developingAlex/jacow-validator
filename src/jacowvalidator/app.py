@@ -2,7 +2,7 @@ import os
 
 from docx import Document
 
-from flask import Flask, redirect, render_template, request, url_for
+from flask import Flask, redirect, render_template, request, url_for, send_file
 
 from flask_uploads import UploadSet, configure_uploads
 
@@ -14,6 +14,7 @@ from .utils import (
     extract_title,
     get_margins,
     get_page_size,
+    replace_identifying_text,
 )
 
 documents = UploadSet("document", ("docx"))
@@ -90,3 +91,29 @@ def upload():
             os.remove(fullpath)
 
     return render_template("upload.html")
+
+
+@app.route("/convert", methods=["GET", "POST"])
+def convert():
+    if request.method == "POST" and documents.name in request.files:
+        filename = documents.save(request.files[documents.name])
+        full_path = documents.path(filename)
+        try:
+            doc = Document(full_path)
+            new_doc_path = documents.path('test_'+filename)
+            replace_identifying_text(doc, new_doc_path)
+            # send_file should handle the open read and close
+            return send_file(
+                new_doc_path,
+                mimetype='application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                as_attachment=True,
+                attachment_filename=filename
+            )
+
+        finally:
+            os.remove(full_path)
+            # PermissionError: [WinError 32] The process cannot access the file because it is being used by another process: '/var/tmp\\document\\test_THPMK148_2.docx'
+            # only happens on windows I think.
+            os.remove(new_doc_path)
+
+    return render_template("convert.html")
