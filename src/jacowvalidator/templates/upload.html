@@ -62,25 +62,51 @@
 
         <h2 class="subtitle">References</h2>
         {% for reference in references_list if not reference.style_ok %}
-        {% if loop.index0 == 0 %}<h3>References with wrong style</h3>{% endif %}
+        {% if loop.index0 == 0 %}<h3 class="has-text-weight-bold">References with wrong style</h3>{% endif %}
         <p>[{{ reference.id }}] <b>Style:</b> {{ reference.style }}</p>
         {% else %}
         <p>{{ true|tick_cross }} reference styles okay</p>
         {% endfor %}
 
         {% for reference in references_list if not reference.used %}
-        {% if loop.index0 == 0 %}<h3>Unused references</h3>{% endif %}
+        {% if loop.index0 == 0 %}<h3 class="has-text-weight-bold">Unused references</h3>{% endif %}
         <p>{{ reference.text }}</p>
         {% else %}
         <p>{{ true|tick_cross }} all references used</p>
         {% endfor %}
 
         {% for reference in references_list if not reference.order_ok %}
-        {% if loop.index0 == 0 %}<h3>Out of order references</h3>{% endif %}
+        {% if loop.index0 == 0 %}<h3 class="has-text-weight-bold">Out of order references</h3>{% endif %}
         <p>{{ reference.text }}</p>
         {% else %}
         <p>{{ true|tick_cross }} all references are in correct order</p>
         {% endfor %}
+        <details>
+        <summary>Details</summary>
+        <table class="table is-bordered">
+            <thead>
+                <tr>
+                    <th>No.</th>
+                    <th>Used</th>
+                    <th>Order</th>
+                    <th colspan="2">Style</th>
+                    <th>Text</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for reference in references_list %}
+                <tr>
+                    <td>{{ reference.id }}</td>
+                    <td class="{{ 'has-background-danger' if not reference.used }}">{{ reference.used|tick_cross }}</td>
+                    <td class="{{ 'has-background-danger' if not reference.order_ok }}">{{ reference.order_ok|tick_cross }}</td>
+                    <td class="{{ 'has-background-danger' if not reference.style_ok }}">{{ reference.style_ok|tick_cross }}</td>
+                    <td class="is-size-7">{{ reference.style }}</td>
+                    <td>{{ reference.text }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        </details>
     </div>
     <div class="box">
         <h2 class="subtitle">Figures</h2>
