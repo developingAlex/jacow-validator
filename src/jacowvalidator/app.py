@@ -1,10 +1,11 @@
 import os
 
 from docx import Document
+from docx.opc.exceptions import PackageNotFoundError
 
 from flask import Flask, redirect, render_template, request, url_for, send_file
 
-from flask_uploads import UploadSet, configure_uploads
+from flask_uploads import UploadSet, configure_uploads, UploadNotAllowed
 
 from .utils import (
     check_jacow_styles,
@@ -40,8 +41,12 @@ def hello():
 @app.route("/upload", methods=["GET", "POST"])
 def upload():
     if request.method == "POST" and documents.name in request.files:
-        filename = documents.save(request.files[documents.name])
+        try:
+            filename = documents.save(request.files[documents.name])
+        except UploadNotAllowed:
+            return render_template("upload.html", error=f"Wrong file extension. Please upload .docx files only")
         fullpath = documents.path(filename)
+
         try:
             doc = Document(fullpath)
 
@@ -87,6 +92,10 @@ def upload():
             references_in_text, references_list = extract_references(doc)
 
             return render_template("upload.html", processed=True, **locals())
+        except PackageNotFoundError:
+            return render_template("upload.html", error=f"Failed to open document: {filename}")
+        except Exception:
+            return render_template("upload.html", error=f"Failed to process document: {filename}")
         finally:
             os.remove(fullpath)
 
