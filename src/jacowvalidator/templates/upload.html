@@ -9,6 +9,9 @@
 </head>
 <body>
     <section class="section">
+    <div class="container is-clearfix">
+    {% if commit_sha and commit_date %}<p class="is-size-7 is-pulled-right"><b>Updated:</b> {{ commit_date.strftime('%H:%M %d/%m/%Y') }} [<b>{{ commit_sha }}</b>]</p>{% endif %}    
+    </div>
         <div class="container box">
     <form method="POST" enctype="multipart/form-data" action="{{ url_for('upload') }}">
         <input type="file" name="document">

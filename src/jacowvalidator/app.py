@@ -1,4 +1,6 @@
 import os
+from datetime import datetime
+from subprocess import run
 
 from docx import Document
 from docx.opc.exceptions import PackageNotFoundError
@@ -20,12 +22,24 @@ from .utils import (
 
 documents = UploadSet("document", ("docx"))
 
+try:
+    p = run(['git', 'log', '-1', '--format=%h,%at'], capture_output=True, text=True, check=True)
+    commit_sha, commit_date = p.stdout.split(',')
+    commit_date = datetime.fromtimestamp(int(commit_date))
+except Exception:
+    commit_sha, commit_date = None, None
+
 app = Flask(__name__)
 app.config.update(
     dict(UPLOADS_DEFAULT_DEST=os.environ.get("UPLOADS_DEFAULT_DEST", "/var/tmp"))
 )
 
 configure_uploads(app, (documents,))
+
+
+@app.context_processor
+def inject_commit_details():
+    return dict(commit_sha=commit_sha, commit_date=commit_date)
 
 
 @app.template_filter('tick_cross')
