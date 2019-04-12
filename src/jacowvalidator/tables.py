@@ -44,7 +44,22 @@ def check_table_titles(doc):
         if isinstance(block, Paragraph):
             prev = block
         elif isinstance(block, Table):
-            table_details.append({'table': block, 'title': prev})
+            # exclude those with only 1 column, since not likely to be real tables.
+            if len(block.columns) == 1:
+                continue
+
+            # check whether there is data in table
+            text_found = False
+            for row in block.rows:
+                for cell in row.cells:
+                    for paragraph in cell.paragraphs:
+                        if paragraph.text.strip() is not '':
+                            print(paragraph.text)
+                            text_found = True
+                            break
+
+            if text_found:
+                table_details.append({'table': block, 'title': prev})
 
     refs = []
     for paragraph in doc.paragraphs:
@@ -75,6 +90,7 @@ def check_table_titles(doc):
             'order_ok': order_check,
             'style': title.style.name,
             'style_ok': title.style.name in ['Caption', 'Table Caption', 'Table Caption Multi Line'],
+            'table': f"rows: {len(table['table'].rows)}, columns: {len(table['table'].columns)}"
         })
         count = count+1
 

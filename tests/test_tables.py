@@ -4,6 +4,7 @@ from jacowvalidator.tables import check_table_titles
 
 test_dir = Path(__file__).parent / 'data'
 
+
 def test_tables():
     from docx import Document
     doc = Document(test_dir / 'jacow_template_a4.docx')
