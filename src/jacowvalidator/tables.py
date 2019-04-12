@@ -68,16 +68,17 @@ def check_table_titles(doc):
                 table_details.append({'table': block, 'title': prev})
 
     refs = []
+    table_titles = [item['title'].text for item in table_details]
     for paragraph in doc.paragraphs:
-        # TODO fix since style is not sufficient to exclude the table caption paragraphs
-        if paragraph.style.name not in ['Caption', 'Table Caption', 'Table Caption Multi Line']:
+        # don't include if it is one of the table titles
+        if paragraph.text not in table_titles:
             # Check for table names
             result = RE_TABLE_REF_LIST.findall(paragraph.text)
             if result is not None:
                 for f in result:
                     refs.append(f)
 
-    titles = []
+    title_details = []
     count = 1
     for table in table_details:
         title = table['title']
@@ -87,7 +88,7 @@ def check_table_titles(doc):
         order_check = RE_TABLE_ORDER.findall(title.text.strip())
         used_count = refs.count('Table ' + str(count))
 
-        titles.append({
+        title_details.append({
             'id': count,
             'text': title.text,
             'text_format_ok': format_check_1 and format_check_2,
@@ -99,4 +100,4 @@ def check_table_titles(doc):
         })
         count = count+1
 
-    return titles
+    return title_details
