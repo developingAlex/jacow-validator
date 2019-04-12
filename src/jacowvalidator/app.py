@@ -19,6 +19,9 @@ from .utils import (
     get_page_size,
     replace_identifying_text,
 )
+from .tables import (
+    check_table_titles,
+)
 
 documents = UploadSet("document", ("docx"))
 
@@ -91,7 +94,7 @@ def upload():
                 if p.text.strip().lower() == 'references':
                     references_start = i
 
-            author_paragraphs = doc.paragraphs[1 : abstract['start']]
+            author_paragraphs = doc.paragraphs[1: abstract['start']]
             authors = {
                 'text': ''.join(p.text for p in author_paragraphs),
                 'style': set(p.style.name for p in author_paragraphs if p.text.strip()),
@@ -104,6 +107,7 @@ def upload():
 
             figures = extract_figures(doc)
             references_in_text, references_list = extract_references(doc)
+            table_titles = check_table_titles(doc)
 
             return render_template("upload.html", processed=True, **locals())
         except PackageNotFoundError:

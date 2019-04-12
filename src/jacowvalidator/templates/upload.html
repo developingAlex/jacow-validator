@@ -141,6 +141,33 @@
             </tbody>
         </table>
     </div>
+    <div class="box">
+        <h2 class="subtitle">Tables</h2>
+        <table class="table is-bordered">
+            <thead>
+                <tr>
+                    <th>No.</th>
+                    <th colspan="2">Caption</th>
+                    <th>Used</th>
+                    <th>Order</th>
+                    <th colspan="2">Style</th>
+                </tr>
+            </thead>
+            <tbody>
+        {% for title in table_titles %}
+            <tr>
+                <td>{{ title.id }}</td>
+                <td>{{ title.text }}</td>
+                <td>{{ title.text_format_ok|tick_cross }}</td>
+                <td>{{ title.used }}</td>
+                <td>{{ title.order|tick_cross }}</td>
+                <td>{{ title.style }}</td>
+                <td>{{ title.style_ok|tick_cross }}</td>
+            </tr>
+        {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </div>
     {% endif %}
 </section>
