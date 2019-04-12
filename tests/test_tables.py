@@ -9,27 +9,27 @@ def test_tables():
     from docx import Document
     doc = Document(test_dir / 'jacow_template_a4.docx')
 
-    # hardcode known issues with this doc for the moment
+    # hard code known issues with this doc for the moment
+    type_of_checks = ['order_ok', 'style_ok']
     issues = {
         1: [],
         2: ['style_ok'],
-        3: ['used','order_ok'],
+        3: ['used', 'order_ok'],
     }
+
     table_titles = check_table_titles(doc)
-    for table in table_titles:
+    assert len(table_titles) == 3
+
+    for item in table_titles:
         # TODO optimise this
-        if 'used' in issues[table['id']]:
-            assert table['used'] == 0, f"{table['id']} used check passes but it should fail"
+        if 'used' in issues[item['id']]:
+            assert item['used'] == 0, f"{item['id']} used check passes but it should fail"
         else:
-            assert table['used'] > 0, f"{table['id']} used check failed"
+            assert item['used'] > 0, f"{item['id']} used check failed"
 
-        if 'order_ok' in issues[table['id']]:
-            assert table['order_ok'] is False, f"{table['id']} order check passes but it should fail"
-        else:
-            assert table['order_ok'], f"{table['id']} order check failed"
-
-        if 'style_ok' in issues[table['id']]:
-            assert table['style_ok'] is False, f"{table['id']} style check passes but it should fail"
-        else:
-            assert table['style_ok'], f"{table['id']} style check failed"
+        for check in type_of_checks:
+            if check in issues[item['id']]:
+                assert item[check] is False, f"{item['id']} {check} check passes but it should fail"
+            else:
+                assert item[check], f"{item['id']} {check} check failed"
 

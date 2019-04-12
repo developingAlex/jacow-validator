@@ -9,9 +9,27 @@ def test_references():
     from docx import Document
     doc = Document(test_dir / 'reference_test.docx')
 
-    # hardcode known issues for the moment
+    # hard code known issues for the moment
+    type_of_checks = ['used', 'order_ok', 'style_ok']
     issues = {
+        1: [],
+        2: [],
+        3: [],
+        4: [],
+        5: [],
+        6: [],
+        7: [],
+        8: [],
+        9: [],
+        10: [],
+        11: [],
         12: ['order_ok'],
+        13: [],
+        14: [],
+        15: [],
+        16: [],
+        17: [],
+        18: [],
         19: ['used'],
         20: ['order_ok'],
         21: ['order_ok'],
@@ -40,26 +58,14 @@ def test_references():
         44: ['order_ok'],
         45: ['order_ok'],
     }
-    references_in_text, references_list = extract_references(doc)
-    for reference in references_list:
-        # TODO optimise this
-        if reference['id'] in issues:
-            if 'used' in issues[reference['id']]:
-                assert reference['used'] is False, f"{reference['id']} used check passes but it should fail"
-            else:
-                assert reference['used'], f"{reference['id']} used check failed"
-        if reference['id'] in issues:
-            if 'order_ok' in issues[reference['id']]:
-                assert reference['order_ok'] is False, f"{reference['id']} order check passes but it should fail"
-            else:
-                assert reference['order_ok'], f"{reference['id']} order check failed"
-        if reference['id'] in issues:
-            if 'style_ok' in issues[reference['id']]:
-                assert reference['style_ok'] is False, f"{reference['id']} style check passes but it should fail"
-            else:
-                assert reference['style_ok'], f"{reference['id']} style check failed"
 
-        else:
-            assert reference['used'], f"{reference['id']} used check failed"
-            assert reference['order_ok'], f"{reference['id']} order check failed"
-            assert reference['style_ok'], f"{reference['id']} style check failed - {reference['style']}"
+    references_in_text, references_list = extract_references(doc)
+    assert len(references_list) == 45
+
+    for item in references_list:
+        # TODO optimise this
+        for check in type_of_checks:
+            if check in issues[item['id']]:
+                assert item[check] is False, f"{item['id']} {check} check passes but it should fail"
+            else:
+                assert item[check], f"{item['id']} {check} check failed"
