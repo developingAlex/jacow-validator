@@ -5,6 +5,11 @@ from docx.oxml.table import CT_Tbl
 from docx.table import _Cell, _Row, Table
 from docx.text.paragraph import Paragraph
 
+RE_TABLE_LIST = re.compile(r'^Table \d+:')
+RE_TABLE_ORDER = re.compile(r'^Table \d+')
+RE_TABLE_REF_LIST = re.compile(r'Table \d+')
+RE_TABLE_FORMAT = re.compile(r'\.$')
+
 
 def iter_block_items(parent):
     """
@@ -29,15 +34,17 @@ def iter_block_items(parent):
             yield Table(child, parent)
 
 
-# Table captions are actually titles, this means that they are in Title Case, and don’t have a “.”
-# At the end, well unless exceeds 2 lines.  The table caption is centred if 1 line (“Table Caption” Style),
-# and Justified if 2 or more (“Table Caption Multi Line” Style.  The table caption must appear above the Table.
-#
-# All tables must be numbered in the order they appear in the document and not skip a number in the sequence.
-#
-# All tables start with “Table n:”.
-# All tables must be referred to in the main text and use “Table n”.
 def check_table_titles(doc):
+    """
+    Table captions are actually titles, this means that they are in Title Case, and don’t have a “.”
+    At the end, well unless exceeds 2 lines.  The table caption is centred if 1 line (“Table Caption” Style),
+    and Justified if 2 or more (“Table Caption Multi Line” Style.  The table caption must appear above the Table.
+
+    All tables must be numbered in the order they appear in the document and not skip a number in the sequence.
+
+    All tables start with “Table n:”.
+    All tables must be referred to in the main text and use “Table n”.
+    """
     prev = None
     table_details = []
     for block in iter_block_items(doc):
@@ -62,9 +69,10 @@ def check_table_titles(doc):
 
     refs = []
     for paragraph in doc.paragraphs:
+        # TODO fix since style is not sufficient to exclude the table caption paragraphs
         if paragraph.style.name not in ['Caption', 'Table Caption', 'Table Caption Multi Line']:
             # Check for table names
-            result = re.findall(r'Table \d', paragraph.text)
+            result = RE_TABLE_REF_LIST.findall(paragraph.text)
             if result is not None:
                 for f in result:
                     refs.append(f)
@@ -73,21 +81,18 @@ def check_table_titles(doc):
     count = 1
     for table in table_details:
         title = table['title']
-        format_check_1 = re.search(r'^Table \d:', title.text.strip()) is not None
-        format_check_2 = re.search(r'\.$', title.text.strip()) is None
+        format_check_1 = RE_TABLE_LIST.search(title.text.strip()) is not None
+        format_check_2 = RE_TABLE_FORMAT.search(title.text.strip()) is None
 
-        # allow whitespace between the number and : for the order check
-        order_regex = r"^Table " + re.escape(str(count)) + r"\s*:"
-        order_check = re.search(order_regex, title.text.strip()) is not None
-
-        used_check = refs.count('Table ' + str(count))
+        order_check = RE_TABLE_ORDER.findall(title.text.strip())
+        used_count = refs.count('Table ' + str(count))
 
         titles.append({
             'id': count,
             'text': title.text,
             'text_format_ok': format_check_1 and format_check_2,
-            'used': used_check,
-            'order_ok': order_check,
+            'used': used_count,
+            'order_ok': f'Table {count}' in order_check,
             'style': title.style.name,
             'style_ok': title.style.name in ['Caption', 'Table Caption', 'Table Caption Multi Line'],
             'table': f"rows: {len(table['table'].rows)}, columns: {len(table['table'].columns)}"
