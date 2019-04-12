@@ -51,7 +51,6 @@ def check_table_titles(doc):
         if paragraph.style.name not in ['Caption', 'Table Caption', 'Table Caption Multi Line']:
             # Check for table names
             result = re.findall(r'Table \d', paragraph.text)
-            print(result)
             if result is not None:
                 for f in result:
                     refs.append(f)
@@ -73,7 +72,7 @@ def check_table_titles(doc):
             'text': title.text,
             'text_format_ok': format_check_1 and format_check_2,
             'used': used_check,
-            'order': order_check,
+            'order_ok': order_check,
             'style': title.style.name,
             'style_ok': title.style.name in ['Caption', 'Table Caption', 'Table Caption Multi Line'],
         })
