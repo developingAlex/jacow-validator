@@ -54,7 +54,6 @@ def check_table_titles(doc):
                 for cell in row.cells:
                     for paragraph in cell.paragraphs:
                         if paragraph.text.strip() is not '':
-                            print(paragraph.text)
                             text_found = True
                             break
 
@@ -77,7 +76,8 @@ def check_table_titles(doc):
         format_check_1 = re.search(r'^Table \d:', title.text.strip()) is not None
         format_check_2 = re.search(r'\.$', title.text.strip()) is None
 
-        order_regex = r"^Table " + re.escape(str(count)) + r":"
+        # allow whitespace between the number and : for the order check
+        order_regex = r"^Table " + re.escape(str(count)) + r"\s*:"
         order_check = re.search(order_regex, title.text.strip()) is not None
 
         used_check = refs.count('Table ' + str(count))
