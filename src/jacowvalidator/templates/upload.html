@@ -108,7 +108,11 @@
                     <td class="{{ 'has-background-danger' if not reference.order_ok }}">{{ reference.order_ok|tick_cross }}</td>
                     <td class="{{ 'has-background-danger' if not reference.style_ok }}">{{ reference.style_ok|tick_cross }}</td>
                     <td class="is-size-7">{{ reference.style }}</td>
-                    <td>{{ reference.text }}</td>
+                    <td>
+                        {{ reference.text }}
+                        {% if reference.text_error %}<p class="has-text-weight-bold has-text-danger">{{ reference.text_error }}</p>{% endif %}
+                        {% if reference.duplicate %}<p class="has-text-weight-bold has-text-danger">Duplicate reference number</p>{% endif %}
+                    </td>
                 </tr>
             {% endfor %}
             </tbody>
