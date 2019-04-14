@@ -105,7 +105,7 @@ def get_paragraph_style_exceptions(doc):
 RE_REFS_LIST = re.compile(r'^\[([\d]+)\]')
 RE_REFS_INTEXT = re.compile(r'(?<!^)\[([\d ,-]+)\]')
 RE_FIG_TITLES = re.compile(r'(^Figure \d+:)')
-RE_FIG_INTEXT = re.compile(r'(Fig.\s?\d+|Figure\s?\d+\s+)')
+RE_FIG_INTEXT = re.compile(r'(Fig.\s?\d+|Figure\s?\d+[.\s]+)')
 
 
 def _ref_to_int(ref):
