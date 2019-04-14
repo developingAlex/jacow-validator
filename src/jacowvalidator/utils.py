@@ -233,8 +233,6 @@ def extract_figures(doc):
     return figures
 
 
-# move abstract and author logic here so can be tested.
-# original logic left in app, so won't cause conflict, but should be changed to use this function or similar
 def get_abstract_and_author(doc):
     for i, p in enumerate(doc.paragraphs):
         if p.text.strip().lower() == 'abstract':
@@ -244,8 +242,6 @@ def get_abstract_and_author(doc):
                 'style': p.style.name,
                 'style_ok': p.style.name in 'JACoW_Abstract_Heading',
             }
-        if p.text.strip().lower() == 'references':
-            references_start = i
 
     author_paragraphs = doc.paragraphs[1: abstract['start']]
     authors = {
