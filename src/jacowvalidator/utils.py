@@ -204,7 +204,7 @@ def extract_figures(doc):
                     name=f,
                     text=p.text.strip(),
                     style=p.style.name,
-                    style_ok=p.style.name in ['Figure Caption', 'Caption Multi Line'],
+                    style_ok=p.style.name in ['Figure Caption', 'Caption Multi Line', 'Caption'],
                 )
             )
 
