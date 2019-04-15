@@ -20,6 +20,9 @@ from .utils import (
     get_page_size,
     replace_identifying_text,
 )
+from .tables import (
+    check_table_titles,
+)
 
 documents = UploadSet("document", ("docx"))
 
@@ -83,6 +86,7 @@ def upload():
             abstract, authors = get_abstract_and_author(doc)
             figures = extract_figures(doc)
             references_in_text, references_list = extract_references(doc)
+            table_titles = check_table_titles(doc)
 
             return render_template("upload.html", processed=True, **locals())
         except PackageNotFoundError:
