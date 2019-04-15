@@ -27,7 +27,14 @@ def iter_block_items(parent):
         parent_elm = parent._tr
     else:
         raise ValueError("something's not right")
+
+    # TODO make this work for floating tables
+    # as do not necessarily appear in the same order in the document as they do visually
+    # Floating tables can be fixed in word doc by right clicking in table, choosing table properties,
+    # selecting None for text wrapping and clicking on ok.
+    # Then moving the table to the correct place.
     for child in parent_elm.iterchildren():
+        print(child)
         if isinstance(child, CT_P):
             yield Paragraph(child, parent)
         elif isinstance(child, CT_Tbl):
@@ -86,6 +93,7 @@ def check_table_titles(doc):
         format_check_2 = RE_TABLE_FORMAT.search(title.text.strip()) is None
 
         order_check = RE_TABLE_ORDER.findall(title.text.strip())
+        # TODO Add info if doing some common wrong ways of doing references like 'table 1'
         used_count = refs.count('Table ' + str(count))
 
         title_details.append({
