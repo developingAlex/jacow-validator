@@ -103,9 +103,10 @@ def get_paragraph_style_exceptions(doc):
 
 
 RE_REFS_LIST = re.compile(r'^\[([\d]+)\]')
+RE_REFS_LIST_TAB = re.compile(r'^\[([\d]+)\]\t')
 RE_REFS_INTEXT = re.compile(r'(?<!^)\[([\d ,-]+)\]')
 RE_FIG_TITLES = re.compile(r'(^Figure \d+:)')
-RE_FIG_INTEXT = re.compile(r'(Fig.\s?\d+|Figure\s?\d+\s+)')
+RE_FIG_INTEXT = re.compile(r'(Fig.\s?\d+|Figure\s?\d+[.\s]+)')
 
 
 def _ref_to_int(ref):
@@ -134,14 +135,25 @@ def extract_references(doc):
 
     # find all references in text and references list
     references_list = []
-    for p in data:
+    ref_list_start = 0
+    for i, p in enumerate(data):
         for ref in RE_REFS_INTEXT.findall(p.text):
             references_in_text.append(_ref_to_int(ref))
 
-        for ref in RE_REFS_LIST.findall(p.text.strip()):
-            references_list.append(
-                dict(id=int(ref), text=p.text.strip(), style=p.style.name)
-            )
+        refs = RE_REFS_LIST.findall(p.text.strip())
+        if refs:
+            for ref in refs:
+                if int(ref) == 1:
+                    ref_list_start = i
+                references_list.append(
+                    dict(id=int(ref), text=p.text.strip(), style=p.style.name)
+                )
+        elif ref_list_start > 0:
+            should_find = i - ref_list_start + 1
+            if str(should_find) in p.text.strip():
+                references_list.append(
+                    dict(id=should_find, text=p.text.strip(), style=p.style.name, text_error=f"Number format wrong should be [{should_find}]")
+                )
 
     # check references in body are in correct order
     stack = [0]
@@ -167,9 +179,16 @@ def extract_references(doc):
 
     # check reference styles, order etc
     ref_count = len(references_list)
+    seen = set()
     for i, ref in enumerate(references_list, 1):
+        if ref['id'] in seen:
+            ref['duplicate'] = True
+        seen.add(ref['id'])
         ref['order_ok'] = i == ref['id'] and i not in out_of_order
         ref['used'] = i in used_references
+
+        if not RE_REFS_LIST_TAB.search(ref['text']):
+            ref['text_error'] = f"Number format error should be [{i}] followed by a tab"
 
         if ref_count <= 9:
             ref['style_ok'] = ref['style'] == 'JACoW_Reference when <= 9 Refs'
@@ -204,7 +223,7 @@ def extract_figures(doc):
                     name=f,
                     text=p.text.strip(),
                     style=p.style.name,
-                    style_ok=p.style.name in ['Figure Caption', 'Caption Multi Line'],
+                    style_ok=p.style.name in ['Figure Caption', 'Caption Multi Line', 'Caption'],
                 )
             )
 
@@ -233,8 +252,6 @@ def extract_figures(doc):
     return figures
 
 
-# move abstract and author logic here so can be tested.
-# original logic left in app, so won't cause conflict, but should be changed to use this function or similar
 def get_abstract_and_author(doc):
     for i, p in enumerate(doc.paragraphs):
         if p.text.strip().lower() == 'abstract':
@@ -244,8 +261,6 @@ def get_abstract_and_author(doc):
                 'style': p.style.name,
                 'style_ok': p.style.name in 'JACoW_Abstract_Heading',
             }
-        if p.text.strip().lower() == 'references':
-            references_start = i
 
     author_paragraphs = doc.paragraphs[1: abstract['start']]
     authors = {
