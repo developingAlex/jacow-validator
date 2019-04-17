@@ -10,7 +10,12 @@ def test_tables():
     doc = Document(test_dir / 'jacow_template_a4.docx')
 
     # hard code known issues with this doc for the moment
-    type_of_checks = ['order_ok', 'style_ok']
+    type_of_checks = [
+        'order_ok',
+        'style_ok',
+        'text_format_ok',
+        ['alignment', 'CENTER']
+    ]
     issues = {
         1: [],
         2: ['style_ok'],
@@ -28,8 +33,13 @@ def test_tables():
             assert item['used'] > 0, f"{item['id']} used check failed"
 
         for check in type_of_checks:
-            if check in issues[item['id']]:
-                assert item[check] is False, f"{item['id']} {check} check passes but it should fail"
+            if type(check) == list:
+                to_check = item[check[0]] == check[1]
             else:
-                assert item[check], f"{item['id']} {check} check failed"
+                to_check = item[check]
+
+            if check in issues[item['id']]:
+                assert to_check is False, f"{item['id']} {check} check passes but it should fail"
+            else:
+                assert to_check, f"{item['id']} {check} check failed"
 
