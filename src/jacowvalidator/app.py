@@ -92,6 +92,7 @@ def upload():
         except PackageNotFoundError:
             return render_template("upload.html", error=f"Failed to open document: {filename}")
         except Exception:
+            app.logger.exception("Failed to process document")
             return render_template("upload.html", error=f"Failed to process document: {filename}")
         finally:
             os.remove(fullpath)
