@@ -149,8 +149,8 @@ def extract_references(doc):
                     dict(id=int(ref), text=p.text.strip(), style=p.style.name)
                 )
         elif ref_list_start > 0:
-            should_find = i - ref_list_start + 1
-            if str(should_find) in p.text.strip():
+            should_find = references_list[-1]['id'] + 1
+            if str(should_find) in p.text.strip()[:4]: # only look in first 4 chars
                 references_list.append(
                     dict(id=should_find, text=p.text.strip(), style=p.style.name, text_error=f"Number format wrong should be [{should_find}]")
                 )
