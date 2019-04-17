@@ -68,6 +68,9 @@
     <div class="box">
 
         <h2 class="subtitle">References</h2>
+        {% if not references_list %}
+        <p class="has-text-weight-bold has-text-danger">No references found at end of document. Please check formatting.</p>
+        {% else %}
         {% for reference in references_list if not reference.style_ok %}
         {% if loop.index0 == 0 %}<h3 class="has-text-weight-bold">References with wrong style</h3>{% endif %}
         <p>[{{ reference.id }}] <b>Style:</b> {{ reference.style }}</p>
@@ -118,6 +121,7 @@
             </tbody>
         </table>
         </details>
+        {% endif %}
     </div>
     <div class="box">
         <h2 class="subtitle">Figures</h2>
