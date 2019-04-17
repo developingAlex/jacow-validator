@@ -275,6 +275,17 @@ def get_abstract_and_author(doc):
     return abstract, authors
 
 
+def get_paragraph_alignment(paragraph):
+    # alignment style can be overridden by more local definition
+    alignment = paragraph.style.paragraph_format.alignment
+    if paragraph.alignment is not None:
+        alignment = paragraph.alignment
+    elif paragraph.paragraph_format.alignment is not None:
+        alignment = paragraph.paragraph_format.alignment
+
+    return alignment._member_name
+
+
 # replace text using same case
 def replace_text_with_blah(text):
     # temp solution to saving table and figure
