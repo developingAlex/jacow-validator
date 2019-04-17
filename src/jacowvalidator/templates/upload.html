@@ -155,6 +155,7 @@
                     <th>Used</th>
                     <th>Order</th>
                     <th colspan="2">Style</th>
+                    <th>Alignment</th>
                     <th>Table</th>
                 </tr>
             </thead>
@@ -163,11 +164,12 @@
             <tr>
                 <td>{{ title.id }}</td>
                 <td>{{ title.text }}</td>
-                <td>{{ title.text_format_ok|tick_cross }}</td>
+                <td><span title="{{ title.text_format_message }}">{{ title.text_format_ok|tick_cross }}</span></td>
                 <td>{{ title.used }}</td>
                 <td>{{ title.order_ok|tick_cross }}</td>
                 <td>{{ title.style }}</td>
                 <td>{{ title.style_ok|tick_cross }}</td>
+                <td>{{ title.alignment }}</td>
                 <td>{{ title.table }}</td>
             </tr>
         {% endfor %}
