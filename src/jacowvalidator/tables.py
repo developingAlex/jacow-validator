@@ -12,7 +12,7 @@ RE_TABLE_ORDER = re.compile(r'^Table \d+')
 RE_TABLE_REF_LIST = re.compile(r'Table \d+')
 RE_TABLE_FORMAT = re.compile(r'\.$')
 RE_TABLE_TITLE_CAPS = re.compile(r'^(?:[A-Z][^\s]*\s?)+$')
-RE_REMOVE_SPECIAL = re.compile(r'[^a-zA-Z ]+')
+RE_REMOVE_SPECIAL = re.compile(r'[^a-zA-Z ]|(of|and|to)')
 
 
 def iter_block_items(parent):
@@ -58,6 +58,7 @@ def check_caption_format(title, format_checks):
         text = title.text.strip()
         if check['preformat']:
             text = check['preformat'].sub("", text)
+            # remove extra spaces created by preformat
             text = re.sub(' +', ' ', text)
 
         if check['valid_result'] is True and check['test'].search(text) is None:
