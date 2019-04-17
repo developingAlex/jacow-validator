@@ -9,7 +9,7 @@ from .utils import get_paragraph_alignment
 
 RE_TABLE_LIST = re.compile(r'^Table \d+:')
 RE_TABLE_ORDER = re.compile(r'^Table \d+')
-RE_TABLE_REF_LIST = re.compile(r'Table \d+')
+RE_TABLE_REF_LIST = re.compile(r'(Table\s?\d+|Tables\s?\d+\sand\s\d+)')
 RE_TABLE_FORMAT = re.compile(r'\.$')
 RE_TABLE_TITLE_CAPS = re.compile(r'^(?:[A-Z][^\s]*\s?)+$')
 RE_REMOVE_SPECIAL = re.compile(r'[^a-zA-Z ]|(of|and|to)')
@@ -91,6 +91,9 @@ def check_table_titles(doc):
             # exclude those with only 1 column, since not likely to be real tables.
             if len(block.columns) == 1:
                 continue
+            # exclude those with only 1 row, since not likely to be real tables.
+            if len(block.rows) == 1:
+                continue
 
             # check whether there is data in table
             text_found = False
@@ -113,7 +116,13 @@ def check_table_titles(doc):
             result = RE_TABLE_REF_LIST.findall(paragraph.text)
             if result is not None:
                 for f in result:
-                    refs.append(f)
+                    # split by space and parse for numbers
+                    for w in f.split(' '):
+                        try:
+                            refs.append(int(w))
+                        except ValueError:
+                            # do nothing
+                            continue
 
     title_details = []
     count = 1
@@ -145,7 +154,7 @@ def check_table_titles(doc):
 
         order_check = RE_TABLE_ORDER.findall(title.text.strip())
         # TODO Add info if doing some common wrong ways of doing references like 'table 1'
-        used_count = refs.count('Table ' + str(count))
+        used_count = refs.count(count)
 
         title_details.append({
             'id': count,
