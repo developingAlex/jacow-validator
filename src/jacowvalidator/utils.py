@@ -297,7 +297,10 @@ def get_paragraph_alignment(paragraph):
     elif paragraph.paragraph_format.alignment is not None:
         alignment = paragraph.paragraph_format.alignment
 
-    return alignment._member_name
+    if alignment:
+        return alignment._member_name
+    else:
+        return None
 
 
 # replace text using same case
