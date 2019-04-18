@@ -209,12 +209,7 @@ def extract_figures(doc):
     figures_refs = []
     figures_captions = []
 
-    for p in doc.paragraphs:
-        # find references to figures
-        for f in RE_FIG_INTEXT.findall(p.text):
-            figures_refs.append(dict(id=_fig_to_int(f), name=f.strip()))
-
-        # find figure captions
+    def _find_figure_captions(p):
         for f in RE_FIG_TITLES.findall(p.text.strip()):
             _id = _fig_to_int(f)
             figures_captions.append(
@@ -226,6 +221,21 @@ def extract_figures(doc):
                     style_ok=p.style.name in ['Figure Caption', 'Caption Multi Line', 'Caption'],
                 )
             )
+
+    for p in doc.paragraphs:
+        # find references to figures
+        for f in RE_FIG_INTEXT.findall(p.text):
+            figures_refs.append(dict(id=_fig_to_int(f), name=f.strip()))
+
+        # find figure captions
+        _find_figure_captions(p)
+
+    # search for figure captions in tables
+    for t in doc.tables:
+        for r in t.rows:
+            for c in r.cells:
+                for p in c.paragraphs:
+                    _find_figure_captions(p)
 
     figures = OrderedDict()
     _last = max(
