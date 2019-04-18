@@ -132,18 +132,20 @@
                     <th colspan="2">Caption</th>
                     <th colspan="2">References</th>
                     <th colspan="2">Style</th>
+                    <th>Text</th>
                 </tr>
             </thead>
             <tbody>
         {% for id, fig in figures.items() %}
             <tr>
                 <td>{{ id }}</td>
-                <td>{{ fig.name }}</td>
-                <td>{{ fig.found|tick_cross }}</td>
+                <td style="white-space: nowrap">{{ fig.name }}</td>
+                <td>{{ fig.caption_ok|tick_cross }}</td>
                 <td>{{ fig.refs|join(', ') }}</td>
                 <td>{{ fig.used|tick_cross }}</td>
                 <td>{{ fig.style }}</td>
                 <td>{{ fig.style_ok|tick_cross }}</td>
+                <td>{{ fig.text }}</td>
             </tr>
         {% endfor %}
             </tbody>
@@ -155,7 +157,7 @@
             <thead>
                 <tr>
                     <th>No.</th>
-                    <th colspan="2">Caption</th>
+                    <th colspan="3">Caption</th>
                     <th>Used</th>
                     <th>Order</th>
                     <th colspan="2">Style</th>
@@ -168,7 +170,12 @@
             <tr>
                 <td>{{ title.id }}</td>
                 <td>{{ title.text }}</td>
-                <td><span title="{{ title.text_format_message }}">{{ title.text_format_ok|tick_cross }}</span></td>
+                <td>{{ title.text_format_ok|tick_cross }}</td>
+                <td><ul style="list-style-type: circle; padding-left: 5px">
+                {% for message in title.text_format_message %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+                </ul></td>
                 <td>{{ title.used }}</td>
                 <td>{{ title.order_ok|tick_cross }}</td>
                 <td>{{ title.style }}</td>

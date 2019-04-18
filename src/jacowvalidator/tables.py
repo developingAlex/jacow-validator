@@ -160,7 +160,7 @@ def check_table_titles(doc):
             'id': count,
             'text': title.text,
             'text_format_ok': result,
-            'text_format_message': '\n'.join(message),
+            'text_format_message': message,
             'used': used_count,
             'order_ok': f'Table {count}' in order_check,
             'style': title.style.name,
