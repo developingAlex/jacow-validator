@@ -132,18 +132,20 @@
                     <th colspan="2">Caption</th>
                     <th colspan="2">References</th>
                     <th colspan="2">Style</th>
+                    <th>Text</th>
                 </tr>
             </thead>
             <tbody>
         {% for id, fig in figures.items() %}
             <tr>
                 <td>{{ id }}</td>
-                <td>{{ fig.name }}</td>
-                <td>{{ fig.found|tick_cross }}</td>
+                <td style="white-space: nowrap">{{ fig.name }}</td>
+                <td>{{ fig.caption_ok|tick_cross }}</td>
                 <td>{{ fig.refs|join(', ') }}</td>
                 <td>{{ fig.used|tick_cross }}</td>
                 <td>{{ fig.style }}</td>
                 <td>{{ fig.style_ok|tick_cross }}</td>
+                <td>{{ fig.text }}</td>
             </tr>
         {% endfor %}
             </tbody>
