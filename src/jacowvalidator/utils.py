@@ -105,7 +105,7 @@ def get_paragraph_style_exceptions(doc):
 RE_REFS_LIST = re.compile(r'^\[([\d]+)\]')
 RE_REFS_LIST_TAB = re.compile(r'^\[([\d]+)\]\t')
 RE_REFS_INTEXT = re.compile(r'(?<!^)\[([\d ,-]+)\]')
-RE_FIG_TITLES = re.compile(r'(^Figure \d+:)')
+RE_FIG_TITLES = re.compile(r'(^Figure \d+[.:])')
 RE_FIG_INTEXT = re.compile(r'(Fig.\s?\d+|Figure\s?\d+[.\s]+)')
 
 
@@ -149,8 +149,8 @@ def extract_references(doc):
                     dict(id=int(ref), text=p.text.strip(), style=p.style.name)
                 )
         elif ref_list_start > 0:
-            should_find = i - ref_list_start + 1
-            if str(should_find) in p.text.strip():
+            should_find = references_list[-1]['id'] + 1
+            if str(should_find) in p.text.strip()[:4]: # only look in first 4 chars
                 references_list.append(
                     dict(id=should_find, text=p.text.strip(), style=p.style.name, text_error=f"Number format wrong should be [{should_find}]")
                 )
@@ -209,12 +209,7 @@ def extract_figures(doc):
     figures_refs = []
     figures_captions = []
 
-    for p in doc.paragraphs:
-        # find references to figures
-        for f in RE_FIG_INTEXT.findall(p.text):
-            figures_refs.append(dict(id=_fig_to_int(f), name=f.strip()))
-
-        # find figure captions
+    def _find_figure_captions(p):
         for f in RE_FIG_TITLES.findall(p.text.strip()):
             _id = _fig_to_int(f)
             figures_captions.append(
@@ -226,6 +221,24 @@ def extract_figures(doc):
                     style_ok=p.style.name in ['Figure Caption', 'Caption Multi Line', 'Caption'],
                 )
             )
+
+    for p in doc.paragraphs:
+        # find references to figures
+        for f in iter(f.strip() for f in RE_FIG_INTEXT.findall(p.text)):
+            if f.endswith('.') and p.text.strip().startswith(f):
+                # probably a figure caption with . instead of :
+                continue
+            figures_refs.append(dict(id=_fig_to_int(f), name=f))
+
+        # find figure captions
+        _find_figure_captions(p)
+
+    # search for figure captions in tables
+    for t in doc.tables:
+        for r in t.rows:
+            for c in r.cells:
+                for p in c.paragraphs:
+                    _find_figure_captions(p)
 
     figures = OrderedDict()
     _last = max(
@@ -244,6 +257,7 @@ def extract_figures(doc):
             'refs': list(f['name'] for f in figures_refs if f['id'] == i),
             'duplicate': len(caption) != 1,
             'found': len(caption) > 0,
+            'caption_ok': len(caption) == 1 and caption[0]['name'].endswith(':')
         }
         figures[i]['used'] = len(figures[i]['refs']) > 0
         if caption:
