@@ -140,17 +140,21 @@ def check_table_titles(doc):
             'message': 'Has a . at the end of the sentence',
             'preformat': False
         },
-        {
-            'test': RE_TABLE_TITLE_CAPS,
-            'valid_result': True,
-            'message': 'Not in Title Caps',
-            'preformat': RE_REMOVE_SPECIAL
-        },
+        # {
+        #     'test': RE_TABLE_TITLE_CAPS,
+        #     'valid_result': True,
+        #     'message': 'Not in Title Caps',
+        #     'preformat': RE_REMOVE_SPECIAL
+        # },
     ]
 
     for table in table_details:
         title = table['title']
         result, message = check_caption_format(title, table_caption_format_checks)
+        # use titlecase library to create title case of title and see if it is same as original
+        if titlecase(title.text) != title.text:
+            result = False
+            message.append('Not in Title Caps')
 
         order_check = RE_TABLE_ORDER.findall(title.text.strip())
         # TODO Add info if doing some common wrong ways of doing references like 'table 1'

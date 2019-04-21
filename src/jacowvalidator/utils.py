@@ -3,6 +3,8 @@ from collections import OrderedDict
 from itertools import chain
 
 from docx.shared import Inches, Mm
+from docx.oxml.text.font import CT_RPr
+from lxml.etree import _Element
 
 
 def check_margins_A4(section):
@@ -303,48 +305,27 @@ def get_paragraph_alignment(paragraph):
         return None
 
 
-# replace text using same case
-def replace_text_with_blah(text):
-    # temp solution to saving table and figure
-    save_text = [
-        {'text': 'Table ', 'replace': '******'},
-        {'text': 'Figure ', 'replace': '@@@@@@'},
-        {'text': 'Fig ', 'replace': '######'},
-        {'text': 'Fig.', 'replace': '&&&&&&'},
-    ]
-
-    for t in save_text:
-        text = text.replace(t['text'], t['replace'])
-    new_text = []
-    for c in text:
-        new_char = c
-        if c.isupper():
-            new_char = 'A'
-        elif c.islower():
-            new_char = 'a'
-        new_text.append(new_char)
-
-    new_text = ''.join(new_text)
-    for t in save_text:
-        new_text = new_text.replace(t['replace'], t['text'])
-
-    return new_text
+# simple unique list of languages
+def get_language_tags(doc):
+    tags = get_language_tags_location(doc)
+    # get unique list
+    tags = list(set(tags.values()))
+    return tags
 
 
-# at the moment, this will replace character formatting within the paragraph
-def replace_identifying_text(doc, filename):
-    for paragraph in doc.paragraphs:
-        # leave headings so can still see abstract and reference sections
-        if paragraph.style.name not in [
-            'JACoW_Abstract_Heading',
-            'JACoW_Section Heading',
-            'JACoW_Subsection Heading',
-            'J_Section Heading',
-            'J_Abstract Title',
-        ]:
-            paragraph.text = replace_text_with_blah(paragraph.text)
-
-    doc.save(filename)
+def get_language_tags_location(doc):
+    tags = {}
+    if doc.core_properties.language != '':
+        tags['-1'] = doc.core_properties.language
+    for i, p in enumerate(doc.paragraphs):
+        for r in p.runs:
+            for c in r.element.iterchildren():
+                if isinstance(c, CT_RPr):
+                    for cc in c.iterchildren():
+                        if isinstance(cc, _Element) and 'lang' in str(cc):
+                            tags[i] = cc.items()[0][1]
+    # get unique list
+    return tags
 
 
 # These are in the jacow templates so may be in docs created from them

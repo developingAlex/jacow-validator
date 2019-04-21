@@ -18,6 +18,9 @@ from .utils import (
     extract_title,
     get_margins,
     get_page_size,
+    get_language_tags,
+)
+from .test_utils import (
     replace_identifying_text,
 )
 from .tables import (
@@ -87,6 +90,7 @@ def upload():
             figures = extract_figures(doc)
             references_in_text, references_list = extract_references(doc)
             table_titles = check_table_titles(doc)
+            languages = get_language_tags(doc)
 
             return render_template("upload.html", processed=True, **locals())
         except PackageNotFoundError:
