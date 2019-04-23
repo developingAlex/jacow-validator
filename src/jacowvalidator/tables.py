@@ -66,7 +66,7 @@ def check_caption_format(title, format_checks):
     return result, message
 
 
-def check_if_floating(table):
+def check_is_floating(table):
     # check whether floating table
     tblppr = False
     width_type = False
@@ -87,17 +87,7 @@ def check_if_floating(table):
     return tblppr and width_type
 
 
-def check_table_titles(doc):
-    """
-    Table captions are actually titles, this means that they are in Title Case, and don’t have a “.”
-    At the end, well unless exceeds 2 lines.  The table caption is centred if 1 line (“Table Caption” Style),
-    and Justified if 2 or more (“Table Caption Multi Line” Style.  The table caption must appear above the Table.
-
-    All tables must be numbered in the order they appear in the document and not skip a number in the sequence.
-
-    All tables start with “Table n:”.
-    All tables must be referred to in the main text and use “Table n”.
-    """
+def get_table_paragraphs(doc):
     prev = None
     table_details = []
     for block in iter_block_items(doc):
@@ -122,6 +112,21 @@ def check_table_titles(doc):
 
             if text_found:
                 table_details.append({'table': block, 'title': prev})
+    return table_details
+
+
+def check_table_titles(doc):
+    """
+    Table captions are actually titles, this means that they are in Title Case, and don’t have a “.”
+    At the end, well unless exceeds 2 lines.  The table caption is centred if 1 line (“Table Caption” Style),
+    and Justified if 2 or more (“Table Caption Multi Line” Style.  The table caption must appear above the Table.
+
+    All tables must be numbered in the order they appear in the document and not skip a number in the sequence.
+
+    All tables start with “Table n:”.
+    All tables must be referred to in the main text and use “Table n”.
+    """
+    table_details = get_table_paragraphs(doc)
 
     refs = []
     table_titles = [item['title'].text for item in table_details]
@@ -176,7 +181,7 @@ def check_table_titles(doc):
         # TODO Add info if doing some common wrong ways of doing references like 'table 1'
         used_count = refs.count(count)
 
-        floating = check_if_floating(table['table'])
+        floating = check_is_floating(table['table'])
 
         title_details.append({
             'id': count,

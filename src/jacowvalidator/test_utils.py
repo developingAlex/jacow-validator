@@ -28,12 +28,14 @@ def replace_identifying_text(doc, filename):
 # replace text using same case
 def replace_paragraph_text(paragraph):
     p_all_caps = False
+    all_caps = False
     if paragraph.style.font.all_caps or paragraph.style.base_style and paragraph.style.base_style.font.all_caps:
         p_all_caps = True
 
     for r in paragraph.runs:
         all_caps = p_all_caps or r.style.font.all_caps or r.font.all_caps
-        r.text = replace_text(r.text, all_caps)
+
+    paragraph.text = replace_text(paragraph.text, all_caps)
 
 
 def replace_text(text, all_caps):
@@ -51,6 +53,6 @@ def replace_text(text, all_caps):
 
     new_text = ''.join(new_text)
     for t in save_text:
-        text = new_text.replace(t['replace'], t['text'])
+        new_text = new_text.replace(t['replace'], t['text'])
 
-    return text
+    return new_text
