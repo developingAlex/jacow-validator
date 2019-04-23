@@ -4,8 +4,10 @@ from docx.oxml.text.paragraph import CT_P
 from docx.oxml.table import CT_Tbl, CT_TblPr
 from docx.table import _Cell, _Row, Table
 from docx.text.paragraph import Paragraph
-from .utils import get_paragraph_alignment
+from lxml.etree import _Element
 
+from .utils import get_paragraph_alignment
+from titlecase import titlecase
 
 RE_TABLE_LIST = re.compile(r'^Table \d+:')
 RE_TABLE_ORDER = re.compile(r'^Table \d+')
@@ -41,13 +43,6 @@ def iter_block_items(parent):
         if isinstance(child, CT_P):
             yield Paragraph(child, parent)
         elif isinstance(child, CT_Tbl):
-            # check whether floating
-            # CT_TblPr
-            # for c in child.iterchildren():
-            #     print(c)
-            #     if isinstance(c, CT_TblPr):
-            #         for c2 in c.iterchildren():
-            #             print(c2)
             yield Table(child, parent)
 
 
@@ -69,6 +64,27 @@ def check_caption_format(title, format_checks):
             message.append(check['message'])
 
     return result, message
+
+
+def check_if_floating(table):
+    # check whether floating table
+    tblppr = False
+    width_type = False
+    for c in table._element.iterchildren():
+        if isinstance(c, CT_TblPr):
+            for c2 in c.iterchildren():
+                if isinstance(c2, _Element) and 'tblpPr' in str(c2):
+                    tblppr = True
+                    for c3 in c2.items():
+                        if 'tblpY' in str(c3):
+                            # width should be higher then the line height of 11
+                            tblppr = int(c3[1]) > 11
+                # also need to check that tblW is auto
+                if isinstance(c2, _Element) and 'tblW' in str(c2):
+                    # type is the second attribute of tblW
+                    width_type = c2.items()[1][1] == 'auto'
+
+    return tblppr and width_type
 
 
 def check_table_titles(doc):
@@ -160,6 +176,8 @@ def check_table_titles(doc):
         # TODO Add info if doing some common wrong ways of doing references like 'table 1'
         used_count = refs.count(count)
 
+        floating = check_if_floating(table['table'])
+
         title_details.append({
             'id': count,
             'text': title.text,
@@ -170,7 +188,7 @@ def check_table_titles(doc):
             'style': title.style.name,
             'style_ok': title.style.name in ['Caption', 'Table Caption', 'Table Caption Multi Line'],
             'alignment': get_paragraph_alignment(title),
-            'table': f"rows: {len(table['table'].rows)}, columns: {len(table['table'].columns)}"
+            'table': f"rows: {len(table['table'].rows)}, columns: {len(table['table'].columns)}, floating: {floating}"
         })
         count = count+1
 
