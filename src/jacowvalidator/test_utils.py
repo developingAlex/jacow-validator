@@ -10,7 +10,7 @@ save_text = [
 
 
 # at the moment, this will replace character formatting within the paragraph
-def replace_identifying_text(doc, filename):
+def replace_identifying_text(doc, filename=None):
     for paragraph in doc.paragraphs:
         # leave headings so can still see abstract and reference sections
         if paragraph.style.name not in [
@@ -21,8 +21,8 @@ def replace_identifying_text(doc, filename):
             'J_Abstract Title',
         ]:
             replace_paragraph_text(paragraph)
-
-    doc.save(filename)
+    if filename:
+        doc.save(filename)
 
 
 # replace text using same case
