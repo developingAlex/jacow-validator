@@ -309,8 +309,7 @@ def get_paragraph_alignment(paragraph):
 def get_language_tags(doc):
     tags = get_language_tags_location(doc)
     # get unique list
-    tags = list(set(tags.values()))
-    return tags
+    return list(dict.fromkeys(tags.values()))
 
 
 def get_language_tags_location(doc):

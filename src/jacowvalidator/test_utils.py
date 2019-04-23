@@ -34,8 +34,9 @@ def replace_paragraph_text(paragraph):
 
     for r in paragraph.runs:
         all_caps = p_all_caps or r.style.font.all_caps or r.font.all_caps
+        r.text = replace_text(r.text, all_caps)
 
-    paragraph.text = replace_text(paragraph.text, all_caps)
+    # paragraph.text = replace_text(paragraph.text, all_caps)
 
 
 def replace_text(text, all_caps):
