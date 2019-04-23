@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from jacowvalidator.tables import check_table_titles
+from jacowvalidator.tables import check_table_titles, get_table_paragraphs, check_is_floating
 
 test_dir = Path(__file__).parent / 'data'
 
@@ -43,3 +43,21 @@ def test_tables():
             else:
                 assert to_check, f"{item['id']} {check} check failed"
 
+    for table in get_table_paragraphs(doc):
+        assert check_is_floating(table['table']) is False, "Table should not be floating"
+
+
+def test_float_table():
+    from docx import Document
+    doc = Document(test_dir / 'floating_table.docx')
+
+    for table in get_table_paragraphs(doc):
+        assert check_is_floating(table['table']), "Table should be floating by isn't"
+
+
+def test_float_table_fixed():
+    from docx import Document
+    doc = Document(test_dir / 'floating_table_fixed.docx')
+
+    for table in get_table_paragraphs(doc):
+        assert check_is_floating(table['table']) is False, "Table should not be floating"

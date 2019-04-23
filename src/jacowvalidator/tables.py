@@ -4,8 +4,10 @@ from docx.oxml.text.paragraph import CT_P
 from docx.oxml.table import CT_Tbl, CT_TblPr
 from docx.table import _Cell, _Row, Table
 from docx.text.paragraph import Paragraph
-from .utils import get_paragraph_alignment
+from lxml.etree import _Element
 
+from .utils import get_paragraph_alignment
+from titlecase import titlecase
 
 RE_TABLE_LIST = re.compile(r'^Table \d+:')
 RE_TABLE_ORDER = re.compile(r'^Table \d+')
@@ -41,13 +43,6 @@ def iter_block_items(parent):
         if isinstance(child, CT_P):
             yield Paragraph(child, parent)
         elif isinstance(child, CT_Tbl):
-            # check whether floating
-            # CT_TblPr
-            # for c in child.iterchildren():
-            #     print(c)
-            #     if isinstance(c, CT_TblPr):
-            #         for c2 in c.iterchildren():
-            #             print(c2)
             yield Table(child, parent)
 
 
@@ -71,17 +66,28 @@ def check_caption_format(title, format_checks):
     return result, message
 
 
-def check_table_titles(doc):
-    """
-    Table captions are actually titles, this means that they are in Title Case, and don’t have a “.”
-    At the end, well unless exceeds 2 lines.  The table caption is centred if 1 line (“Table Caption” Style),
-    and Justified if 2 or more (“Table Caption Multi Line” Style.  The table caption must appear above the Table.
+def check_is_floating(table):
+    # check whether floating table
+    tblppr = False
+    width_type = False
+    for c in table._element.iterchildren():
+        if isinstance(c, CT_TblPr):
+            for c2 in c.iterchildren():
+                if isinstance(c2, _Element) and 'tblpPr' in str(c2):
+                    tblppr = True
+                    for c3 in c2.items():
+                        if 'tblpY' in str(c3):
+                            # width should be higher then the line height of 11
+                            tblppr = int(c3[1]) > 11
+                # also need to check that tblW is auto
+                if isinstance(c2, _Element) and 'tblW' in str(c2):
+                    # type is the second attribute of tblW
+                    width_type = c2.items()[1][1] == 'auto'
 
-    All tables must be numbered in the order they appear in the document and not skip a number in the sequence.
+    return tblppr and width_type
 
-    All tables start with “Table n:”.
-    All tables must be referred to in the main text and use “Table n”.
-    """
+
+def get_table_paragraphs(doc):
     prev = None
     table_details = []
     for block in iter_block_items(doc):
@@ -106,6 +112,21 @@ def check_table_titles(doc):
 
             if text_found:
                 table_details.append({'table': block, 'title': prev})
+    return table_details
+
+
+def check_table_titles(doc):
+    """
+    Table captions are actually titles, this means that they are in Title Case, and don’t have a “.”
+    At the end, well unless exceeds 2 lines.  The table caption is centred if 1 line (“Table Caption” Style),
+    and Justified if 2 or more (“Table Caption Multi Line” Style.  The table caption must appear above the Table.
+
+    All tables must be numbered in the order they appear in the document and not skip a number in the sequence.
+
+    All tables start with “Table n:”.
+    All tables must be referred to in the main text and use “Table n”.
+    """
+    table_details = get_table_paragraphs(doc)
 
     refs = []
     table_titles = [item['title'].text for item in table_details]
@@ -140,21 +161,27 @@ def check_table_titles(doc):
             'message': 'Has a . at the end of the sentence',
             'preformat': False
         },
-        {
-            'test': RE_TABLE_TITLE_CAPS,
-            'valid_result': True,
-            'message': 'Not in Title Caps',
-            'preformat': RE_REMOVE_SPECIAL
-        },
+        # {
+        #     'test': RE_TABLE_TITLE_CAPS,
+        #     'valid_result': True,
+        #     'message': 'Not in Title Caps',
+        #     'preformat': RE_REMOVE_SPECIAL
+        # },
     ]
 
     for table in table_details:
         title = table['title']
         result, message = check_caption_format(title, table_caption_format_checks)
+        # use titlecase library to create title case of title and see if it is same as original
+        if titlecase(title.text) != title.text:
+            result = False
+            message.append('Not in Title Caps')
 
         order_check = RE_TABLE_ORDER.findall(title.text.strip())
         # TODO Add info if doing some common wrong ways of doing references like 'table 1'
         used_count = refs.count(count)
+
+        floating = check_is_floating(table['table'])
 
         title_details.append({
             'id': count,
@@ -166,7 +193,7 @@ def check_table_titles(doc):
             'style': title.style.name,
             'style_ok': title.style.name in ['Caption', 'Table Caption', 'Table Caption Multi Line'],
             'alignment': get_paragraph_alignment(title),
-            'table': f"rows: {len(table['table'].rows)}, columns: {len(table['table'].columns)}"
+            'table': f"rows: {len(table['table'].rows)}, columns: {len(table['table'].columns)}, floating: {floating}"
         })
         count = count+1
 

@@ -51,6 +51,14 @@
         </table>
     </div>
     <div class="box">
+    <h2 class="subtitle">Languages</h2>
+    <ul>
+        {% for lang in languages %}
+        <li>{{ lang }}</li>
+        {% endfor %}
+    </ul>
+    </div>
+    <div class="box">
         <h2 class="subtitle">Title</h2>
         <p><b>Title: </b>{{ title.text }} {{ title.case_ok|tick_cross}}</p>
         {% if not title.case_ok %}<p class="has-text-weight-bold has-text-danger">Title should be atleast 70% uppercase</p>{% endif %}

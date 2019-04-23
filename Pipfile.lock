@@ -131,6 +131,14 @@
             ],
             "version": "==0.10.1"
         },
+        "titlecase": {
+            "hashes": [
+                "sha256:84de7a97fb702c400e5ba11c6b30849944b39db12e20fbf4515a23c7538a0611",
+                "sha256:95d643a0c08097c02933aced707adfe1c275c335019e8e514dea782a465c5b84"
+            ],
+            "index": "pypi",
+            "version": "==0.12.0"
+        },
         "werkzeug": {
             "hashes": [
                 "sha256:0a73e8bb2ff2feecfc5d56e6f458f5b99290ef34f565ffb2665801ff7de6af7a",
@@ -160,6 +168,14 @@
                 "sha256:f0b870f674851ecbfbbbd364d6b5cbdff9dcedbc7f3f5e18a6891057f21fe399"
             ],
             "version": "==19.1.0"
+        },
+        "colorama": {
+            "hashes": [
+                "sha256:05eed71e2e327246ad6b38c540c4a3117230b19679b875190486ddd2d721422d",
+                "sha256:f8ac84de7840f5b9c4e3347b3c1eaa50f7e49c2b07596221daec5edaabbd7c48"
+            ],
+            "markers": "sys_platform == 'win32'",
+            "version": "==0.4.1"
         },
         "filelock": {
             "hashes": [
