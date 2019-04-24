@@ -322,7 +322,7 @@ def get_language_tags_location(doc):
                 if isinstance(c, CT_RPr):
                     for cc in c.iterchildren():
                         if isinstance(cc, _Element) and 'lang' in str(cc):
-                            tags[i] = cc.items()[0][1]
+                            tags[r.text] = cc.items()[0][1]
     # get unique list
     return tags
 

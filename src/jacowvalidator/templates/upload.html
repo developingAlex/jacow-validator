@@ -53,10 +53,19 @@
     <div class="box">
     <h2 class="subtitle">Languages</h2>
     <ul>
-        {% for lang in languages %}
-        <li>{{ lang }}</li>
+        {% for lang in language_summary %}
+        <li> {{ lang }}</li>
         {% endfor %}
     </ul>
+    <details>
+    <ul>
+        {% for lang in languages %}
+            {% if languages[lang] not in ['en-US', 'en-GB', 'en-AU'] %}
+            <li>{{ languages[lang] }} - {{ lang }}</li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+     </details>
     </div>
     <div class="box">
         <h2 class="subtitle">Title</h2>
