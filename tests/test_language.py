@@ -18,7 +18,7 @@ def test_language2():
     from docx import Document
     doc = Document(test_dir / 'jacow_template_a4.docx')
 
-    expected = ['en-US', 'fr-FR', 'de-CH']
+    expected = ['en-US', 'en-GB', 'ko-KR', 'fr-FR', 'de-CH']
     languages = get_language_tags(doc)
     assert expected == languages, f"languages {languages} do not match expected {expected}"
 
