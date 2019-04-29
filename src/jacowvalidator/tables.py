@@ -14,8 +14,8 @@ RE_TABLE_ORDER = re.compile(r'^Table \d+')
 RE_TABLE_REF_LIST = re.compile(r'(Table\s?\d+|Tables\s?\d+\sand\s\d+)')
 RE_TABLE_FORMAT = re.compile(r'\.$')
 RE_TABLE_TITLE_CAPS = re.compile(r'^(?:[A-Z][^\s]*\s?)+$')
-RE_REMOVE_SPECIAL = re.compile(r'[^a-zA-Z ]|(of|and|to)')
-
+RE_SPECIAL_CHAR = re.compile(r'[^a-zA-Z ]')
+RE_MULTI_SPACE = re.compile(r' +')
 
 def iter_block_items(parent):
     """
@@ -49,19 +49,24 @@ def iter_block_items(parent):
 def check_caption_format(title, format_checks):
     result = True
     message = []
+    text = title.text.strip()
     for check in format_checks:
-        text = title.text.strip()
-        if check['preformat']:
-            text = check['preformat'].sub("", text)
-            # remove extra spaces created by preformat
-            text = re.sub(' +', ' ', text)
-
         if check['valid_result'] is True and check['test'].search(text) is None:
             result = False
             message.append(check['message'])
         elif check['valid_result'] is False and check['test'].search(text) is not None:
             result = False
             message.append(check['message'])
+
+    # Also check title case
+    title_to_check = RE_SPECIAL_CHAR.sub(' ', text)
+    # remove extra spaces created by preformat
+    title_to_check = RE_MULTI_SPACE.sub(' ', title_to_check)
+
+    # use titlecase library to create title case of title and see if it is same as original
+    if titlecase(title_to_check) != title_to_check:
+        result = False
+        message.append('Not in Title Caps')
 
     return result, message
 
@@ -118,7 +123,7 @@ def get_table_paragraphs(doc):
 def check_table_titles(doc):
     """
     Table captions are actually titles, this means that they are in Title Case, and don’t have a “.”
-    At the end, well unless exceeds 2 lines.  The table caption is centred if 1 line (“Table Caption” Style),
+    at the end, well unless exceeds 2 lines.  The table caption is centred if 1 line (“Table Caption” Style),
     and Justified if 2 or more (“Table Caption Multi Line” Style.  The table caption must appear above the Table.
 
     All tables must be numbered in the order they appear in the document and not skip a number in the sequence.
@@ -133,8 +138,10 @@ def check_table_titles(doc):
     for paragraph in doc.paragraphs:
         # don't include if it is one of the table titles
         if paragraph.text not in table_titles:
+            # make sure we are using normal spaces
+            text = paragraph.text.replace(u'\xa0', u' ')
             # Check for table names
-            result = RE_TABLE_REF_LIST.findall(paragraph.text)
+            result = RE_TABLE_REF_LIST.findall(text)
             if result is not None:
                 for f in result:
                     # split by space and parse for numbers
@@ -153,29 +160,17 @@ def check_table_titles(doc):
             'test': RE_TABLE_LIST,
             'valid_result': True,
             'message': 'Does not use "Table N: " format',
-            'preformat': False
         },
         {
             'test': RE_TABLE_FORMAT,
             'valid_result': False,
             'message': 'Has a . at the end of the sentence',
-            'preformat': False
         },
-        # {
-        #     'test': RE_TABLE_TITLE_CAPS,
-        #     'valid_result': True,
-        #     'message': 'Not in Title Caps',
-        #     'preformat': RE_REMOVE_SPECIAL
-        # },
     ]
 
     for table in table_details:
         title = table['title']
         result, message = check_caption_format(title, table_caption_format_checks)
-        # use titlecase library to create title case of title and see if it is same as original
-        if titlecase(title.text) != title.text:
-            result = False
-            message.append('Not in Title Caps')
 
         order_check = RE_TABLE_ORDER.findall(title.text.strip())
         # TODO Add info if doing some common wrong ways of doing references like 'table 1'
