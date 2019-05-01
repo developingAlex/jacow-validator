@@ -366,7 +366,6 @@ def reference_csv_check(filename_minus_ext, title, authors):
                             print(f"match found! (on row {rownum})")
                             # compare the title
                             if title.upper() == row[title_col].upper():
-                                print("title matched!")
                                 result['title_match'] = True
                             # compare the authors
                             if authors == row[authors_col]:
