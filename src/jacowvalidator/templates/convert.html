@@ -1,13 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <title></title>
-    <meta name="description" content="">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <link rel="stylesheet" href="{{ url_for('static', filename='vendor/bulma/css/bulma.min.css')}}">
-</head>
-<body>
+{% extends "layout.html" %}
+{% block content %}
     <section class="section">
         <div class="container box">
     <form method="POST" enctype="multipart/form-data" action="{{ url_for('convert') }}">
@@ -16,5 +8,4 @@
     </form>
     </div>
     </section>
-</body>
-</html>
+{% endblock %}

@@ -130,3 +130,7 @@ def convert():
             os.remove(new_doc_path)
 
     return render_template("convert.html")
+
+@app.route("/resources", methods=["GET"])
+def resources():
+    return render_template("resources.html")
