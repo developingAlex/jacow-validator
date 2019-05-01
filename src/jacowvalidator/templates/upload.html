@@ -231,14 +231,8 @@
                 {% else %}
                     <h2 class="subtitle">Conformance with references.csv</h2>
                 {% endif %}
-
-                {% if reference_csv_results['errors'] %}
-                    reference_csv_results['errors']
-                {% else %}
-                    titles match {{ reference_csv_results['title_match']|tick_cross }}<br>
-                    authors match {{ reference_csv_results['authors_match']|tick_cross }}
-                {% endif %}
-
+                titles match {{ title_match|tick_cross }}<br>
+                authors match {{ authors_match|tick_cross }}
             </div>
         </div>
         {% endif %}
