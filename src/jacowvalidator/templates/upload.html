@@ -34,12 +34,6 @@
 
     </form>
     </div>
-    <div class="container box" style="box-shadow: 0 4px 6px rgba(0, 0, 255, 0.1), 0 0 0 2px rgba(0, 0, 255, 0.1)">
-        <div style="text-align: center;">
-    <img src="{{ url_for('static', filename='ansto_logo.jpg')}}" width="153" height="45" alt="ansto logo">
-    <img src="{{ url_for('static', filename='ipac_logo.jpg')}}" width="98" height="45" alt="ipac logo">
-    </div>
-    </div>
     {% if error %}
     <div class="container box has-background-danger">{{ error }}</div>
     {% endif %}

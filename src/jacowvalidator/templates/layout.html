@@ -30,9 +30,22 @@
       </a>
       </div>
     </div>
+    <div class="navbar-end">
+        <div class="navbar-item">
+        <img src="{{ url_for('static', filename='jacow_image.png')}}" width="208" height="32" alt="ansto logo">&nbsp;&nbsp;
+        </div>
+    </div>
   </div>
 </nav>
     {% block content %}
     {% endblock %}
+<footer class="footer has-background-white">
+  <div class="has-text-centered">
+      Created in partnership with &nbsp;&nbsp;
+      <img style="vertical-align:middle" src="{{ url_for('static', filename='ansto_logo.jpg')}}" alt="ansto logo">
+      &nbsp;&nbsp; as part of &nbsp;&nbsp;
+      <img style="vertical-align:middle" src="{{ url_for('static', filename='ipac_logo.jpg')}}"  alt="ipac logo">
+  </div>
+</footer>
 </body>
 </html>
