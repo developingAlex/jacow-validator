@@ -37,11 +37,22 @@
         {% endif %}
 
         {% if processed %}
-        <div class="container">
+                    <div class="container">
             <h1 class="title">Report for {{ filename }}</h1>
 
+        <div class="container box" style="box-shadow: 0 4px 6px rgba(0, 0, 255, 0.1), 0 0 0 2px rgba(0, 0, 255, 0.1)">
+            <h2 class="subtitle">Summary</h2>
+            <div class="list is-hoverable">
+            {% for i, item in summary.items() %}
+               <a href="#{{ item.anchor }}" class="list-item {{ item.ok|background_style }}">
+                {{ item.ok|tick_cross }} {{ item.title }} {% if item.ok == False %} - {{ item.message }}{% endif %}
+               </a>
+            {% endfor%}
+            </div>
+        </div>
+
             <div class="box">
-                <h2 class="subtitle">Word Document loaded successfully</h2>
+                <h2 class="subtitle"><a name="meta"></a>Word Document loaded successfully</h2>
                 <p>Author: {{ metadata.author }}</p>
                 <p>Internal Revision: {{ metadata.revision }}</p>
                 <p>Created at (UTC): {{ metadata.created.strftime('%d/%m/%Y %H:%M') }}</p>
@@ -49,7 +60,8 @@
             </div>
 
             <div class="box">
-                <h2 class="subtitle">JACoW Styles </h2>
+                <h2 class="subtitle {{ summary['Styles']['ok']|background_style }}" style="padding:10px">
+                    <a name="styles"></a>{{ summary['Styles']['ok']|tick_cross }} JACoW Styles</h2>
                 <p>{{ jacow_styles_ok|tick_cross }} All JACoW styles found in document</p>
                 <table class="table is-bordered">
                     <thead>
@@ -70,7 +82,8 @@
             </div>
 
             <div class="box">
-                <h2 class="subtitle">Page Size and Margins</h2>
+                <h2 class="subtitle {{ summary['Margins']['ok']|background_style }}" style="padding:10px">
+                    <a name="pagesize"></a>{{ summary['Margins']['ok']|tick_cross }} Page Size and Margins</h2>
                 <table class="table is-bordered">
                     <thead>
                         <tr>
@@ -93,7 +106,8 @@
             </div>
 
             <div class="box">
-                <h2 class="subtitle">Languages</h2>
+                <h2 class="subtitle {{ summary['Languages']['ok']|background_style }}" style="padding:10px">
+                    <a name="language"></a>{{ summary['Languages']['ok']|tick_cross }} Languages</h2>
                 <ul>
                     {% for lang in language_summary %}
                     <li> {{ lang }}</li>
@@ -111,25 +125,29 @@
             </div>
 
             <div class="box">
-                <h2 class="subtitle">Title</h2>
+                <h2 class="subtitle {{ summary['Title']['ok']|background_style }}" style="padding:10px">
+                    <a name="title"></a>{{ summary['Title']['ok']|tick_cross }} Title</h2>
                 <p><b>Title: </b>{{ title.text }} {{ title.case_ok|tick_cross}}</p>
                 {% if not title.case_ok %}<p class="has-text-weight-bold has-text-danger">Title should be atleast 70% uppercase</p>{% endif %}
                 <p><b>Style: </b> {{ title.style }} {{ title.style_ok|tick_cross }}</p>
             </div>
 
             <div class="box">
-                <h2 class="subtitle">Authors</h2>
+                <h2 class="subtitle {{ summary['Authors']['ok']|background_style }}" style="padding:10px">
+                    <a name="author"></a>{{ summary['Authors']['ok']|tick_cross }} Authors</h2>
                 <p><b>Authors: </b>{{ authors.text }}</p>
                 <p><b>Style: </b>{{ authors.style }} {{ authors.style_ok|tick_cross }}</p>
             </div>
 
             <div class="box">
-                <h2 class="subtitle">Abstract Heading</h2>
+                <h2 class="subtitle {{ summary['Abstract']['ok']|background_style }}" style="padding:10px">
+                    <a name="abstract"></a>{{ summary['Abstract']['ok']|tick_cross }} Abstract Heading</h2>
                 <p><b>Style:</b> {{ abstract.style }} {{ abstract.style_ok|tick_cross }}</p>
             </div>
 
             <div class="box">
-                <h2 class="subtitle">References</h2>
+                <h2 class="subtitle {{ summary['References']['ok']|background_style }}" style="padding:10px">
+                    <a name="references"></a>{{ summary['References']['ok']|tick_cross }} References</h2>
                 {% if not references_list %}
                 <p class="has-text-weight-bold has-text-danger">No references found at end of document. Please check formatting.</p>
                 {% else %}
@@ -187,7 +205,8 @@
             </div>
 
             <div class="box">
-                <h2 class="subtitle">Figures</h2>
+                <h2 class="subtitle {{ summary['Figures']['ok']|background_style }}" style="padding:10px">
+                    <a name="figures"></a>{{ summary['Figures']['ok']|tick_cross }} Figures</h2>
                 <table class="table is-bordered">
                     <thead>
                         <tr>
@@ -216,7 +235,8 @@
             </div>
 
             <div class="box">
-                <h2 class="subtitle">Tables</h2>
+                <h2 class="subtitle {{ summary['Tables']['ok']|background_style }}" style="padding:10px">
+                    <a name="tables"></a>{{ summary['Tables']['ok']|tick_cross }} Tables</h2>
                 <table class="table is-bordered">
                     <thead>
                         <tr>
@@ -254,11 +274,14 @@
                 </table>
             </div>
             <div class="box">
+                <h2 class="subtitle {{ summary['SPMS']['ok']|background_style }}" style="padding:10px">
+                    <a name="spms"></a>{{ summary['SPMS']['ok']|tick_cross }} 
                 {% if reference_csv_url is defined %}
-                    <h2 class="subtitle">Conformance with <a href={{reference_csv_url}}>references.csv</a></h2>
+                    Conformance with <a href={{reference_csv_url}}>references.csv</a>
                 {% else %}
-                    <h2 class="subtitle">Conformance with references.csv</h2>
+                   Conformance with references.csv
                 {% endif %}
+                </h2>
                 <table class="table is-bordered">
                 <thead>
                     <th>Type</th><th>Match</th><th>Docx</th><th>SPMS</th>

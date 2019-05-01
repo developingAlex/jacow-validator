@@ -1,6 +1,19 @@
 from .page import get_page_size
 
 
+def check_sections(doc):
+    sections = []
+    for i, section in enumerate(doc.sections):
+        sections.append(
+            (
+                get_page_size(section),
+                check_margins(section),
+                get_margins(section),
+            )
+        )
+    return sections
+
+
 def check_margins_A4(section):
     return get_margins_A4(section) == [37, 19, 20, 20]
 

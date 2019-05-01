@@ -1,6 +1,8 @@
 from docx.oxml.text.font import CT_RPr
 from lxml.etree import _Element
 
+VALID_LANGUAGES = ['en-US', 'en-GB', 'en-AU']
+
 
 # simple unique list of languages
 def get_language_tags(doc):
