@@ -254,6 +254,15 @@
                     </tbody>
                 </table>
             </div>
+            <div class="box">
+                {% if reference_csv_url is defined %}
+                    <h2 class="subtitle">Conformance with <a href={{reference_csv_url}}>references.csv</a></h2>
+                {% else %}
+                    <h2 class="subtitle">Conformance with references.csv</h2>
+                {% endif %}
+                titles match {{ title_match|tick_cross }}<br>
+                authors match {{ authors_match|tick_cross }}
+            </div>
         </div>
         {% endif %}
     </section>
