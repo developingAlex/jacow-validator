@@ -1,32 +1,28 @@
 import os
 from datetime import datetime
 from subprocess import run
-
 from docx import Document
 from docx.opc.exceptions import PackageNotFoundError
-
 from flask import Flask, redirect, render_template, request, url_for, send_file
-
 from flask_uploads import UploadSet, configure_uploads, UploadNotAllowed
 
-from .utils import (
-    check_jacow_styles,
-    check_margins,
-    get_abstract_and_author,
-    extract_figures,
-    extract_references,
-    extract_title,
-    get_margins,
-    get_page_size,
-    get_language_tags,
-    get_language_tags_location,
-)
-from .test_utils import (
-    replace_identifying_text,
-)
+
+from .page import (get_page_size, get_abstract_and_author)
+from .margins import (check_margins, get_margins)
+from .styles import check_jacow_styles
+from .title import extract_title
+from .references import extract_references
+from .figures import extract_figures
+from .languages import (get_language_tags, get_language_tags_location)
+
 from .tables import (
     check_table_titles,
 )
+
+from .test_utils import (
+    replace_identifying_text,
+)
+
 
 documents = UploadSet("document", ("docx"))
 
@@ -136,6 +132,7 @@ def convert():
             os.remove(new_doc_path)
 
     return render_template("convert.html")
+
 
 @app.route("/resources", methods=["GET"])
 def resources():

@@ -2,7 +2,7 @@ from pathlib import Path
 from docx import Document
 
 from jacowvalidator.test_utils import replace_identifying_text
-from jacowvalidator.utils import extract_references
+from jacowvalidator.references import extract_references
 
 test_dir = Path(__file__).parent / 'data'
 
@@ -20,7 +20,3 @@ def test_tables():
         f"Reference in text count of {len(ref)} does not match original of {len(new_ref)}"
     assert len(ref_list) == len(new_ref_list), \
         f"Reference count of {len(ref_list)} does not match original of {len(new_ref_list)}"
-
-
-
-

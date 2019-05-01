@@ -6,7 +6,7 @@ from docx.table import _Cell, _Row, Table
 from docx.text.paragraph import Paragraph
 from lxml.etree import _Element
 
-from .utils import get_paragraph_alignment
+from .page import get_paragraph_alignment
 from titlecase import titlecase
 
 RE_TABLE_LIST = re.compile(r'^Table \d+:')
