@@ -20,6 +20,7 @@ from .utils import (
     get_page_size,
     get_language_tags,
     get_language_tags_location,
+    reference_csv_check,
 )
 from .test_utils import (
     replace_identifying_text,
@@ -65,6 +66,7 @@ def upload():
     if request.method == "POST" and documents.name in request.files:
         try:
             filename = documents.save(request.files[documents.name])
+            filename_minus_extension = os.path.splitext(filename)[0]
         except UploadNotAllowed:
             return render_template("upload.html", error=f"Wrong file extension. Please upload .docx files only")
         fullpath = documents.path(filename)
@@ -94,7 +96,9 @@ def upload():
             table_titles = check_table_titles(doc)
             language_summary = get_language_tags(doc)
             languages = get_language_tags_location(doc)
-
+            if "URL_TO_JACOW_REFERENCES_CSV" in os.environ:
+                reference_csv_url = os.environ["URL_TO_JACOW_REFERENCES_CSV"]
+            reference_csv_results = reference_csv_check(filename_minus_extension, title['text'], authors['text'])
             return render_template("upload.html", processed=True, **locals())
         except PackageNotFoundError:
             return render_template("upload.html", error=f"Failed to open document {filename}. Is it a valid Word document?")

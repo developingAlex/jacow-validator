@@ -11,6 +11,20 @@ Scripts to validate JACoW docx proceedings against the official template.
     pipenv install --dev
     cd jacow-validator
 
+At time of writing the references.csv file can be accessed at the following:
+https://spms.kek.jp/pls/ipac19/references.csv
+
+grab a copy of it and save it to your computer
+
+Create two environment variables:
+
+    URL_TO_JACOW_REFERENCES_CSV=https://spms.kek.jp/pls/ipac19/references.csv
+    PATH_TO_JACOW_REFERENCES_CSV=/home/user/Documents/jacow/References.csv
+
+Where **URL_TO_JACOW_REFERENCES_CSV** is set to the currently applicable url
+and **PATH_TO_JACOW_REFERENCES_CSV** is set to the location on your filesystem 
+where you saved the file. 
+
 ##  Setup using forked jacow-validator
 
 1. Fork this project to your own github account

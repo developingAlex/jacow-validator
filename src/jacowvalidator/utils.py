@@ -1,4 +1,6 @@
 import re
+import os
+import csv
 from collections import OrderedDict
 from itertools import chain
 
@@ -325,6 +327,72 @@ def get_language_tags_location(doc):
                             tags[r.text] = cc.items()[0][1]
     # get unique list
     return tags
+
+
+# runs conformity checks against the references csv file and returns a dict of
+# results, eg: result = { title_match: True, authors_match: False }
+def reference_csv_check(filename_minus_ext, title, authors):
+    result = {
+        'title_match': False,
+        'authors_match': False,
+        'errors': None
+    }
+    if 'PATH_TO_JACOW_REFERENCES_CSV' in os.environ:
+        # the encoding value is one that should work for most documents.
+        # the encoding for a file can be detected with the command:
+        #    ` file -i FILE `
+        try:
+            with open(os.environ['PATH_TO_JACOW_REFERENCES_CSV'], encoding="ISO-8859-1") as f:
+                reader = csv.reader(f)
+                rownum = 0
+                match_found = False
+                for row in reader:
+                    if rownum == 0:
+                        header = row
+                        print("csv file has headers: ", header)
+                        title_col = header.index("title")
+                        paper_col = header.index("paper")
+                        authors_col = header.index("authors")
+                        # confirm those headers existed as expected:
+                        for heading in ['title_col', 'paper_col', 'authors_col']:
+                            # (if they didn't exist, the vars will be undefined)
+                            if heading not in locals():
+                                print(f"could not identify {heading} column in references csv")
+                                result['errors'] = f"could not identify {heading} column in references csv"
+                                return result
+                    else:
+                        if filename_minus_ext == row[paper_col]:
+                            match_found = True
+                            print(f"match found! (on row {rownum})")
+                            # compare the title
+                            if title.upper() == row[title_col].upper():
+                                print("title matched!")
+                                result['title_match'] = True
+                            # compare the authors
+                            if authors == row[authors_col]:
+                                print("authors matched!")
+                                result['authors_match'] = True
+                            return result
+                    rownum += 1
+                if not match_found:
+                    print("No matching paper found in the csv file")
+                    result['errors'] = "No matching paper found in the csv file"
+                    return result
+        except IOError:
+            print(f"{os.environ['PATH_TO_JACOW_REFERENCES_CSV']} does not appear to exist")
+            result['errors'] = f"{os.environ['PATH_TO_JACOW_REFERENCES_CSV']} does not appear to exist"
+            return result
+        except Exception as e:
+            error_msg = f"There was an error in attempting to read the " \
+                f"file {os.environ['PATH_TO_JACOW_REFERENCES_CSV']}" \
+                f"{e}"
+            print(error_msg)
+            result['errors'] = error_msg
+            return result
+    else:
+        print("The environment variable PATH_TO_JACOW_REFERENCES_CSV is not "
+              "set! Unable to locate references.csv file for title checking")
+        return False
 
 
 # These are in the jacow templates so may be in docs created from them
