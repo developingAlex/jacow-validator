@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JACoW Cat Scan Editor</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <link rel="stylesheet" href="{{ url_for('static', filename='vendor/bulma/css/bulma.min.css')}}">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+</head>
+<body>
+<nav class="navbar is-info" role="navigation" aria-label="main navigation">
+  <div class="navbar-brand">
+    <img src="{{ url_for('static', filename='cat.png')}}" width="52" height="61" style="height:61px" alt="jacow validator logo">
+    <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+    </a>
+  </div>
+
+  <div id="navbarBasicExample" class="navbar-menu">
+    <div class="navbar-start">
+      <a href="{{ url_for('upload')}}" class="navbar-item" style="padding-left:50px">
+        Validator
+      </a>
+
+      <a href="{{ url_for('resources')}}" class="navbar-item" style="padding-left:50px">
+        Resources
+      </a>
+      </div>
+    </div>
+    <div class="navbar-end">
+        <div class="navbar-item">
+        <img src="{{ url_for('static', filename='jacow_image.png')}}" width="208" height="32" alt="ansto logo">&nbsp;&nbsp;
+        </div>
+    </div>
+  </div>
+</nav>
+    {% block content %}
+    {% endblock %}
+<footer class="footer has-background-white">
+  <div class="has-text-centered">
+      Created in partnership with &nbsp;&nbsp;
+      <img style="vertical-align:middle" src="{{ url_for('static', filename='ansto_logo.jpg')}}" alt="ansto logo">
+      &nbsp;&nbsp; as part of &nbsp;&nbsp;
+      <img style="vertical-align:middle" src="{{ url_for('static', filename='ipac_logo.jpg')}}"  alt="ipac logo">
+  </div>
+</footer>
+</body>
+</html>
