@@ -1,5 +1,5 @@
 from docx.shared import Inches, Mm
-
+from .authors import get_author_list
 
 def get_page_size(section):
     width = round(section.page_width, -4)
@@ -39,8 +39,10 @@ def get_abstract_and_author(doc):
             break
 
     author_paragraphs = doc.paragraphs[1: abstract['start']]
+    text = ''.join(p.text for p in author_paragraphs)
     authors = {
-        'text': ''.join(p.text for p in author_paragraphs),
+        'text': text,
+        'list': get_author_list(text),
         'style': set(p.style.name for p in author_paragraphs if p.text.strip()),
         'style_ok': all(
             p.style.name in ['JACoW_Author List']
