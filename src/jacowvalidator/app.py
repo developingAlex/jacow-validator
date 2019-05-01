@@ -96,10 +96,15 @@ def upload():
 
             return render_template("upload.html", processed=True, **locals())
         except PackageNotFoundError:
-            return render_template("upload.html", error=f"Failed to open document: {filename}")
+            return render_template("upload.html", error=f"Failed to open document {filename}. Is it a valid Word document?")
+        except OSError:
+            return render_template("upload.html", error=f"It seems the file {filename} is corrupted")
         except Exception:
-            app.logger.exception("Failed to process document")
-            return render_template("upload.html", error=f"Failed to process document: {filename}")
+            if app.debug:
+                raise
+            else:
+                app.logger.exception("Failed to process document")
+                return render_template("upload.html", error=f"Failed to process document: {filename}")
         finally:
             os.remove(fullpath)
 
