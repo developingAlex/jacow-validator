@@ -1,6 +1,7 @@
 from pathlib import Path
 
-from jacowvalidator.utils import extract_references
+from jacowvalidator.references import extract_references
+
 
 test_dir = Path(__file__).parent / 'data'
 

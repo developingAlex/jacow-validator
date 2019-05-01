@@ -1,7 +1,10 @@
 from pathlib import Path
 
-from jacowvalidator.utils import check_margins, check_margins_A4, get_page_size, check_margins_letter, \
-    check_jacow_styles, get_paragraph_style_exceptions, extract_figures, extract_title, get_abstract_and_author
+from jacowvalidator.margins import check_margins, check_margins_A4, check_margins_letter
+from jacowvalidator.styles import check_jacow_styles, get_paragraph_style_exceptions
+from jacowvalidator.page import get_page_size, get_abstract_and_author
+from jacowvalidator.figures import extract_figures
+from jacowvalidator.title import extract_title
 
 
 test_dir = Path(__file__).parent / 'data'

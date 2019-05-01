@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from jacowvalidator.utils import get_language_tags
+from jacowvalidator.languages import get_language_tags
 
 test_dir = Path(__file__).parent / 'data'
 
@@ -21,6 +21,3 @@ def test_language2():
     expected = ['en-US', 'en-GB', 'ko-KR', 'fr-FR', 'de-CH']
     languages = get_language_tags(doc)
     assert expected == languages, f"languages {languages} do not match expected {expected}"
-
-
-
