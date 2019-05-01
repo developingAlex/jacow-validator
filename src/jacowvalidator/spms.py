@@ -3,7 +3,9 @@
 
 import os
 import csv
+import re
 
+RE_MULTI_SPACE = re.compile(r' +')
 
 class PaperNotFoundError(Exception):
     """Raised when the paper submitted by a user has no matching entry in the
@@ -63,7 +65,8 @@ def reference_csv_check(filename_minus_ext, title, authors):
                         raise ColumnNotFoundError(f"could not identify {heading} column in references csv")
             else:
                 if filename_minus_ext == row[paper_col]:
-                    title_match = title.upper() == row[title_col].upper()
+                    reference_title = RE_MULTI_SPACE.sub(' ', row[title_col].upper())
+                    title_match = title.upper() == reference_title
                     authors_match = authors == row[authors_col]
                     return title_match, authors_match
         # if not returned by now its because the paper wasn't found in the list
