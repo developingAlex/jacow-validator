@@ -71,6 +71,7 @@ def upload():
 
         try:
             doc = Document(fullpath)
+            metadata = doc.core_properties
 
             jacow_styles_ok = check_jacow_styles(doc)
 

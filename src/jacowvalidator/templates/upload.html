@@ -2,210 +2,230 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title></title>
+    <title>JACoW Cat Scan Editor</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
     <link rel="stylesheet" href="{{ url_for('static', filename='vendor/bulma/css/bulma.min.css')}}">
 </head>
 <body>
     <section class="section">
-    <div class="container is-clearfix">
-    {% if commit_sha and commit_date %}<p class="is-size-7 is-pulled-right"><b>Updated:</b> {{ commit_date.strftime('%H:%M %d/%m/%Y') }} [<b>{{ commit_sha }}</b>]</p>{% endif %}    
-    </div>
+        <div class="container is-clearfix">
+        {% if commit_sha and commit_date %}<p class="is-size-7 is-pulled-right"><b>Updated:</b> {{ commit_date.strftime('%H:%M %d/%m/%Y') }} [<b>{{ commit_sha }}</b>]</p>{% endif %}
+        </div>
         <div class="container box">
-    <form method="POST" enctype="multipart/form-data" action="{{ url_for('upload') }}">
-        <input type="file" name="document">
-        <button type="submit">Submit</button>
-    </form>
-    </div>
-    {% if error %}
-    <div class="container box has-background-danger">{{ error }}</div>
-    {% endif %}
-    {% if processed %}
-    <div class="container">
-        <h1 class="title">Report for {{ filename }}</h1>
-        <div class="box">
-        <h2 class="subtitle">JACoW Styles </h2>
-        <p>{{ jacow_styles_ok|tick_cross }} JACoW styles found in document?</p>
-    </div>
-    <div class="box">
-        <h2 class="subtitle">Page Size and Margins</h2>
-        <table class="table is-bordered">
-            <thead>
-                <tr>
-                    <th>Section</th>
-                    <th>Page Size</th>
-                    <th colspan="2">Margins</th>
-                </tr>
-            </thead>
-            <tbody>
-            {% for page_size, margins_ok, margins in sections %}
-            <tr>
-                <td>{{ loop.index }}</td>
-                <td>{{ page_size }}</td>
-                <td>{{ margins }}</td>
-                <td>{{ margins_ok|tick_cross }}</td>
-            </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-    </div>
-    <div class="box">
-    <h2 class="subtitle">Languages</h2>
-    <ul>
-        {% for lang in language_summary %}
-        <li> {{ lang }}</li>
-        {% endfor %}
-    </ul>
-    <details>
-    <ul>
-        {% for lang in languages %}
-            {% if languages[lang] not in ['en-US', 'en-GB', 'en-AU'] %}
-            <li>{{ languages[lang] }} - {{ lang }}</li>
-            {% endif %}
-        {% endfor %}
-    </ul>
-     </details>
-    </div>
-    <div class="box">
-        <h2 class="subtitle">Title</h2>
-        <p><b>Title: </b>{{ title.text }} {{ title.case_ok|tick_cross}}</p>
-        {% if not title.case_ok %}<p class="has-text-weight-bold has-text-danger">Title should be atleast 70% uppercase</p>{% endif %}
-        <p><b>Style: </b> {{ title.style }} {{ title.style_ok|tick_cross }}</p>
-    </div>
-    <div class="box">
-        <h2 class="subtitle">Authors</h2>
-        <p><b>Authors: </b>{{ authors.text }}</p>
-        <p><b>Style: </b>{{ authors.style }} {{ authors.style_ok|tick_cross }}</p>
-    </div>
-    <div class="box">
-        <h2 class="subtitle">Abstract Heading</h2>
-        <p><b>Style:</b> {{ abstract.style }} {{ abstract.style_ok|tick_cross }}</p>
-    </div>
-    <div class="box">
+            <form method="POST" enctype="multipart/form-data" action="{{ url_for('upload') }}">
+                <input type="file" name="document">
+                <button type="submit">Submit</button>
+            </form>
+        </div>
 
-        <h2 class="subtitle">References</h2>
-        {% if not references_list %}
-        <p class="has-text-weight-bold has-text-danger">No references found at end of document. Please check formatting.</p>
-        {% else %}
-        {% for reference in references_list if not reference.style_ok %}
-        {% if loop.index0 == 0 %}<h3 class="has-text-weight-bold">References with wrong style</h3>{% endif %}
-        <p>[{{ reference.id }}] <b>Style:</b> {{ reference.style }}</p>
-        {% else %}
-        <p>{{ true|tick_cross }} reference styles okay</p>
-        {% endfor %}
-
-        {% for reference in references_list if not reference.used %}
-        {% if loop.index0 == 0 %}<h3 class="has-text-weight-bold">Unused references</h3>{% endif %}
-        <p>{{ reference.text }}</p>
-        {% else %}
-        <p>{{ true|tick_cross }} all references used</p>
-        {% endfor %}
-
-        {% for reference in references_list if not reference.order_ok %}
-        {% if loop.index0 == 0 %}<h3 class="has-text-weight-bold">Out of order references</h3>{% endif %}
-        <p>{{ reference.text }}</p>
-        {% else %}
-        <p>{{ true|tick_cross }} all references are in correct order</p>
-        {% endfor %}
-        <details>
-        <summary>Details</summary>
-        <table class="table is-bordered">
-            <thead>
-                <tr>
-                    <th>No.</th>
-                    <th>Used</th>
-                    <th>Order</th>
-                    <th colspan="2">Style</th>
-                    <th>Text</th>
-                </tr>
-            </thead>
-            <tbody>
-            {% for reference in references_list %}
-                <tr>
-                    <td>{{ reference.id }}</td>
-                    <td class="{{ 'has-background-danger' if not reference.used }}">{{ reference.used|tick_cross }}</td>
-                    <td class="{{ 'has-background-danger' if not reference.order_ok }}">{{ reference.order_ok|tick_cross }}</td>
-                    <td class="{{ 'has-background-danger' if not reference.style_ok }}">{{ reference.style_ok|tick_cross }}</td>
-                    <td class="is-size-7">{{ reference.style }}</td>
-                    <td>
-                        {{ reference.text }}
-                        {% if reference.text_error %}<p class="has-text-weight-bold has-text-danger">{{ reference.text_error }}</p>{% endif %}
-                        {% if reference.duplicate %}<p class="has-text-weight-bold has-text-danger">Duplicate reference number</p>{% endif %}
-                    </td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-        </details>
+        {% if error %}
+        <div class="container box has-background-danger">{{ error }}</div>
         {% endif %}
-    </div>
-    <div class="box">
-        <h2 class="subtitle">Figures</h2>
-        <table class="table is-bordered">
-            <thead>
-                <tr>
-                    <th>No.</th>
-                    <th colspan="2">Caption</th>
-                    <th colspan="2">References</th>
-                    <th colspan="2">Style</th>
-                    <th>Text</th>
-                </tr>
-            </thead>
-            <tbody>
-        {% for id, fig in figures.items() %}
-            <tr>
-                <td>{{ id }}</td>
-                <td style="white-space: nowrap">{{ fig.name }}</td>
-                <td>{{ fig.caption_ok|tick_cross }}</td>
-                <td>{{ fig.refs|join(', ') }}</td>
-                <td>{{ fig.used|tick_cross }}</td>
-                <td>{{ fig.style }}</td>
-                <td>{{ fig.style_ok|tick_cross }}</td>
-                <td>{{ fig.text }}</td>
-            </tr>
-        {% endfor %}
-            </tbody>
-        </table>
-    </div>
-    <div class="box">
-        <h2 class="subtitle">Tables</h2>
-        <table class="table is-bordered">
-            <thead>
-                <tr>
-                    <th>No.</th>
-                    <th colspan="3">Caption</th>
-                    <th>Used</th>
-                    <th>Order</th>
-                    <th colspan="2">Style</th>
-                    <th>Alignment</th>
-                    <th>Table</th>
-                </tr>
-            </thead>
-            <tbody>
-        {% for title in table_titles %}
-            <tr>
-                <td>{{ title.id }}</td>
-                <td>{{ title.text }}</td>
-                <td>{{ title.text_format_ok|tick_cross }}</td>
-                <td><ul style="list-style-type: circle; padding-left: 5px">
-                {% for message in title.text_format_message %}
-                    <li>{{ message }}</li>
+
+        {% if processed %}
+        <div class="container">
+            <h1 class="title">Report for {{ filename }}</h1>
+
+            <div class="box">
+                <h2 class="subtitle">Word Document loaded successfully</h2>
+                <p>Author: {{ metadata.author }}</p>
+                <p>Internal Revision: {{ metadata.revision }}</p>
+                <p>Created at (UTC): {{ metadata.created.strftime('%d/%m/%Y %H:%M') }}</p>
+                <p>Modified at (UTC): {{ metadata.modified.strftime('%d/%m/%Y %H:%M') }}</p>
+            </div>
+
+            <div class="box">
+                <h2 class="subtitle">JACoW Styles </h2>
+                <p>{{ jacow_styles_ok|tick_cross }} JACoW styles found in document?</p>
+            </div>
+
+            <div class="box">
+                <h2 class="subtitle">Page Size and Margins</h2>
+                <table class="table is-bordered">
+                    <thead>
+                        <tr>
+                            <th>Section</th>
+                            <th>Page Size</th>
+                            <th colspan="2">Margins</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for page_size, margins_ok, margins in sections %}
+                        <tr>
+                            <td>{{ loop.index }}</td>
+                            <td>{{ page_size }}</td>
+                            <td>{{ margins }}</td>
+                            <td>{{ margins_ok|tick_cross }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="box">
+                <h2 class="subtitle">Languages</h2>
+                <ul>
+                    {% for lang in language_summary %}
+                    <li> {{ lang }}</li>
+                    {% endfor %}
+                </ul>
+                <details>
+                <ul>
+                    {% for lang in languages %}
+                        {% if languages[lang] not in ['en-US', 'en-GB', 'en-AU'] %}
+                        <li>{{ languages[lang] }} - {{ lang }}</li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+                </details>
+            </div>
+
+            <div class="box">
+                <h2 class="subtitle">Title</h2>
+                <p><b>Title: </b>{{ title.text }} {{ title.case_ok|tick_cross}}</p>
+                {% if not title.case_ok %}<p class="has-text-weight-bold has-text-danger">Title should be atleast 70% uppercase</p>{% endif %}
+                <p><b>Style: </b> {{ title.style }} {{ title.style_ok|tick_cross }}</p>
+            </div>
+
+            <div class="box">
+                <h2 class="subtitle">Authors</h2>
+                <p><b>Authors: </b>{{ authors.text }}</p>
+                <p><b>Style: </b>{{ authors.style }} {{ authors.style_ok|tick_cross }}</p>
+            </div>
+
+            <div class="box">
+                <h2 class="subtitle">Abstract Heading</h2>
+                <p><b>Style:</b> {{ abstract.style }} {{ abstract.style_ok|tick_cross }}</p>
+            </div>
+
+            <div class="box">
+                <h2 class="subtitle">References</h2>
+                {% if not references_list %}
+                <p class="has-text-weight-bold has-text-danger">No references found at end of document. Please check formatting.</p>
+                {% else %}
+                {% for reference in references_list if not reference.style_ok %}
+                {% if loop.index0 == 0 %}<h3 class="has-text-weight-bold">References with wrong style</h3>{% endif %}
+                <p>[{{ reference.id }}] <b>Style:</b> {{ reference.style }}</p>
+                {% else %}
+                <p>{{ true|tick_cross }} reference styles okay</p>
                 {% endfor %}
-                </ul></td>
-                <td>{{ title.used }}</td>
-                <td>{{ title.order_ok|tick_cross }}</td>
-                <td>{{ title.style }}</td>
-                <td>{{ title.style_ok|tick_cross }}</td>
-                <td>{{ title.alignment }}</td>
-                <td>{{ title.table }}</td>
-            </tr>
-        {% endfor %}
-            </tbody>
-        </table>
-    </div>
-</div>
-    {% endif %}
-</section>
+
+                {% for reference in references_list if not reference.used %}
+                {% if loop.index0 == 0 %}<h3 class="has-text-weight-bold">Unused references</h3>{% endif %}
+                <p>{{ reference.text }}</p>
+                {% else %}
+                <p>{{ true|tick_cross }} all references used</p>
+                {% endfor %}
+
+                {% for reference in references_list if not reference.order_ok %}
+                {% if loop.index0 == 0 %}<h3 class="has-text-weight-bold">Out of order references</h3>{% endif %}
+                <p>{{ reference.text }}</p>
+                {% else %}
+                <p>{{ true|tick_cross }} all references are in correct order</p>
+                {% endfor %}
+                <details>
+                    <summary>Details</summary>
+                    <table class="table is-bordered">
+                        <thead>
+                            <tr>
+                                <th>No.</th>
+                                <th>Used</th>
+                                <th>Order</th>
+                                <th colspan="2">Style</th>
+                                <th>Text</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for reference in references_list %}
+                            <tr>
+                                <td>{{ reference.id }}</td>
+                                <td class="{{ 'has-background-danger' if not reference.used }}">{{ reference.used|tick_cross }}</td>
+                                <td class="{{ 'has-background-danger' if not reference.order_ok }}">{{ reference.order_ok|tick_cross }}</td>
+                                <td class="{{ 'has-background-danger' if not reference.style_ok }}">{{ reference.style_ok|tick_cross }}</td>
+                                <td class="is-size-7">{{ reference.style }}</td>
+                                <td>
+                                    {{ reference.text }}
+                                    {% if reference.text_error %}<p class="has-text-weight-bold has-text-danger">{{ reference.text_error }}</p>{% endif %}
+                                    {% if reference.duplicate %}<p class="has-text-weight-bold has-text-danger">Duplicate reference number</p>{% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </details>
+                {% endif %}
+            </div>
+
+            <div class="box">
+                <h2 class="subtitle">Figures</h2>
+                <table class="table is-bordered">
+                    <thead>
+                        <tr>
+                            <th>No.</th>
+                            <th colspan="2">Caption</th>
+                            <th colspan="2">References</th>
+                            <th colspan="2">Style</th>
+                            <th>Text</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for id, fig in figures.items() %}
+                        <tr>
+                            <td>{{ id }}</td>
+                            <td style="white-space: nowrap">{{ fig.name }}</td>
+                            <td>{{ fig.caption_ok|tick_cross }}</td>
+                            <td>{{ fig.refs|join(', ') }}</td>
+                            <td>{{ fig.used|tick_cross }}</td>
+                            <td>{{ fig.style }}</td>
+                            <td>{{ fig.style_ok|tick_cross }}</td>
+                            <td>{{ fig.text }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="box">
+                <h2 class="subtitle">Tables</h2>
+                <table class="table is-bordered">
+                    <thead>
+                        <tr>
+                            <th>No.</th>
+                            <th colspan="3">Caption</th>
+                            <th>Used</th>
+                            <th>Order</th>
+                            <th colspan="2">Style</th>
+                            <th>Alignment</th>
+                            <th>Table</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for title in table_titles %}
+                        <tr>
+                            <td>{{ title.id }}</td>
+                            <td>{{ title.text }}</td>
+                            <td>{{ title.text_format_ok|tick_cross }}</td>
+                            <td>
+                                <ul style="list-style-type: circle; padding-left: 5px">
+                                {% for message in title.text_format_message %}
+                                    <li>{{ message }}</li>
+                                {% endfor %}
+                                </ul>
+                            </td>
+                            <td>{{ title.used }}</td>
+                            <td>{{ title.order_ok|tick_cross }}</td>
+                            <td>{{ title.style }}</td>
+                            <td>{{ title.style_ok|tick_cross }}</td>
+                            <td>{{ title.alignment }}</td>
+                            <td>{{ title.table }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% endif %}
+    </section>
 </body>
 </html>
