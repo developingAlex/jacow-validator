@@ -6,7 +6,7 @@
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
     <link rel="stylesheet" href="{{ url_for('static', filename='vendor/bulma/css/bulma.min.css')}}">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{ url_for('static', filename='vendor/fontawesome/css/all.min.css')}}">
 </head>
 <body>
 <nav class="navbar is-info" role="navigation" aria-label="main navigation">
@@ -21,18 +21,20 @@
 
   <div id="navbarBasicExample" class="navbar-menu">
     <div class="navbar-start">
-      <a href="{{ url_for('upload')}}" class="navbar-item" style="padding-left:50px">
-        Validator
+      <a href="{{ url_for('upload')}}" class="navbar-item" style="padding-left:10px;padding-right:10px;margin-left:30px">
+        Jacow Word (docx) Validator
       </a>
 
-      <a href="{{ url_for('resources')}}" class="navbar-item" style="padding-left:50px">
+      <a href="{{ url_for('resources')}}" class="navbar-item" style="padding-left:10px;padding-right:10px;;margin-left:30px">
         Resources
       </a>
       </div>
     </div>
     <div class="navbar-end">
         <div class="navbar-item">
-        <img src="{{ url_for('static', filename='jacow_image.png')}}" width="208" height="32" alt="ansto logo">&nbsp;&nbsp;
+            <a href="http://www.jacow.org/">
+                <img src="{{ url_for('static', filename='jacow_image.png')}}" width="208" height="32" alt="ansto logo">
+            </a>
         </div>
     </div>
   </div>
