@@ -259,8 +259,37 @@
                 {% else %}
                     <h2 class="subtitle">Conformance with references.csv</h2>
                 {% endif %}
-                titles match {{ title_match|tick_cross }}<br>
-                authors match {{ authors_match|tick_cross }}
+                <table class="table is-bordered">
+                <thead>
+                    <th>Type</th><th>Match</th><th>Docx</th><th>SPMS</th>
+                </thead>
+                <tbody>
+                <tr><td>Title</td><td>{{ reference_csv_details['title']['match']|tick_cross }}</td>
+                <td>
+                {% if reference_csv_details['title']['match'] == False %}
+                    {{ reference_csv_details['title']['docx'] }}
+                {% endif %}
+                </td>
+                <td>
+                {% if reference_csv_details['title']['match'] == False %}
+                    {{ reference_csv_details['title']['spms'] }}
+                {% endif %}
+                </td>
+                </tr>
+                <tr><td>Author</td><td>{{ reference_csv_details['author']['match']|tick_cross }}</td>
+                <td>
+                {% if reference_csv_details['author']['match'] == False %}
+                    {{ reference_csv_details['author']['docx'] }}
+                {% endif %}
+                </td>
+                <td>
+                {% if reference_csv_details['author']['match'] == False %}
+                    {{ reference_csv_details['author']['spms'] }}
+                {% endif %}
+                </td>
+                </tr>
+                </tbody>
+                </table>
             </div>
         </div>
         {% endif %}

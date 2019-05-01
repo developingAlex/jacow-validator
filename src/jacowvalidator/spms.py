@@ -68,6 +68,32 @@ def reference_csv_check(filename_minus_ext, title, authors):
                     reference_title = RE_MULTI_SPACE.sub(' ', row[title_col].upper())
                     title_match = title.upper() == reference_title
                     authors_match = authors == row[authors_col]
-                    return title_match, authors_match
+                    return {
+                        'title': {
+                            'match': title_match,
+                            'docx': title.upper(),
+                            'spms': reference_title
+                        },
+                        'author': {
+                            'match': authors_match,
+                            'docx': authors,
+                            'spms': row[authors_col]
+                        }
+                    }
+
         # if not returned by now its because the paper wasn't found in the list
-        raise PaperNotFoundError("No matching paper found in the spms csv file")
+        if 'SPMS_DEBUG' in os.environ and os.environ['SPMS_DEBUG'] == 'True':
+            return {
+                'title': {
+                    'match': False,
+                    'docx': title.upper(),
+                    'spms': 'No matching paper found in the spms csv file'
+                },
+                'author': {
+                    'match': False,
+                    'docx': authors,
+                    'spms': 'No matching paper found in the spms csv file'
+                },
+            }
+        else:
+            raise PaperNotFoundError("No matching paper found in the spms csv file")

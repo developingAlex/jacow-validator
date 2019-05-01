@@ -3,7 +3,7 @@ from datetime import datetime
 from subprocess import run
 from docx import Document
 from docx.opc.exceptions import PackageNotFoundError
-from flask import Flask, redirect, render_template, request, url_for, send_file
+from flask import Flask, redirect, render_template, request, url_for, send_file, abort
 from flask_uploads import UploadSet, configure_uploads, UploadNotAllowed
 
 
@@ -97,7 +97,7 @@ def upload():
             languages = get_language_tags_location(doc)
             if "URL_TO_JACOW_REFERENCES_CSV" in os.environ:
                 reference_csv_url = os.environ["URL_TO_JACOW_REFERENCES_CSV"]
-            title_match, authors_match = reference_csv_check(paper_name, title['text'], authors['text'])
+            reference_csv_details = reference_csv_check(paper_name, title['text'], authors['text'])
             return render_template("upload.html", processed=True, **locals())
         except PackageNotFoundError:
             return render_template("upload.html", error=f"Failed to open document {filename}. Is it a valid Word document?")
@@ -121,6 +121,9 @@ def upload():
 
 @app.route("/convert", methods=["GET", "POST"])
 def convert():
+    if not ('ALLOW_CONVERT' in os.environ and os.environ['ALLOW_CONVERT'] == 'True'):
+        abort(403)
+
     if request.method == "POST" and documents.name in request.files:
         filename = documents.save(request.files[documents.name])
         full_path = documents.path(filename)
