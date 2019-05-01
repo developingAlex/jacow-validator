@@ -47,14 +47,18 @@ def extract_figures(doc):
                     _find_figure_captions(p)
 
     figures = OrderedDict()
-    _last = max(
-        chain.from_iterable(
-            [
-                (fig['id'] for fig in figures_captions),
-                (fig['id'] for fig in figures_refs),
-            ]
+    # no figure found means there is probably an error with parsing though.
+    if len(figures_refs) == 0 and len(figures_captions) == 0:
+        _last = 0
+    else:
+        _last = max(
+            chain.from_iterable(
+                [
+                    (fig['id'] for fig in figures_captions),
+                    (fig['id'] for fig in figures_refs),
+                ]
+            )
         )
-    )
 
     for i in range(1, _last + 1):
         caption = [c for c in figures_captions if c['id'] == i]
