@@ -51,7 +51,23 @@
 
             <div class="box">
                 <h2 class="subtitle">JACoW Styles </h2>
-                <p>{{ jacow_styles_ok|tick_cross }} JACoW styles found in document?</p>
+                <p>{{ jacow_styles_ok|tick_cross }} All JACoW styles found in document</p>
+                <table class="table is-bordered">
+                    <thead>
+                        <tr>
+                            <th>Style</th>
+                            <th>Embedded in Document</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for style, style_ok in jacow_styles.items() %}
+                        <tr>
+                            <td>{{ style }}</td>
+                            <td>{{ style_ok|tick_cross }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
 
             <div class="box">

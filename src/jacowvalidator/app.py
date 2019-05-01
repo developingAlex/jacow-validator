@@ -69,8 +69,6 @@ def upload():
             doc = Document(fullpath)
             metadata = doc.core_properties
 
-            jacow_styles_ok = check_jacow_styles(doc)
-
             # get page size and margin details
             sections = []
             for i, section in enumerate(doc.sections):
@@ -82,7 +80,9 @@ def upload():
                     )
                 )
 
-            # get title and title syle details
+            # get title and title style details
+            jacow_styles = check_jacow_styles(doc)
+            jacow_styles_ok = all([tick for _, tick in jacow_styles.items()])
             title = extract_title(doc)
             abstract, authors = get_abstract_and_author(doc)
             figures = extract_figures(doc)
