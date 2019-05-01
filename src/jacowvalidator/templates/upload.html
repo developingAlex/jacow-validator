@@ -50,7 +50,23 @@
 
             <div class="box">
                 <h2 class="subtitle">JACoW Styles </h2>
-                <p>{{ jacow_styles_ok|tick_cross }} JACoW styles found in document?</p>
+                <p>{{ jacow_styles_ok|tick_cross }} All JACoW styles found in document</p>
+                <table class="table is-bordered">
+                    <thead>
+                        <tr>
+                            <th>Style</th>
+                            <th>Embedded in Document</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for style, style_ok in jacow_styles.items() %}
+                        <tr>
+                            <td>{{ style }}</td>
+                            <td>{{ style_ok|tick_cross }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
 
             <div class="box">
@@ -236,6 +252,15 @@
                         {% endfor %}
                     </tbody>
                 </table>
+            </div>
+            <div class="box">
+                {% if reference_csv_url is defined %}
+                    <h2 class="subtitle">Conformance with <a href={{reference_csv_url}}>references.csv</a></h2>
+                {% else %}
+                    <h2 class="subtitle">Conformance with references.csv</h2>
+                {% endif %}
+                titles match {{ title_match|tick_cross }}<br>
+                authors match {{ authors_match|tick_cross }}
             </div>
         </div>
         {% endif %}

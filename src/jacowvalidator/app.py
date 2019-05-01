@@ -23,6 +23,10 @@ from .test_utils import (
     replace_identifying_text,
 )
 
+from .spms import (
+    reference_csv_check,
+    PaperNotFoundError,
+)
 
 documents = UploadSet("document", ("docx"))
 
@@ -61,6 +65,7 @@ def upload():
     if request.method == "POST" and documents.name in request.files:
         try:
             filename = documents.save(request.files[documents.name])
+            paper_name = os.path.splitext(filename)[0]
         except UploadNotAllowed:
             return render_template("upload.html", error=f"Wrong file extension. Please upload .docx files only")
         fullpath = documents.path(filename)
@@ -68,8 +73,6 @@ def upload():
         try:
             doc = Document(fullpath)
             metadata = doc.core_properties
-
-            jacow_styles_ok = check_jacow_styles(doc)
 
             # get page size and margin details
             sections = []
@@ -82,7 +85,9 @@ def upload():
                     )
                 )
 
-            # get title and title syle details
+            # get title and title style details
+            jacow_styles = check_jacow_styles(doc)
+            jacow_styles_ok = all([tick for _, tick in jacow_styles.items()])
             title = extract_title(doc)
             abstract, authors = get_abstract_and_author(doc)
             figures = extract_figures(doc)
@@ -90,12 +95,18 @@ def upload():
             table_titles = check_table_titles(doc)
             language_summary = get_language_tags(doc)
             languages = get_language_tags_location(doc)
-
+            if "URL_TO_JACOW_REFERENCES_CSV" in os.environ:
+                reference_csv_url = os.environ["URL_TO_JACOW_REFERENCES_CSV"]
+            title_match, authors_match = reference_csv_check(paper_name, title['text'], authors['text'])
             return render_template("upload.html", processed=True, **locals())
         except PackageNotFoundError:
             return render_template("upload.html", error=f"Failed to open document {filename}. Is it a valid Word document?")
         except OSError:
             return render_template("upload.html", error=f"It seems the file {filename} is corrupted")
+        except PaperNotFoundError:
+            return render_template("upload.html", error=f"It seems the file"
+            f" {filename} has no corresponding entry in the SPMS references "
+            f"list. Is your filename the same as your Paper name?")
         except Exception:
             if app.debug:
                 raise
