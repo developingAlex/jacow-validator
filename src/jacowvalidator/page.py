@@ -36,11 +36,6 @@ def get_paragraph_space(paragraph):
     if after is None and paragraph.style.base_style is not None:
         after = paragraph.style.base_style.paragraph_format.space_after
 
-    if paragraph.alignment is not None:
-        before, after = paragraph.space_before, paragraph.space_after
-    elif paragraph.paragraph_format.alignment is not None:
-        before, after = paragraph.paragraph_format.space_before, paragraph.paragraph_format.space_after
-
     if before:
         before = before.pt
     if after:
@@ -50,18 +45,21 @@ def get_paragraph_space(paragraph):
 
 
 def get_style_font(paragraph):
-    # paragraph formatting style can be overridden by more local definition
+    # use paragraph style if values set
     style = paragraph.style
     bold, italic, font_size, all_caps = style.font.bold, style.font.italic, style.font.size, style.font.all_caps
-    if font_size is None and paragraph.style.base_style is not None:
+    if paragraph.style.base_style is not None:
         style = paragraph.style.base_style
-        bold, italic, font_size, all_caps = style.font.bold, style.font.italic, style.font.size, style.font.all_caps
-    #
-    # if paragraph.alignment is not None:
-    #     font_size = paragraph.space_before, paragraph.space_after
-    # elif paragraph.paragraph_format.alignment is not None:
-    #     font_size = paragraph.paragraph_format.space_before, paragraph.paragraph_format.space_after
-    # all_caps', 'bold', 'italic'
+        # if values not set, use base style
+        if font_size is None:
+            font_size = style.font.size
+        if bold is None:
+            bold = style.font.bold
+        if italic is None:
+            italic = style.font.italic
+        if all_caps is None:
+            all_caps = style.font.all_caps
+
     if font_size:
         font_size = font_size.pt
 
@@ -82,6 +80,12 @@ def get_abstract_and_author(doc):
             break
 
     author_paragraphs = doc.paragraphs[1: abstract['start']]
+    # TODO get set of values instead of just for first paragraph
+    p = author_paragraphs[0]
+    space_before, space_after = get_paragraph_space(p)
+    bold, italic, font_size, all_caps = get_style_font(p)
+    alignment = get_paragraph_alignment(p)
+
     text = ''.join(p.text for p in author_paragraphs)
     authors = {
         'text': text,
@@ -92,6 +96,13 @@ def get_abstract_and_author(doc):
             for p in author_paragraphs
             if p.text.strip()
         ),
+        'alignment': alignment,
+        'before': space_before,
+        'after': space_after,
+        'bold': bold,
+        'italic': italic,
+        'font_size': font_size,
+        'all_caps': all_caps,
     }
     return abstract, authors
 
@@ -99,4 +110,3 @@ def get_abstract_and_author(doc):
 def convert_twips_to_mm(twips):
     width = Twips(int(twips))
     return width.mm
-

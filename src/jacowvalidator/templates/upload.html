@@ -187,15 +187,45 @@
                     <a name="{{ summary['Title']['anchor'] }}"></a>{{ summary['Title']['ok']|tick_cross }} Title</h2>
                 <details style="padding:5px;border:1px lightgray solid;border-radius:5px">
                     <summary>Rules for {{ summary['Title']['title'] }}</summary>
-                    <ul>
-                        <li>Title should contain greater than 70% of CAPITAL Letters, can’t be simple Title Case. (May have lower case units on JACoW for example)</li>
-                        <li>Centered “JACoW_Paper Title” Style, or equivalent style.</li>
-                    </ul>
+                    <table class="table is-bordered">
+                        <thead><th>Type</th><th>Details</th><th>Alignment</th><th>Font Size</th><th>Font Style</th><th>Case</th><th>Space Before</th><th>Space After</th></thead>
+                        <tr>
+                            <td>PAPER TITLE</td>
+                            <td>“JACoW_Paper Title” Style, or equivalent style.</td>
+                            <td>Centered</td><td>14 pt</td><td>Bold</td><td>Title should contain greater than 70% of CAPITAL Letters, can’t be simple Title Case.</td><td>0 pt</td><td>3 pt</td>
+                        </tr>
+                    </table>
                 </details>
                 <br/>
                 <p><b>Title: </b>{{ title.text }} {{ title.case_ok|tick_cross}}</p>
                 {% if not title.case_ok %}<p class="has-text-weight-bold has-text-danger">Title should be atleast 70% uppercase</p>{% endif %}
-                <p><b>Style: </b> {{ title.style }} {{ title.style_ok|tick_cross }}</p>
+                <table class="table is-bordered">
+                    <thead>
+                        <tr>
+                            <th colspan="2">Style</th>
+                            <th>Alignment</th>
+                            <th>Font Size</th>
+                            <th>Bold</th>
+                            <th>Italic</th>
+                            <th>Space Before</th>
+                            <th>Space After</th>
+                            <th>All Caps</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>{{ title.style }}</td>
+                            <td>{{ title.style_ok|tick_cross }}</td>
+                            <td>{{ title.alignment }}</td>
+                            <td>{{ title.font_size }}</td>
+                            <td>{{ title.bold }}</td>
+                            <td>{{ title.italic }}</td>
+                            <td>{{ title.before }}</td>
+                            <td>{{ title.after }}</td>
+                            <td>{{ title.all_caps }}</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
 
             <div class="box" style="box-shadow: 0 4px 6px rgba(0, 0, 255, 0.1), 0 0 0 2px rgba(0, 0, 255, 0.1)">
@@ -203,13 +233,44 @@
                     <a name="{{ summary['Authors']['anchor'] }}"></a>{{ summary['Authors']['ok']|tick_cross }} Authors</h2>
                 <details style="padding:5px;border:1px lightgray solid;border-radius:5px">
                     <summary>Rules for {{ summary['Authors']['title'] }}</summary>
-                    <ul>
-                        <li>Centered “JACoW_Author List” Style</li>
-                    </ul>
+                    <table class="table is-bordered">
+                        <thead><th>Type</th><th>Details</th><th>Alignment</th><th>Font Size</th><th>Font Style</th><th>Case</th><th>Space Before</th><th>Space After</th></thead>
+                        <tr>
+                            <td>Author List</td>
+                            <td>“JACoW_Author Title” Style, or equivalent style.</td>
+                            <td>Centered</td><td>12 pt</td><td>None</td><td>UPPER and lowercase</td><td>9 pt</td><td>3 pt</td>
+                        </tr>
+                    </table>
                 </details>
                 <br/>
                 <p><b>Authors: </b>{{ authors.text }}</p>
-                <p><b>Style: </b>{{ authors.style }} {{ authors.style_ok|tick_cross }}</p>
+                <table class="table is-bordered">
+                    <thead>
+                        <tr>
+                            <th colspan="2">Style</th>
+                            <th>Alignment</th>
+                            <th>Font Size</th>
+                            <th>Bold</th>
+                            <th>Italic</th>
+                            <th>Space Before</th>
+                            <th>Space After</th>
+                            <th>All Caps</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>{{ authors.style }}</td>
+                            <td>{{ authors.style_ok|tick_cross }}</td>
+                            <td>{{ authors.alignment }}</td>
+                            <td>{{ authors.font_size }}</td>
+                            <td>{{ authors.bold }}</td>
+                            <td>{{ authors.italic }}</td>
+                            <td>{{ authors.before }}</td>
+                            <td>{{ authors.after }}</td>
+                            <td>{{ authors.all_caps }}</td>
+                        </tr>
+                    </tbody>
+                </table>
                 <br/>
                 <details style="padding:5px;border:1px lightgray solid;border-radius:5px">
                     <ul>
@@ -241,21 +302,21 @@
                 <details style="padding:5px;border:1px lightgray solid;border-radius:5px">
                     <summary>Rules for {{ summary['Headings']['title'] }}</summary>
                     <table class="table is-bordered">
-                        <thead><th>Type</th><th>Details</th><th>Alignment</th><th>Font Size</th><th>Font Style</th><th>Space Before</th><th>Space After</th></thead>
+                        <thead><th>Type</th><th>Details</th><th>Alignment</th><th>Font Size</th><th>Font Style</th><th>Case</th><th>Space Before</th><th>Space After</th></thead>
                         <tr>
                             <td>SECTION HEADING</td>
-                            <td>“JACoW_Section Heading” Style, or equivalent style.<br/>All Caps where appropriate.</td>
-                            <td>Centered</td><td>12 pt</td><td>Bold</td><td>9 pt</td><td>3 pt</td>
+                            <td>“JACoW_Section Heading” Style, or equivalent style.</td>
+                            <td>Centered</td><td>12 pt</td><td>Bold</td><td>All Caps where appropriate</td><td>9 pt</td><td>3 pt</td>
                         </tr>
                         <tr>
                             <td>Sub-Section Heading</td>
-                            <td>“JACoW_Subsection Heading” Style, or equivalent style.<br/>Title Case.</td>
-                            <td>Left Justified</td><td>12 pt</td><td>Italic</td><td>6 pt</td><td>3 pt</td>
+                            <td>“JACoW_Subsection Heading” Style, or equivalent style.</td>
+                            <td>Left Justified</td><td>12 pt</td><td>Italic</td><td>Title Case.</td><td>6 pt</td><td>3 pt</td>
                         </tr>
                         <tr>
                             <td>Third Level Heading</td>
-                            <td>“JACoW_Third-Level Heading” Style, or equivalent style.<br/>Title Case, and run into the paragraph.</td>
-                            <td>Left Justified</td><td>10 pt</td><td>Bold</td><td>6 pt</td><td>0 pt</td>
+                            <td>“JACoW_Third-Level Heading” Style, or equivalent style</td>
+                            <td>Left Justified</td><td>10 pt</td><td>Bold</td><td>Title Case, and run into the paragraph.</td><td>6 pt</td><td>0 pt</td>
                         </tr>
                     </table>
                 </details>
