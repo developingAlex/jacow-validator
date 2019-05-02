@@ -1,4 +1,5 @@
-from .page import get_page_size
+from lxml.etree import _Element
+from .page import get_page_size, convert_twips_to_mm
 
 
 def check_sections(doc):
@@ -9,6 +10,7 @@ def check_sections(doc):
                 get_page_size(section),
                 check_margins(section),
                 get_margins(section),
+                get_columns(section),
             )
         )
     return sections
@@ -54,3 +56,16 @@ def check_margins(section):
         return check_margins_A4(section)
     elif page_size == 'Letter':
         return check_margins_letter(section)
+
+
+def get_columns(section):
+    num = 1
+    space = 0
+    for c1 in section._sectPr.iterchildren():
+        if isinstance(c1, _Element) and 'cols' in str(c1):
+            for c2 in c1.items():
+                if 'num' in str(c2):
+                    num = int(c2[1])
+                if 'space' in str(c2):
+                    space = convert_twips_to_mm(c2[1])
+    return num, space

@@ -1,7 +1,7 @@
 from docx.oxml.text.font import CT_RPr
 from lxml.etree import _Element
 
-VALID_LANGUAGES = ['en-US', 'en-GB', 'en-AU']
+VALID_LANGUAGES = ['en-US', 'en-GB', 'en-AU', 'en-NZ']
 
 
 # simple unique list of languages

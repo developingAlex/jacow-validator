@@ -1,4 +1,4 @@
-from docx.shared import Inches, Mm
+from docx.shared import Inches, Mm, Twips
 from .authors import get_author_list
 
 def get_page_size(section):
@@ -94,3 +94,9 @@ def get_abstract_and_author(doc):
         ),
     }
     return abstract, authors
+
+
+def convert_twips_to_mm(twips):
+    width = Twips(int(twips))
+    return width.mm
+

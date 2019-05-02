@@ -143,7 +143,6 @@ def upload():
             }
 
             headings = get_headings(doc)
-            print(headings)
             summary['Headings'] = {
                 'title': 'Headings',
                 'ok': all([tick['style_ok'] for tick in headings]),
