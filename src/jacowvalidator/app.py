@@ -62,7 +62,7 @@ def background_style(s):
 
 @app.template_filter('pastel_background_style')
 def pastel_background_style(s):
-    return "d5f5d5" if s else "ffc6c3"
+    return "DDFFDD" if s else "FFDDDD"
 
 
 @app.route("/")
