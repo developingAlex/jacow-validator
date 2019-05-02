@@ -62,22 +62,24 @@
             <div class="box" style="box-shadow: 0 4px 6px rgba(0, 0, 255, 0.1), 0 0 0 2px rgba(0, 0, 255, 0.1)">
                 <h2 class="subtitle" style="padding:10px;background-color:#{{ summary['Styles']['ok']|pastel_background_style }}">
                     <a name="{{ summary['Styles']['anchor'] }}"></a>{{ summary['Styles']['ok']|tick_cross }} JACoW Styles</h2>
-                <table class="table is-bordered">
-                    <thead>
-                        <tr>
-                            <th>Style</th>
-                            <th>Embedded in Document</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for style, style_ok in jacow_styles.items() %}
-                        <tr>
-                            <td>{{ style }}</td>
-                            <td>{{ style_ok|tick_cross }}</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                <details>
+                    <table class="table is-bordered">
+                        <thead>
+                            <tr>
+                                <th>Style</th>
+                                <th>Embedded in Document</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for style, style_ok in jacow_styles.items() %}
+                            <tr>
+                                <td>{{ style }}</td>
+                                <td>{{ style_ok|tick_cross }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </details>
             </div>
 
             <div class="box" style="box-shadow: 0 4px 6px rgba(0, 0, 255, 0.1), 0 0 0 2px rgba(0, 0, 255, 0.1)">
