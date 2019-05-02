@@ -188,7 +188,7 @@ def upload():
         except OSError:
             return render_template("upload.html", error=f"It seems the file {filename} is corrupted")
         except PaperNotFoundError:
-            return render_template("upload.html", error=f"It seems the file"
+            return render_template("upload.html", processed=True, **locals(), error=f"It seems the file"
             f" {filename} has no corresponding entry in the SPMS references "
             f"list. Is your filename the same as your Paper name?")
         except Exception:

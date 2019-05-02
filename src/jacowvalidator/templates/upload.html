@@ -281,6 +281,7 @@
                     </tbody>
                 </table>
             </div>
+            {% if summary['SPMS'] %}
             <div class="box" style="box-shadow: 0 4px 6px rgba(0, 0, 255, 0.1), 0 0 0 2px rgba(0, 0, 255, 0.1)">
                 <h2 class="subtitle" style="padding:10px;background-color:#{{ summary['SPMS']['ok']|pastel_background_style }}">
                     <a name="spms"></a>{{ summary['SPMS']['ok']|tick_cross }}
@@ -322,6 +323,7 @@
                 </tbody>
                 </table>
             </div>
+            {% endif %}
         </div>
         {% endif %}
     </section>
