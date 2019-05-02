@@ -183,7 +183,7 @@ def upload():
             }
 
             return render_template("upload.html", processed=True, **locals())
-        except PackageNotFoundError:
+        except (PackageNotFoundError, ValueError):
             return render_template("upload.html", error=f"Failed to open document {filename}. Is it a valid Word document?")
         except OSError:
             return render_template("upload.html", error=f"It seems the file {filename} is corrupted")
