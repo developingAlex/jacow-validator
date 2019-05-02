@@ -14,6 +14,9 @@ def get_page_size(section):
 def get_paragraph_alignment(paragraph):
     # alignment style can be overridden by more local definition
     alignment = paragraph.style.paragraph_format.alignment
+    if alignment is None and paragraph.style.base_style is not None:
+        alignment = paragraph.style.base_style.paragraph_format.alignment
+
     if paragraph.alignment is not None:
         alignment = paragraph.alignment
     elif paragraph.paragraph_format.alignment is not None:
@@ -23,6 +26,46 @@ def get_paragraph_alignment(paragraph):
         return alignment._member_name
     else:
         return None
+
+
+def get_paragraph_space(paragraph):
+    # paragraph formatting style can be overridden by more local definition
+    before, after = paragraph.style.paragraph_format.space_before, paragraph.style.paragraph_format.space_after
+    if before is None and paragraph.style.base_style is not None:
+        before = paragraph.style.base_style.paragraph_format.space_before
+    if after is None and paragraph.style.base_style is not None:
+        after = paragraph.style.base_style.paragraph_format.space_after
+
+    if paragraph.alignment is not None:
+        before, after = paragraph.space_before, paragraph.space_after
+    elif paragraph.paragraph_format.alignment is not None:
+        before, after = paragraph.paragraph_format.space_before, paragraph.paragraph_format.space_after
+
+    if before:
+        before = before.pt
+    if after:
+        after = after.pt
+
+    return before, after
+
+
+def get_style_font(paragraph):
+    # paragraph formatting style can be overridden by more local definition
+    style = paragraph.style
+    bold, italic, font_size, all_caps = style.font.bold, style.font.italic, style.font.size, style.font.all_caps
+    if font_size is None and paragraph.style.base_style is not None:
+        style = paragraph.style.base_style
+        bold, italic, font_size, all_caps = style.font.bold, style.font.italic, style.font.size, style.font.all_caps
+    #
+    # if paragraph.alignment is not None:
+    #     font_size = paragraph.space_before, paragraph.space_after
+    # elif paragraph.paragraph_format.alignment is not None:
+    #     font_size = paragraph.paragraph_format.space_before, paragraph.paragraph_format.space_after
+    # all_caps', 'bold', 'italic'
+    if font_size:
+        font_size = font_size.pt
+
+    return bold, italic, font_size, all_caps
 
 
 def get_abstract_and_author(doc):

@@ -231,6 +231,66 @@
             </div>
 
             <div class="box" style="box-shadow: 0 4px 6px rgba(0, 0, 255, 0.1), 0 0 0 2px rgba(0, 0, 255, 0.1)">
+                <h2 class="subtitle" style="padding:10px;background-color:#{{ summary['Headings']['ok']|pastel_background_style }}">
+                    <a name="{{ summary['Headings']['anchor'] }}"></a>{{ summary['Headings']['ok']|tick_cross }} Headings</h2>
+                <details style="padding:5px;border:1px lightgray solid;border-radius:5px">
+                    <summary>Rules for {{ summary['Headings']['title'] }}</summary>
+                    <table class="table is-bordered">
+                        <thead><th>Type</th><th>Details</th><th>Alignment</th><th>Font Size</th><th>Font Style</th><th>Space Before</th><th>Space After</th></thead>
+                        <tr>
+                            <td>SECTION HEADING</td>
+                            <td>“JACoW_Section Heading” Style, or equivalent style.<br/>All Caps where appropriate.</td>
+                            <td>Centered</td><td>12 pt</td><td>Bold</td><td>9 pt</td><td>3 pt</td>
+                        </tr>
+                        <tr>
+                            <td>Sub-Section Heading</td>
+                            <td>“JACoW_Subsection Heading” Style, or equivalent style.<br/>Title Case.</td>
+                            <td>Left Justified</td><td>12 pt</td><td>Italic</td><td>6 pt</td><td>3 pt</td>
+                        </tr>
+                        <tr>
+                            <td>Third Level Heading</td>
+                            <td>“JACoW_Third-Level Heading” Style, or equivalent style.<br/>Title Case, and run into the paragraph.</td>
+                            <td>Left Justified</td><td>10 pt</td><td>Bold</td><td>6 pt</td><td>0 pt</td>
+                        </tr>
+                    </table>
+                </details>
+                <br/>
+                <table class="table is-bordered">
+                    <thead>
+                        <tr>
+                            <th>Type</th>
+                            <th colspan="2">Style</th>
+                            <th>Alignment</th>
+                            <th>Font Size</th>
+                            <th>Bold</th>
+                            <th>Italic</th>
+                            <th>Space Before</th>
+                            <th>Space After</th>
+                            <th>All Caps</th>
+                            <th>Text</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in headings %}
+                        <tr>
+                            <td>{{ item.type }}</td>
+                            <td>{{ item.style }}</td>
+                            <td>{{ item.style_ok|tick_cross }}</td>
+                            <td>{{ item.alignment }}</td>
+                            <td>{{ item.font_size }}</td>
+                            <td>{{ item.bold }}</td>
+                            <td>{{ item.italic }}</td>
+                            <td>{{ item.before }}</td>
+                            <td>{{ item.after }}</td>
+                            <td>{{ item.all_caps }}</td>
+                            <td>{{ item.text }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="box" style="box-shadow: 0 4px 6px rgba(0, 0, 255, 0.1), 0 0 0 2px rgba(0, 0, 255, 0.1)">
                 <h2 class="subtitle" style="padding:10px;background-color:#{{ summary['References']['ok']|pastel_background_style }}">
                     <a name="references"></a>{{ summary['References']['ok']|tick_cross }} References</h2>
                 <details style="padding:5px;border:1px lightgray solid;border-radius:5px">

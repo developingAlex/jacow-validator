@@ -12,6 +12,7 @@ from .margins import check_sections
 from .styles import check_jacow_styles
 from .title import extract_title
 from .references import extract_references
+from .heading import get_headings
 from .figures import extract_figures
 from .languages import (get_language_tags, get_language_tags_location, VALID_LANGUAGES)
 
@@ -139,6 +140,16 @@ def upload():
                 'message': 'Abstract issues',
                 'details': abstract,
                 'anchor': 'abstract'
+            }
+
+            headings = get_headings(doc)
+            print(headings)
+            summary['Headings'] = {
+                'title': 'Headings',
+                'ok': all([tick['style_ok'] for tick in headings]),
+                'message': 'Heading issues',
+                'details': headings,
+                'anchor': 'heading'
             }
 
             references_in_text, references_list = extract_references(doc)
