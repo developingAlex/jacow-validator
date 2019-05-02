@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='vendor/fontawesome/css/all.min.css')}}">
 </head>
 <body>
-<nav class="navbar is-info" role="navigation" aria-label="main navigation">
+<nav class="navbar" role="navigation" aria-label="main navigation" style="background-image: linear-gradient(to right, lightblue , white);padding-bottom:5px;border-bottom:1px blue solid">
   <div class="navbar-brand">
     <img src="{{ url_for('static', filename='cat.png')}}" width="52" height="61" style="height:61px" alt="jacow validator logo">
     <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
@@ -22,7 +22,7 @@
   <div id="navbarBasicExample" class="navbar-menu">
     <div class="navbar-start">
       <a href="{{ url_for('upload')}}" class="navbar-item" style="padding-left:10px;padding-right:10px;margin-left:30px">
-        Jacow Word (docx) Validator
+        JACoW Word (docx) Validator
       </a>
 
       <a href="{{ url_for('resources')}}" class="navbar-item" style="padding-left:10px;padding-right:10px;;margin-left:30px">

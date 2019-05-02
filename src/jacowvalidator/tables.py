@@ -66,7 +66,7 @@ def check_caption_format(title, format_checks):
     # use titlecase library to create title case of title and see if it is same as original
     if titlecase(title_to_check) != title_to_check:
         result = False
-        message.append('Not in Title Caps')
+        message.append('Not in Title Case/Initial Caps')
 
     return result, message
 
