@@ -1,7 +1,7 @@
 import re
 from collections import OrderedDict
 from itertools import chain
-
+from .page import get_paragraph_alignment
 
 RE_FIG_TITLES = re.compile(r'(^Figure \d+[.:])')
 RE_FIG_INTEXT = re.compile(r'(Fig.\s?\d+|Figure\s?\d+[.\s]+)')
@@ -25,6 +25,7 @@ def extract_figures(doc):
                     text=p.text.strip(),
                     style=p.style.name,
                     style_ok=p.style.name in ['Figure Caption', 'Caption Multi Line', 'Caption'],
+                    alignment=get_paragraph_alignment(p),
                 )
             )
 

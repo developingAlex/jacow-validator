@@ -222,7 +222,7 @@
                             <th>No.</th>
                             <th colspan="2">Caption</th>
                             <th colspan="2">References</th>
-                            <th colspan="2">Style</th>
+                            <th colspan="3">Style</th>
                             <th>Text</th>
                         </tr>
                     </thead>
@@ -236,6 +236,7 @@
                             <td>{{ fig.used|tick_cross }}</td>
                             <td>{{ fig.style }}</td>
                             <td>{{ fig.style_ok|tick_cross }}</td>
+                            <td>{{ fig.alignment }}</td>
                             <td>{{ fig.text }}</td>
                         </tr>
                         {% endfor %}
