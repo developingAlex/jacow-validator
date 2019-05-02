@@ -62,13 +62,15 @@
             <div class="box" style="box-shadow: 0 4px 6px rgba(0, 0, 255, 0.1), 0 0 0 2px rgba(0, 0, 255, 0.1)">
                 <h2 class="subtitle" style="padding:10px;background-color:#{{ summary['Styles']['ok']|pastel_background_style }}">
                     <a name="{{ summary['Styles']['anchor'] }}"></a>{{ summary['Styles']['ok']|tick_cross }} JACoW Styles</h2>
-                <details>
+                <details style="padding:5px;border:1px lightgray solid;border-radius:5px">
                     <summary>Rules for {{ summary['Styles']['title'] }}</summary>
+                    <div style="padding-left:10px">
                     <p>The latest JACoW Template must be used.<br/>
                         Standard JACoW Style’s must embedded in the document.</p>
+                    </div>
                 </details>
-
-                <details>
+                <br/>
+                <details style="padding:5px;border:1px lightgray solid;border-radius:5px">
                     <table class="table is-bordered">
                         <thead>
                             <tr>
@@ -91,8 +93,9 @@
             <div class="box" style="box-shadow: 0 4px 6px rgba(0, 0, 255, 0.1), 0 0 0 2px rgba(0, 0, 255, 0.1)">
                 <h2 class="subtitle" style="padding:10px;background-color:#{{ summary['Margins']['ok']|pastel_background_style }}">
                     <a name="{{ summary['Margins']['anchor'] }}"></a>{{ summary['Margins']['ok']|tick_cross }} Page Size and Margins</h2>
-                <details>
+                <details style="padding:5px;border:1px lightgray solid;border-radius:5px">
                     <summary>Rules for {{ summary['Margins']['title'] }}</summary>
+                    <div style="padding-left:10px">
                     <h3 class="subtitle is-6">Documents MUST be based on A4 or US Letter</h3>
                     <table class="table is-bordered">
                         <thead><th colspan="2">A4</th></thead>
@@ -112,7 +115,7 @@
                         <tr><td>Right</td><td>1.02in</td></tr>
                         </tbody>
                     </table>
-                    <hr/>
+                    </div>
                 </details>
                 <br/>
                 <table class="table is-bordered">
@@ -139,12 +142,29 @@
             <div class="box" style="box-shadow: 0 4px 6px rgba(0, 0, 255, 0.1), 0 0 0 2px rgba(0, 0, 255, 0.1)">
                 <h2 class="subtitle" style="padding:10px;background-color:#{{ summary['Languages']['ok']|pastel_background_style }}">
                     <a name="{{ summary['Languages']['anchor'] }}"></a>{{ summary['Languages']['ok']|tick_cross }} Languages</h2>
+                <details style="padding:5px;border:1px lightgray solid;border-radius:5px">
+                    <summary>Rules for {{ summary['Languages']['title'] }}</summary>
+                    <div style="padding-left:10px">
+                    <p>Document overall language should be set to English for proofing tools.<br/>
+                    Below are the codes that should be in the list</p>
+                    <table class="table is-bordered">
+                        <thead><th colspan="2">English Codes</th></thead>
+                        <tbody>
+                        <tr><td>en-GB</td><td>English (United Kingdom)</td></tr>
+                        <tr><td>en-US</td><td>English (United States)</td></tr>
+                        <tr><td>en-AU</td><td>English (Australia)</td></tr>
+                        <tr><td>en-nz</td><td>English (New Zealand)</td></tr>
+                        </tbody>
+                    </table>
+                    If you want to look up other codes, you can do so <a href="https://www.andiamo.co.uk/resources/iso-language-codes/" target="_blank">here</a>
+                    </div>
+                </details>
                 <ul>
                     {% for lang in language_summary %}
                     <li> {{ lang }}</li>
                     {% endfor %}
                 </ul>
-                <details>
+                <details style="padding:5px;border:1px lightgray solid;border-radius:5px">
                 <ul>
                     {% for lang in languages %}
                         {% if languages[lang] not in ['en-US', 'en-GB', 'en-AU'] %}
@@ -168,7 +188,8 @@
                     <a name="{{ summary['Authors']['anchor'] }}"></a>{{ summary['Authors']['ok']|tick_cross }} Authors</h2>
                 <p><b>Authors: </b>{{ authors.text }}</p>
                 <p><b>Style: </b>{{ authors.style }} {{ authors.style_ok|tick_cross }}</p>
-                <details>
+                <br/>
+                <details style="padding:5px;border:1px lightgray solid;border-radius:5px">
                     <ul>
                         {% for item in authors.list %}
                             <li>{{ item }}</li>
@@ -210,7 +231,8 @@
                 {% else %}
                 <p>{{ true|tick_cross }} all references are in correct order</p>
                 {% endfor %}
-                <details>
+                <br/>
+                <details style="padding:5px;border:1px lightgray solid;border-radius:5px">
                     <summary>Details</summary>
                     <table class="table is-bordered">
                         <thead>
