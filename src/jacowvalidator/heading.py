@@ -6,6 +6,7 @@ HEADING_DETAILS = {
             'jacow': 'JACoW_Section Heading',
             'normal': 'Section Heading',
         },
+        'alignment': 'CENTER',
         'font_size': 12.0,
         'space_before': 9.0,
         'space_after': 3.0,
@@ -18,6 +19,7 @@ HEADING_DETAILS = {
             'jacow': 'JACoW_Subsection Heading',
             'normal': 'Subsection Heading',
         },
+        'alignment': 'LEFT JUSTIFIED',
         'font_size': 12.0,
         'space_before': 6.0,
         'space_after': 3.0,
@@ -30,6 +32,7 @@ HEADING_DETAILS = {
             'jacow': 'JACoW_Third - Level Heading',
             'normal': 'Third - Level Heading',
         },
+        'alignment': 'LEFT JUSTIFIED',
         'font_size': 10.0,
         'space_before': 6.0,
         'space_after': 0.0,
@@ -47,15 +50,15 @@ def get_headings(doc):
         name = [name for name, h in HEADING_DETAILS.items() if p.style.name in [h['styles']['jacow'], h['styles']['normal']]]
         if name:
             detail = HEADING_DETAILS[name[0]]
+            space_before, space_after = get_paragraph_space(p)
+            bold, italic, font_size, all_caps = get_style_font(p)
+            alignment = get_paragraph_alignment(p)
+
             if p.style.name == detail['styles']['jacow']:
                 style_ok = True
-                space_before, space_after = get_paragraph_space(p)
-                bold, italic, font_size, all_caps = get_style_font(p)
             else:
                 # need to check if equivalent
-                space_before, space_after = get_paragraph_space(p)
-                bold, italic, font_size, all_caps = get_style_font(p)
-
+                # TODO add alignment to check
                 style_ok = all([
                     space_before == detail['space_before'],
                     space_after == detail['space_after'],
@@ -81,7 +84,7 @@ def get_headings(doc):
                 'style': p.style.name,
                 'style_ok': style_ok,
                 'text': p.text,
-                'alignment': get_paragraph_alignment(p),
+                'alignment': alignment,
                 'before': space_before,
                 'after': space_after,
                 'bold': bold,
