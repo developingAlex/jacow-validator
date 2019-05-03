@@ -98,9 +98,10 @@ def upload():
 
             # get page size and margin details
             sections = check_sections(doc)
+            ok = all([tick[1] for tick in sections]) and all([tick[3][2] for tick in sections]),
             summary['Margins'] = {
                 'title': 'Page Size and Margins',
-                'ok': all([tick[1] for tick in sections]),
+                'ok': ok,
                 'message': 'Margins',
                 'detail': sections,
                 'anchor': 'pagesize'
