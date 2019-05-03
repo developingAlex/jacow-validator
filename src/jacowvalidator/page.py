@@ -20,7 +20,7 @@ ABSTRACT_DETAILS = {
         'jacow': 'JACoW_Abstract_Heading',
         'normal': 'Abstract_Heading',
     },
-    'alignment': 'CENTER',
+    'alignment': None,
     'font_size': 12.0,
     'space_before': 0.0,
     'space_after': 3.0,

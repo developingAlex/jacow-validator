@@ -204,32 +204,38 @@
                     </table>
                 </details>
                 <br/>
-                <p><b>Title: </b>{{ title.text }} {{ title.case_ok|tick_cross}}</p>
                 {% if not title.case_ok %}<p class="has-text-weight-bold has-text-danger">Title should be atleast 70% uppercase</p>{% endif %}
                 <table class="table is-bordered">
                     <thead>
                         <tr>
-                            <th colspan="2">Style</th>
-                            <th>Alignment</th>
-                            <th>Font Size</th>
-                            <th>Bold</th>
-                            <th>Italic</th>
-                            <th>Space Before</th>
-                            <th>Space After</th>
-                            <th>All Caps</th>
+                            <th colspan="2" width="30%" style="text-align:center">Text</th>
+                            <th colspan="8" width="70%" style="text-align:center">Style</th>
+                        </tr>
+                        <tr>
+                            <th width="25%"></th>
+                            <th width="5%">Case Ok</th>
+                            <th width="20%">Name</th>
+                            <th width="8%">Alignment</th>
+                            <th width="8%">Font Size</th>
+                            <th width="8%">Bold</th>
+                            <th width="8%">Italic</th>
+                            <th width="8%">Space Before</th>
+                            <th width="8%">Space After</th>
+                            <th width="5%">Ok</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
+                            <td>{{ title.text }}</td>
+                            <td>{{ title.case_ok|tick_cross }}</td>
                             <td>{{ title.style }}</td>
-                            <td>{{ title.style_ok|tick_cross }}</td>
                             <td>{{ title.alignment }}</td>
                             <td>{{ title.font_size }}</td>
                             <td>{{ title.bold }}</td>
                             <td>{{ title.italic }}</td>
                             <td>{{ title.space_before }}</td>
                             <td>{{ title.space_after }}</td>
-                            <td>{{ title.all_caps }}</td>
+                            <td>{{ title.style_ok|tick_cross }}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -253,15 +259,18 @@
                 <table class="table is-bordered">
                     <thead>
                         <tr>
-                            <th>Text</th>
-                            <th colspan="2">Style</th>
-                            <th>Alignment</th>
-                            <th>Font Size</th>
-                            <th>Bold</th>
-                            <th>Italic</th>
-                            <th>Space Before</th>
-                            <th>Space After</th>
-                            <th>All Caps</th>
+                            <th rowspan="2" width="30%" style="text-align:center">Text</th>
+                            <th colspan="8" width="70%" style="text-align:center">Style</th>
+                        </tr>
+                        <tr>
+                            <th width="20%">Name</th>
+                            <th width="8%">Alignment</th>
+                            <th width="8%">Font Size</th>
+                            <th width="8%">Bold</th>
+                            <th width="8%">Italic</th>
+                            <th width="8%">Space Before</th>
+                            <th width="8%">Space After</th>
+                            <th width="5%">Ok</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -269,14 +278,13 @@
                         <tr>
                             <td>{{ author.text }}</td>
                             <td>{{ author.style }}</td>
-                            <td>{{ author.style_ok|tick_cross }}</td>
                             <td>{{ author.alignment }}</td>
                             <td>{{ author.font_size }}</td>
                             <td>{{ author.bold }}</td>
                             <td>{{ author.italic }}</td>
                             <td>{{ author.space_before }}</td>
                             <td>{{ author.space_after }}</td>
-                            <td>{{ author.all_caps }}</td>
+                            <td>{{ author.style_ok|tick_cross }}</td>
                         </tr>
                     {% endfor %}
                     </tbody>
@@ -297,38 +305,41 @@
                     <table class="table is-bordered">
                         <thead><th>Type</th><th>Details</th><th>Alignment</th><th>Font Size</th><th>Font Style</th><th>Case</th><th>Space Before</th><th>Space After</th></thead>
                         <tr>
-                            <td>_Abstract_Heading</td>
+                            <td>Abstract_Heading</td>
                             <td>“JACoW_Abstract_Heading” Style, or equivalent style.</td>
-                            <td>Centered</td><td>12 pt</td><td>Italic</td><td></td><td>0 pt</td><td>3 pt</td>
+                            <td>Left or None</td><td>12 pt</td><td>Italic</td><td></td><td>0 pt</td><td>3 pt</td>
                         </tr>
                     </table>
                 </details>
                 <br/>
-                <p><b>Style:</b> {{ abstract.style }} {{ abstract.style_ok|tick_cross }}</p>
                 <table class="table is-bordered">
                     <thead>
                         <tr>
-                            <th colspan="2">Style</th>
-                            <th>Alignment</th>
-                            <th>Font Size</th>
-                            <th>Bold</th>
-                            <th>Italic</th>
-                            <th>Space Before</th>
-                            <th>Space After</th>
-                            <th>All Caps</th>
+                            <th rowspan="2" width="30%" style="text-align:center">Text</th>
+                            <th colspan="8" width="70%" style="text-align:center">Style</th>
+                        </tr>
+                        <tr>
+                            <th width="20%">Name</th>
+                            <th width="8%">Alignment</th>
+                            <th width="8%">Font Size</th>
+                            <th width="8%">Bold</th>
+                            <th width="8%">Italic</th>
+                            <th width="8%">Space Before</th>
+                            <th width="8%">Space After</th>
+                            <th width="5%">Ok</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
+                            <td>{{ abstract.text }}</td>
                             <td>{{ abstract.style }}</td>
-                            <td>{{ abstract.style_ok|tick_cross }}</td>
                             <td>{{ abstract.alignment }}</td>
                             <td>{{ abstract.font_size }}</td>
                             <td>{{ abstract.bold }}</td>
                             <td>{{ abstract.italic }}</td>
                             <td>{{ abstract.space_before }}</td>
                             <td>{{ abstract.space_after }}</td>
-                            <td>{{ abstract.all_caps }}</td>
+                            <td>{{ abstract.style_ok|tick_cross }}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -349,12 +360,12 @@
                         <tr>
                             <td>Sub-Section Heading</td>
                             <td>“JACoW_Subsection Heading” Style, or equivalent style.</td>
-                            <td>Left Justified</td><td>12 pt</td><td>Italic</td><td>Title Case.</td><td>6 pt</td><td>3 pt</td>
+                            <td>Left or None</td><td>12 pt</td><td>Italic</td><td>Title Case.</td><td>6 pt</td><td>3 pt</td>
                         </tr>
                         <tr>
                             <td>Third Level Heading</td>
                             <td>“JACoW_Third-Level Heading” Style, or equivalent style</td>
-                            <td>Left Justified</td><td>10 pt</td><td>Bold</td><td>Title Case, and run into the paragraph.</td><td>6 pt</td><td>0 pt</td>
+                            <td>Left or None</td><td>10 pt</td><td>Bold</td><td>Title Case, and run into the paragraph.</td><td>6 pt</td><td>0 pt</td>
                         </tr>
                     </table>
                 </details>
@@ -362,32 +373,32 @@
                 <table class="table is-bordered">
                     <thead>
                         <tr>
-                            <th>Type</th>
-                            <th colspan="2">Style</th>
-                            <th>Alignment</th>
-                            <th>Font Size</th>
-                            <th>Bold</th>
-                            <th>Italic</th>
-                            <th>Space Before</th>
-                            <th>Space After</th>
-                            <th>All Caps</th>
-                            <th>Text</th>
+                            <th rowspan="2" width="30%" style="text-align:center">Text</th>
+                            <th colspan="8" width="70%" style="text-align:center">Style</th>
+                        </tr>
+                        <tr>
+                            <th width="20%">Name</th>
+                            <th width="8%">Alignment</th>
+                            <th width="8%">Font Size</th>
+                            <th width="8%">Bold</th>
+                            <th width="8%">Italic</th>
+                            <th width="8%">Space Before</th>
+                            <th width="8%">Space After</th>
+                            <th width="5%">Ok</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for item in headings %}
                         <tr>
-                            <td>{{ item.type }}</td>
+                            <td>{{ item.text }}</td>
                             <td>{{ item.style }}</td>
-                            <td>{{ item.style_ok|tick_cross }}</td>
                             <td>{{ item.alignment }}</td>
                             <td>{{ item.font_size }}</td>
                             <td>{{ item.bold }}</td>
                             <td>{{ item.italic }}</td>
                             <td>{{ item.space_before }}</td>
                             <td>{{ item.space_after }}</td>
-                            <td>{{ item.all_caps }}</td>
-                            <td>{{ item.text }}</td>
+                            <td>{{ item.style_ok|tick_cross }}</td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -492,7 +503,7 @@
                         <tr>
                             <td>Figure Caption Multi Line</td>
                             <td>“Figure Caption Multi Line” Style, or equivalent style.</td>
-                            <td>Justified</td><td>10 pt</td><td>3 pt</td><td>≥3 pt</td>
+                            <td>Right Justified</td><td>10 pt</td><td>3 pt</td><td>≥3 pt</td>
                         </tr>
                     </table>
                 </details>
@@ -503,14 +514,14 @@
                             <th>No.</th>
                             <th colspan="2">Caption</th>
                             <th colspan="2">References</th>
-                            <th colspan="2">Style</th>
-                            <th>Alignment</th>
-                            <th>Font Size</th>
-                            <th>Bold</th>
-                            <th>Italic</th>
-                            <th>Space Before</th>
-                            <th>Space After</th>
-                            <th>Text</th>
+                            <th width="30%">Text</th>
+                            <th colspan="2" width="22%">Style</th>
+                            <th width="8%">Alignment</th>
+                            <th width="8%">Font Size</th>
+                            <th width="8%">Bold</th>
+                            <th width="8%">Italic</th>
+                            <th width="8%">Space Before</th>
+                            <th width="8%">Space After</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -521,6 +532,7 @@
                             <td>{{ fig.caption_ok|tick_cross }}</td>
                             <td>{{ fig.refs|join(', ') }}</td>
                             <td>{{ fig.used|tick_cross }}</td>
+                            <td>{{ fig.text }}</td>
                             <td>{{ fig.style }}</td>
                             <td>{{ fig.style_ok|tick_cross }}</td>
                             <td>{{ fig.alignment }}</td>
@@ -529,7 +541,7 @@
                             <td>{{ fig.italic }}</td>
                             <td>{{ fig.space_before }}</td>
                             <td>{{ fig.space_after }}</td>
-                            <td>{{ fig.text }}</td>
+
                         </tr>
                         {% endfor %}
                     </tbody>
