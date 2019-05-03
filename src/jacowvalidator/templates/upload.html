@@ -57,6 +57,12 @@
                 <p>Internal Revision: {{ metadata.revision }}</p>
                 <p>Created at (UTC): {{ metadata.created.strftime('%d/%m/%Y %H:%M') }}</p>
                 <p>Modified at (UTC): {{ metadata.modified.strftime('%d/%m/%Y %H:%M') }}</p>
+                {% if  metadata.version %}
+                    <p>Version: {{ metadata.version }}</p>
+                {% endif %}
+                {% if  metadata.language %}
+                    <p>Language: {{ metadata.language }}</p>
+                {% endif %}
             </div>
 
             <div class="box" style="box-shadow: 0 4px 6px rgba(0, 0, 255, 0.1), 0 0 0 2px rgba(0, 0, 255, 0.1)">
