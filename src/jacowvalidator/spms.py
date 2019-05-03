@@ -99,7 +99,8 @@ def reference_csv_check(filename_minus_ext, title, authors):
                     'docx': authors,
                     'spms': 'No matching paper found in the spms csv file',
                     'docx_list': list(),
-                    'spms_list': list()
+                    'spms_list': list(),
+                    'report': list()
                 },
             }
         else:
@@ -144,8 +145,8 @@ def get_author_list_report(docx_list, spms_list):
     return results
 
 
-def clone_list(list):
+def clone_list(list_to_clone):
     new_list = list()
-    for item in list:
+    for item in list_to_clone:
         new_list.append(item)
     return new_list
