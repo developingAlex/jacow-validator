@@ -511,23 +511,10 @@
                 <table class="table is-bordered">
                     <thead>
                         <tr>
-                            <th colspan="5" width="30%" style="text-align:center">Caption</th>
-                            <th width="30%" style="text-align:center">Text</th>
-                            <th colspan="8" width="70%" style="text-align:center">Style</th>
-                        </tr>
-                        <tr>
                             <th>No.</th>
                             <th colspan="2">Caption</th>
                             <th colspan="2">References</th>
                             <th width="30%">Text</th>
-                            <th width="20%">Name</th>
-                            <th width="8%">Alignment</th>
-                            <th width="8%">Font Size</th>
-                            <th width="8%">Bold</th>
-                            <th width="8%">Italic</th>
-                            <th width="8%">Space Before</th>
-                            <th width="8%">Space After</th>
-                            <th width="5%">Ok</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -539,18 +526,46 @@
                             <td>{{ fig.refs|join(', ') }}</td>
                             <td>{{ fig.used|tick_cross }}</td>
                             <td>{{ fig.text }}</td>
-                            <td>{{ fig.style }}</td>
-                            <td>{{ fig.alignment }}</td>
-                            <td>{{ fig.font_size }}</td>
-                            <td>{{ fig.bold }}</td>
-                            <td>{{ fig.italic }}</td>
-                            <td>{{ fig.space_before }}</td>
-                            <td>{{ fig.space_after }}</td>
-                            <td>{{ fig.style_ok|tick_cross }}</td>
                         </tr>
                         {% endfor %}
                     </tbody>
                 </table>
+                <details style="padding:5px;border:1px lightgray solid;border-radius:5px">
+                    <summary>Style Breakdown for {{ summary['Figures']['title'] }}</summary>
+                    <table class="table is-bordered">
+                        <thead>
+                            <tr>
+                                <th rowspan="2" width="30%" style="text-align:center">Text</th>
+                                <th colspan="8" width="70%" style="text-align:center">Style</th>
+                            </tr>
+                            <tr>
+                                <th width="20%">Name</th>
+                                <th width="8%">Alignment</th>
+                                <th width="8%">Font Size</th>
+                                <th width="8%">Bold</th>
+                                <th width="8%">Italic</th>
+                                <th width="8%">Space Before</th>
+                                <th width="8%">Space After</th>
+                                <th width="5%">Ok</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for i, item in figures.items() %}
+                            <tr>
+                                <td>{{ item.text }}</td>
+                                <td>{{ item.style }}</td>
+                                <td>{{ item.alignment }}</td>
+                                <td>{{ item.font_size }}</td>
+                                <td>{{ item.bold }}</td>
+                                <td>{{ item.italic }}</td>
+                                <td>{{ item.space_before }}</td>
+                                <td>{{ item.space_after }}</td>
+                                <td>{{ item.style_ok|tick_cross }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </details>
             </div>
 
             <div class="box" style="box-shadow: 0 4px 6px rgba(0, 0, 255, 0.1), 0 0 0 2px rgba(0, 0, 255, 0.1)">
@@ -560,12 +575,24 @@
                     <summary>Rules for {{ summary['Tables']['title'] }}</summary>
                     <ul>
                         <li>Table captions are actually titles, this means that they are in Title Case, and don’t have a “.” At the end, well unless exceeds 2 lines.</li>
-                        <li>The table caption is centred if 1 line (“Table Caption” Style), and Justified if 2 or more (“Table Caption Multi Line” Style.  The table caption must appear above the Table.
-</li>
+                        <li>The table caption is centred if 1 line (“Table Caption” Style), and Justified if 2 or more (“Table Caption Multi Line” Style.  The table caption must appear above the Table.</li>
                         <li>All tables must be numbered in the order they appear in the document and not skip a number in the sequence.</li>
                         <li>All tables start with “Table n:”.</li>
                         <li>All tables must be referred to in the main text and use “Table n”. </li>
                     </ul>
+                    <table class="table is-bordered">
+                        <thead><th>Type</th><th>Details</th><th>Alignment</th><th>Font Size</th><th>Space Before</th><th>Space After</th></thead>
+                        <tr>
+                            <td>Table Caption</td>
+                            <td>“Table Caption” Style, or equivalent style.</td>
+                            <td>Centered</td><td>10 pt</td><td>≥3 pt</td><td>3 pt</td>
+                        </tr>
+                        <tr>
+                            <td>Table Caption Multi Line</td>
+                            <td>“Table Caption Multi Line” Style, or equivalent style.</td>
+                            <td>Right Justified</td><td>10 pt</td><td>≥3 pt</td><td>3 pt</td>
+                        </tr>
+                    </table>
                 </details>
                 <br/>
                 <table class="table is-bordered">
@@ -575,8 +602,6 @@
                             <th colspan="3">Caption</th>
                             <th>Used</th>
                             <th>Order</th>
-                            <th colspan="2">Style</th>
-                            <th>Alignment</th>
                             <th>Table</th>
                         </tr>
                     </thead>
@@ -595,14 +620,47 @@
                             </td>
                             <td>{{ title.used }}</td>
                             <td>{{ title.order_ok|tick_cross }}</td>
-                            <td>{{ title.style }}</td>
-                            <td>{{ title.style_ok|tick_cross }}</td>
-                            <td>{{ title.alignment }}</td>
                             <td>{{ title.table }}</td>
                         </tr>
                         {% endfor %}
                     </tbody>
                 </table>
+                <details style="padding:5px;border:1px lightgray solid;border-radius:5px">
+                    <summary>Style Breakdown for {{ summary['Tables']['title'] }}</summary>
+                    <table class="table is-bordered">
+                        <thead>
+                            <tr>
+                                <th rowspan="2" width="30%" style="text-align:center">Text</th>
+                                <th colspan="8" width="70%" style="text-align:center">Style</th>
+                            </tr>
+                            <tr>
+                                <th width="20%">Name</th>
+                                <th width="8%">Alignment</th>
+                                <th width="8%">Font Size</th>
+                                <th width="8%">Bold</th>
+                                <th width="8%">Italic</th>
+                                <th width="8%">Space Before</th>
+                                <th width="8%">Space After</th>
+                                <th width="5%">Ok</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in table_titles %}
+                            <tr>
+                                <td>{{ item.text }}</td>
+                                <td>{{ item.style }}</td>
+                                <td>{{ item.alignment }}</td>
+                                <td>{{ item.font_size }}</td>
+                                <td>{{ item.bold }}</td>
+                                <td>{{ item.italic }}</td>
+                                <td>{{ item.space_before }}</td>
+                                <td>{{ item.space_after }}</td>
+                                <td>{{ item.style_ok|tick_cross }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </details>
             </div>
             {% if summary['SPMS'] %}
             <div class="box" style="box-shadow: 0 4px 6px rgba(0, 0, 255, 0.1), 0 0 0 2px rgba(0, 0, 255, 0.1)">

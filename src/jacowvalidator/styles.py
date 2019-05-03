@@ -154,17 +154,25 @@ def get_compare(inp, relate, cut):
 def check_style(p, compare):
     detail = get_style_details(p)
 
+    space_before = any([
+        detail['space_before'] == compare['space_before'],
+        (isinstance(compare['space_before'], list) and
+            detail['space_before'] is not None and
+            get_compare(detail['space_before'], compare['space_before'][0], compare['space_before'][1])),
+        (detail['space_before'] is None and compare['space_before'] == 0.0)
+    ])
+
     space_after = any([
         detail['space_after'] == compare['space_after'],
         (isinstance(compare['space_after'], list) and
             detail['space_after'] is not None and
             get_compare(detail['space_after'], compare['space_after'][0], compare['space_after'][1])),
         (detail['space_after'] is None and compare['space_after'] == 0.0)
-    ]),
+    ])
 
     if p.style.name in compare['styles']['jacow']:
         style_ok = all([
-            detail['space_before'] == compare['space_before'] or (detail['space_before'] is None and compare['space_before'] == 0.0),
+            space_before,
             space_after,
             detail['bold'] == compare['bold'],
             detail['italic'] == compare['italic'],
@@ -173,7 +181,7 @@ def check_style(p, compare):
         ])
     else:
         style_ok = all([
-            detail['space_before'] == compare['space_before'] or (detail['space_before'] is None and compare['space_before'] == 0.0),
+            space_before,
             space_after,
             detail['bold'] == compare['bold'],
             detail['italic'] == compare['italic'],
@@ -183,13 +191,16 @@ def check_style(p, compare):
 
     # add messages
     # TODO optimise this
-    if not (detail['space_before'] == compare['space_before'] or (detail['space_before'] is None and compare['space_before'] == 0.0)):
-        detail['space_before'] = f"{detail['space_before']} should be {compare['space_before']}"
+    if not space_before:
+        if isinstance(compare['space_before'], list):
+            detail['space_before'] = f"{detail['space_before']} should be {' '.join(map(str, compare['space_before']))}"
+        else:
+            detail['space_before'] = f"{detail['space_before']} should be {compare['space_before']}"
     if not space_after:
         if isinstance(compare['space_after'], list):
-            detail['space_after'] = f"{detail['space_after']} should be {compare['space_after']}"
+            detail['space_after'] = f"{detail['space_after']} should be {' '.join(map(str, compare['space_after']))}"
         else:
-            detail['space_after'] = f"{detail['space_after']} should be {' '.join(compare['space_after'])}"
+            detail['space_after'] = f"{detail['space_after']} should be {compare['space_after']}"
     if not detail['bold'] == compare['bold']:
         detail['bold'] = f"{detail['bold']} should be {compare['bold']}"
     if not detail['italic'] == compare['italic']:

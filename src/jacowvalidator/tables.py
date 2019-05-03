@@ -6,7 +6,7 @@ from docx.table import _Cell, _Row, Table
 from docx.text.paragraph import Paragraph
 from lxml.etree import _Element
 
-from .styles import get_paragraph_alignment
+from .styles import check_style
 from titlecase import titlecase
 
 RE_TABLE_LIST = re.compile(r'^Table \d+:')
@@ -16,6 +16,32 @@ RE_TABLE_FORMAT = re.compile(r'\.$')
 RE_TABLE_TITLE_CAPS = re.compile(r'^(?:[A-Z][^\s]*\s?)+$')
 RE_SPECIAL_CHAR = re.compile(r'[^a-zA-Z ]')
 RE_MULTI_SPACE = re.compile(r' +')
+
+
+TABLE_DETAILS = {
+    'styles': {
+        'jacow': 'Table Caption',
+    },
+    'alignment': 'CENTER',
+    'font_size': 10.0,
+    'space_before': ['>=', 3.0],
+    'space_after': 3.0,
+    'bold': None,
+    'italic': None,
+}
+
+TABLE_MULTI_DETAILS = {
+    'styles': {
+        'jacow': 'Table Caption Multi Line',
+    },
+    'alignment': 'JUSTIFY',
+    'font_size': 10.0,
+    'space_before': ['>=', 3.0],
+    'space_after': 3.0,
+    'bold': None,
+    'italic': None,
+}
+
 
 def iter_block_items(parent):
     """
@@ -178,7 +204,13 @@ def check_table_titles(doc):
 
         floating = check_is_floating(table['table'])
 
-        title_details.append({
+        table_compare = TABLE_DETAILS
+        # 55 chars is approx where it changes from 1 line to 2 lines
+        if len(title.text.strip()) > 55:
+            table_compare = TABLE_MULTI_DETAILS
+        style_ok, detail = check_style(title, table_compare)
+
+        title_detail = {
             'id': count,
             'text': title.text,
             'text_format_ok': result,
@@ -186,10 +218,11 @@ def check_table_titles(doc):
             'used': used_count,
             'order_ok': f'Table {count}' in order_check,
             'style': title.style.name,
-            'style_ok': title.style.name in ['Caption', 'Table Caption', 'Table Caption Multi Line'],
-            'alignment': get_paragraph_alignment(title),
+            'style_ok': style_ok and title.style.name in ['Caption', 'Table Caption', 'Table Caption Multi Line'],
             'table': f"rows: {len(table['table'].rows)}, columns: {len(table['table'].columns)}, floating: {floating}"
-        })
+        }
+        title_detail.update(detail)
+        title_details.append(title_detail)
         count = count+1
 
     return title_details

@@ -20,7 +20,7 @@ FIGURE_DETAILS = {
 
 FIGURE_MULTI_DETAILS = {
     'styles': {
-        'jacow': 'Caption Multi Line',
+        'jacow': 'Figure Caption Multi Line',
     },
     'alignment': 'JUSTIFY',
     'font_size': 10.0,
@@ -42,8 +42,8 @@ def extract_figures(doc):
     def _find_figure_captions(p):
         for f in RE_FIG_TITLES.findall(p.text.strip()):
             figure_compare = FIGURE_DETAILS
-            # 53 chars is approx where it changes from 1 line to 2 lines
-            if len(p.text.strip()) > 53:
+            # 55 chars is approx where it changes from 1 line to 2 lines
+            if len(p.text.strip()) > 55:
                 figure_compare = FIGURE_MULTI_DETAILS
             style_ok, detail = check_style(p, figure_compare)
             _id = _fig_to_int(f)
