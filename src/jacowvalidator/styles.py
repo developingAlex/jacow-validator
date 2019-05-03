@@ -1,3 +1,4 @@
+import operator
 
 
 VALID_STYLES = ['JACoW_Abstract_Heading',
@@ -124,9 +125,11 @@ def get_style_font(paragraph):
         if r.italic is not None:
             italic = r.italic
 
-    # TODO find default size (from section ?)
-
-    if font_size:
+    if not font_size:
+        font_size = 10.0
+        # TODO find default size (from section ?)
+        # styles = paragraph._parent._parent._parent._parent.styles
+    else:
         font_size = font_size.pt
 
     return bold, italic, font_size, all_caps
@@ -139,13 +142,29 @@ def get_style_details(p):
     return locals()
 
 
+def get_compare(inp, relate, cut):
+    ops = {'>': operator.gt,
+           '<': operator.lt,
+           '>=': operator.ge,
+           '<=': operator.le,
+           '=': operator.eq}
+    return ops[relate](inp, cut)
+
+
 def check_style(p, compare):
     detail = get_style_details(p)
+
+    space_after = any([
+        detail['space_after'] == compare['space_after'],
+        (isinstance(compare['space_after'], list) and get_compare(detail['space_after'], compare['space_after'][0],
+                                                                  compare['space_after'][1])),
+        (detail['space_after'] is None and compare['space_after'] == 0.0)
+    ]),
 
     if p.style.name in compare['styles']['jacow']:
         style_ok = all([
             detail['space_before'] == compare['space_before'] or (detail['space_before'] is None and compare['space_before'] == 0.0),
-            detail['space_after'] == compare['space_after']or (detail['space_after'] is None and compare['space_after'] == 0.0),
+            space_after,
             detail['bold'] == compare['bold'],
             detail['italic'] == compare['italic'],
             detail['font_size'] == compare['font_size'],
@@ -154,7 +173,7 @@ def check_style(p, compare):
     else:
         style_ok = all([
             detail['space_before'] == compare['space_before'] or (detail['space_before'] is None and compare['space_before'] == 0.0),
-            detail['space_after'] == compare['space_after']or (detail['space_after'] is None and compare['space_after'] == 0.0),
+            space_after,
             detail['bold'] == compare['bold'],
             detail['italic'] == compare['italic'],
             detail['font_size'] == compare['font_size'],
@@ -165,8 +184,11 @@ def check_style(p, compare):
     # TODO optimise this
     if not (detail['space_before'] == compare['space_before'] or (detail['space_before'] is None and compare['space_before'] == 0.0)):
         detail['space_before'] = f"{detail['space_before']} should be {compare['space_before']}"
-    if not (detail['space_after'] == compare['space_after'] or (detail['space_after'] is None and compare['space_after'] == 0.0)):
-        detail['space_after'] = f"{detail['space_after']} should be {compare['space_after']}"
+    if not space_after:
+        if isinstance(compare['space_after'], list):
+            detail['space_after'] = f"{detail['space_after']} should be {compare['space_after']}"
+        else:
+            detail['space_after'] = f"{detail['space_after']} should be {' '.join(compare['space_after'])}"
     if not detail['bold'] == compare['bold']:
         detail['bold'] = f"{detail['bold']} should be {compare['bold']}"
     if not detail['italic'] == compare['italic']:

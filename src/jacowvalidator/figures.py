@@ -12,8 +12,20 @@ FIGURE_DETAILS = {
     },
     'alignment': 'CENTER',
     'font_size': 10.0,
-    'space_before': 0.0,
-    'space_after': 3.0,
+    'space_before': 3.0,
+    'space_after': ['>=', 3.0],
+    'bold': None,
+    'italic': None,
+}
+
+FIGURE_MULTI_DETAILS = {
+    'styles': {
+        'jacow': 'Caption Multi Line',
+    },
+    'alignment': 'JUSTIFY',
+    'font_size': 10.0,
+    'space_before': 3.0,
+    'space_after': ['>=', 3.0],
     'bold': None,
     'italic': None,
 }
@@ -29,7 +41,10 @@ def extract_figures(doc):
 
     def _find_figure_captions(p):
         for f in RE_FIG_TITLES.findall(p.text.strip()):
-            style_ok, detail = check_style(p, FIGURE_DETAILS)
+            figure_compare = FIGURE_DETAILS
+            if len(p.text.strip()) > 50:
+                figure_compare = FIGURE_MULTI_DETAILS
+            style_ok, detail = check_style(p, figure_compare)
             _id = _fig_to_int(f)
             figure_detail = dict(
                 id=_id,
