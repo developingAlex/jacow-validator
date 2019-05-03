@@ -227,8 +227,8 @@
                             <td>{{ title.font_size }}</td>
                             <td>{{ title.bold }}</td>
                             <td>{{ title.italic }}</td>
-                            <td>{{ title.before }}</td>
-                            <td>{{ title.after }}</td>
+                            <td>{{ title.space_before }}</td>
+                            <td>{{ title.space_after }}</td>
                             <td>{{ title.all_caps }}</td>
                         </tr>
                     </tbody>
@@ -245,12 +245,66 @@
                         <tr>
                             <td>Author List</td>
                             <td>“JACoW_Author Title” Style, or equivalent style.</td>
-                            <td>Centered</td><td>12 pt</td><td>None</td><td>UPPER and lowercase</td><td>9 pt</td><td>3 pt</td>
+                            <td>Centered</td><td>12 pt</td><td>None</td><td>UPPER and lowercase</td><td>9 pt</td><td>12 pt</td>
                         </tr>
                     </table>
                 </details>
                 <br/>
-                <p><b>Authors: </b>{{ authors.text }}</p>
+                <table class="table is-bordered">
+                    <thead>
+                        <tr>
+                            <th>Text</th>
+                            <th colspan="2">Style</th>
+                            <th>Alignment</th>
+                            <th>Font Size</th>
+                            <th>Bold</th>
+                            <th>Italic</th>
+                            <th>Space Before</th>
+                            <th>Space After</th>
+                            <th>All Caps</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for author in authors %}
+                        <tr>
+                            <td>{{ author.text }}</td>
+                            <td>{{ author.style }}</td>
+                            <td>{{ author.style_ok|tick_cross }}</td>
+                            <td>{{ author.alignment }}</td>
+                            <td>{{ author.font_size }}</td>
+                            <td>{{ author.bold }}</td>
+                            <td>{{ author.italic }}</td>
+                            <td>{{ author.space_before }}</td>
+                            <td>{{ author.space_after }}</td>
+                            <td>{{ author.all_caps }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                <br/>
+            </div>
+
+
+            <div class="box" style="box-shadow: 0 4px 6px rgba(0, 0, 255, 0.1), 0 0 0 2px rgba(0, 0, 255, 0.1)">
+                <h2 class="subtitle" style="padding:10px;background-color:#{{ summary['Abstract']['ok']|pastel_background_style }}">
+                    <a name="abstract"></a>{{ summary['Abstract']['ok']|tick_cross }} Abstract Heading</h2>
+                <details style="padding:5px;border:1px lightgray solid;border-radius:5px">
+                    <summary>Rules for {{ summary['Abstract']['title'] }}</summary>
+                    <ul>
+                        <li>Must Say Abstract</li>
+                        <li>Be in the “JACoW_Abstract_Heading” style.</li>
+                    </ul>
+                    <table class="table is-bordered">
+                        <thead><th>Type</th><th>Details</th><th>Alignment</th><th>Font Size</th><th>Font Style</th><th>Case</th><th>Space Before</th><th>Space After</th></thead>
+                        <tr>
+                            <td>_Abstract_Heading</td>
+                            <td>“JACoW_Abstract_Heading” Style, or equivalent style.</td>
+                            <td>Centered</td><td>12 pt</td><td>Italic</td><td></td><td>0 pt</td><td>3 pt</td>
+                        </tr>
+                    </table>
+                </details>
+                <br/>
+                <p><b>Style:</b> {{ abstract.style }} {{ abstract.style_ok|tick_cross }}</p>
                 <table class="table is-bordered">
                     <thead>
                         <tr>
@@ -266,41 +320,18 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td>{{ authors.style }}</td>
-                            <td>{{ authors.style_ok|tick_cross }}</td>
-                            <td>{{ authors.alignment }}</td>
-                            <td>{{ authors.font_size }}</td>
-                            <td>{{ authors.bold }}</td>
-                            <td>{{ authors.italic }}</td>
-                            <td>{{ authors.before }}</td>
-                            <td>{{ authors.after }}</td>
-                            <td>{{ authors.all_caps }}</td>
+                            <td>{{ abstract.style }}</td>
+                            <td>{{ abstract.style_ok|tick_cross }}</td>
+                            <td>{{ abstract.alignment }}</td>
+                            <td>{{ abstract.font_size }}</td>
+                            <td>{{ abstract.bold }}</td>
+                            <td>{{ abstract.italic }}</td>
+                            <td>{{ abstract.space_before }}</td>
+                            <td>{{ abstract.space_after }}</td>
+                            <td>{{ abstract.all_caps }}</td>
                         </tr>
                     </tbody>
                 </table>
-                <br/>
-                <details style="padding:5px;border:1px lightgray solid;border-radius:5px">
-                    <ul>
-                        {% for item in authors.list %}
-                            <li>{{ item }}</li>
-                        {% endfor %}
-                    </ul>
-                </details>
-            </div>
-
-
-            <div class="box" style="box-shadow: 0 4px 6px rgba(0, 0, 255, 0.1), 0 0 0 2px rgba(0, 0, 255, 0.1)">
-                <h2 class="subtitle" style="padding:10px;background-color:#{{ summary['Abstract']['ok']|pastel_background_style }}">
-                    <a name="abstract"></a>{{ summary['Abstract']['ok']|tick_cross }} Abstract Heading</h2>
-                <details style="padding:5px;border:1px lightgray solid;border-radius:5px">
-                    <summary>Rules for {{ summary['Abstract']['title'] }}</summary>
-                    <ul>
-                        <li>Must Say Abstract</li>
-                        <li>Be in the “JACoW_Abstract_Heading” style.</li>
-                    </ul>
-                </details>
-                <br/>
-                <p><b>Style:</b> {{ abstract.style }} {{ abstract.style_ok|tick_cross }}</p>
             </div>
 
             <div class="box" style="box-shadow: 0 4px 6px rgba(0, 0, 255, 0.1), 0 0 0 2px rgba(0, 0, 255, 0.1)">
@@ -353,8 +384,8 @@
                             <td>{{ item.font_size }}</td>
                             <td>{{ item.bold }}</td>
                             <td>{{ item.italic }}</td>
-                            <td>{{ item.before }}</td>
-                            <td>{{ item.after }}</td>
+                            <td>{{ item.space_before }}</td>
+                            <td>{{ item.space_after }}</td>
                             <td>{{ item.all_caps }}</td>
                             <td>{{ item.text }}</td>
                         </tr>
@@ -451,6 +482,19 @@
                         <li>In text references to the figure if mid-sentence must be “Fig. n”, at the start of a sentence it maybe “Figure n”.</li>
                         <li>Figures must have a “.” On the end of the final line.</li>
                     </ul>
+                    <table class="table is-bordered">
+                        <thead><th>Type</th><th>Details</th><th>Alignment</th><th>Font Size</th><th>Space Before</th><th>Space After</th></thead>
+                        <tr>
+                            <td>Figure Caption</td>
+                            <td>“Figure Caption” Style, or equivalent style.</td>
+                            <td>Centered</td><td>10 pt</td><td>3 pt</td><td>≥3 pt</td>
+                        </tr>
+                        <tr>
+                            <td>Figure Caption Multi Line</td>
+                            <td>“Figure Caption Multi Line” Style, or equivalent style.</td>
+                            <td>Justified</td><td>10 pt</td><td>3 pt</td><td>≥3 pt</td>
+                        </tr>
+                    </table>
                 </details>
                 <br/>
                 <table class="table is-bordered">

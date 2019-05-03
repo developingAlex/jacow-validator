@@ -1,10 +1,22 @@
 import re
 from collections import OrderedDict
 from itertools import chain
-from .page import get_paragraph_alignment
+from .styles import get_paragraph_alignment
 
 RE_FIG_TITLES = re.compile(r'(^Figure \d+[.:])')
 RE_FIG_INTEXT = re.compile(r'(Fig.\s?\d+|Figure\s?\d+[.\s]+)')
+
+FIGURE_DETAILS = {
+    'styles': {
+        'jacow': 'Figure Caption',
+    },
+    'alignment': 'CENTER',
+    'font_size': 10.0,
+    'space_before': 0.0,
+    'space_after': 3.0,
+    'bold': True,
+    'italic': None,
+}
 
 
 def _fig_to_int(s):

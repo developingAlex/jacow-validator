@@ -130,7 +130,7 @@ def upload():
             abstract, authors = get_abstract_and_author(doc)
             summary['Authors'] = {
                 'title': 'Authors',
-                'ok': authors['style_ok'],
+                'ok': all([tick['style_ok'] for tick in authors]),
                 'message': 'Author issues',
                 'details': authors,
                 'anchor': 'author'
@@ -184,7 +184,8 @@ def upload():
 
             if "URL_TO_JACOW_REFERENCES_CSV" in os.environ:
                 reference_csv_url = os.environ["URL_TO_JACOW_REFERENCES_CSV"]
-            reference_csv_details = reference_csv_check(paper_name, title['text'], authors['text'])
+            author_text = ''.join([a['text'] for a in authors])
+            reference_csv_details = reference_csv_check(paper_name, title['text'], author_text)
             summary['SPMS'] = {
                 'title': 'Jacow References',
                 'ok': reference_csv_details['title']['match'] and reference_csv_details['author']['match'],

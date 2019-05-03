@@ -1,4 +1,5 @@
-from .page import get_paragraph_alignment, get_paragraph_space, get_style_font
+from .styles import check_style
+
 
 HEADING_DETAILS = {
     'Section': {
@@ -49,48 +50,14 @@ def get_headings(doc):
         # find matching style
         name = [name for name, h in HEADING_DETAILS.items() if p.style.name in [h['styles']['jacow'], h['styles']['normal']]]
         if name:
-            detail = HEADING_DETAILS[name[0]]
-            space_before, space_after = get_paragraph_space(p)
-            bold, italic, font_size, all_caps = get_style_font(p)
-            alignment = get_paragraph_alignment(p)
-
-            if p.style.name == detail['styles']['jacow']:
-                style_ok = True
-            else:
-                # need to check if equivalent
-                # TODO add alignment to check
-                style_ok = all([
-                    space_before == detail['space_before'],
-                    space_after == detail['space_after'],
-                    bold == detail['bold'],
-                    italic == detail['italic'],
-                    font_size == detail['font_size']
-                ])
-
-                # Add details if errors
-                if not space_before == detail['space_before']:
-                    space_before = f"{space_before} should be {detail['space_before']}"
-                if not space_after == detail['space_after']:
-                    space_after = f"{space_after} should be {detail['space_after']}"
-                if not font_size == detail['font_size']:
-                    font_size = f"{font_size} should be {detail['font_size']}"
-                if not bold == detail['bold']:
-                    bold = f"{bold} should be {detail['bold']}"
-                if not italic == detail['italic']:
-                    italic = f"{italic} should be {detail['italic']}"
-
-            headings.append({
+            style_ok, detail = check_style(p, HEADING_DETAILS[name[0]])
+            heading_details = {
                 'type': name[0],
                 'style': p.style.name,
                 'style_ok': style_ok,
-                'text': p.text,
-                'alignment': alignment,
-                'before': space_before,
-                'after': space_after,
-                'bold': bold,
-                'italic': italic,
-                'font_size': font_size,
-                'all_caps': all_caps,
-            })
+                'text': p.text
+            }
+            heading_details.update(detail)
+            headings.append(heading_details)
 
     return headings
