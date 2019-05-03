@@ -693,18 +693,21 @@
                 {% endif %}
                 </td>
                 </tr>
-                <tr><td>Author</td><td>{{ reference_csv_details['author']['match']|tick_cross }}</td>
-                <td>
-                {% if reference_csv_details['author']['match'] == False %}
-                    {{ reference_csv_details['author']['docx'] }}
-                {% endif %}
-                </td>
-                <td>
-                {% if reference_csv_details['author']['match'] == False %}
-                    {{ reference_csv_details['author']['spms'] }}
-                {% endif %}
-                </td>
+                {% for result in reference_csv_details['author']['report'] %}
+                <tr><td>{% if loop.index0 == 0 %}Author{% endif %}</td>
+                    <td>
+                        {{ result['match']|tick_cross }}
+                    </td>
+
+                    <td>
+                        {{ result['docx'] }}
+                    </td>
+
+                    <td>
+                        {{ result['spms'] }}
+                    </td>
                 </tr>
+                {% endfor %}
                 </tbody>
                 </table>
             </div>
