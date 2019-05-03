@@ -126,7 +126,7 @@
                             <th>Page Size</th>
                             <th colspan="2">Margins</th>
                             <th>Columns</th>
-                            <th>Column Gutter</th>
+                            <th colspan="2">Column Gutter (cm)</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -138,6 +138,7 @@
                             <td>{{ margins_ok|tick_cross }}</td>
                             <td>{{ cols[0] }}</td>
                             <td>{{ cols[1] }}</td>
+                            <td>{{ cols[2]|tick_cross }}</td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -304,7 +305,7 @@
                     <table class="table is-bordered">
                         <thead><th>Type</th><th>Details</th><th>Alignment</th><th>Font Size</th><th>Font Style</th><th>Case</th><th>Space Before</th><th>Space After</th></thead>
                         <tr>
-                            <td>SECTION HEADING</td>
+                            <td>SECTION  HEADING</td>
                             <td>“JACoW_Section Heading” Style, or equivalent style.</td>
                             <td>Centered</td><td>12 pt</td><td>Bold</td><td>All Caps where appropriate</td><td>9 pt</td><td>3 pt</td>
                         </tr>

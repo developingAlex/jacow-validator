@@ -1,5 +1,5 @@
 from lxml.etree import _Element
-from .page import get_page_size, convert_twips_to_mm
+from .page import get_page_size, convert_twips_to_cm
 
 
 def check_sections(doc):
@@ -61,11 +61,14 @@ def check_margins(section):
 def get_columns(section):
     num = 1
     space = 0
+    ok = False
     for c1 in section._sectPr.iterchildren():
         if isinstance(c1, _Element) and 'cols' in str(c1):
             for c2 in c1.items():
                 if 'num' in str(c2):
                     num = int(c2[1])
                 if 'space' in str(c2):
-                    space = convert_twips_to_mm(c2[1])
-    return num, space
+                    space = convert_twips_to_cm(c2[1])
+    if num == 1 or ( num == 2 and space == 0.51):
+        ok = True
+    return num, space, ok

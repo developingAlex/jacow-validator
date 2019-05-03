@@ -107,6 +107,6 @@ def get_abstract_and_author(doc):
     return abstract, authors
 
 
-def convert_twips_to_mm(twips):
+def convert_twips_to_cm(twips):
     width = Twips(int(twips))
-    return width.mm
+    return round(width.mm / 10, 2)
