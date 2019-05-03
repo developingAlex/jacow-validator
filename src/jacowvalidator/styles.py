@@ -124,6 +124,8 @@ def get_style_font(paragraph):
         if r.italic is not None:
             italic = r.italic
 
+    # TODO find default size (from section ?)
+
     if font_size:
         font_size = font_size.pt
 
@@ -141,7 +143,6 @@ def check_style(p, compare):
     detail = get_style_details(p)
 
     if p.style.name in compare['styles']['jacow']:
-        # TODO have different rules here
         style_ok = all([
             detail['space_before'] == compare['space_before'] or (detail['space_before'] is None and compare['space_before'] == 0.0),
             detail['space_after'] == compare['space_after']or (detail['space_after'] is None and compare['space_after'] == 0.0),

@@ -503,7 +503,13 @@
                             <th>No.</th>
                             <th colspan="2">Caption</th>
                             <th colspan="2">References</th>
-                            <th colspan="3">Style</th>
+                            <th colspan="2">Style</th>
+                            <th>Alignment</th>
+                            <th>Font Size</th>
+                            <th>Bold</th>
+                            <th>Italic</th>
+                            <th>Space Before</th>
+                            <th>Space After</th>
                             <th>Text</th>
                         </tr>
                     </thead>
@@ -518,6 +524,11 @@
                             <td>{{ fig.style }}</td>
                             <td>{{ fig.style_ok|tick_cross }}</td>
                             <td>{{ fig.alignment }}</td>
+                            <td>{{ fig.font_size }}</td>
+                            <td>{{ fig.bold }}</td>
+                            <td>{{ fig.italic }}</td>
+                            <td>{{ fig.space_before }}</td>
+                            <td>{{ fig.space_after }}</td>
                             <td>{{ fig.text }}</td>
                         </tr>
                         {% endfor %}

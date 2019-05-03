@@ -1,7 +1,7 @@
 import re
 from collections import OrderedDict
 from itertools import chain
-from .styles import get_paragraph_alignment
+from .styles import check_style
 
 RE_FIG_TITLES = re.compile(r'(^Figure \d+[.:])')
 RE_FIG_INTEXT = re.compile(r'(Fig.\s?\d+|Figure\s?\d+[.\s]+)')
@@ -14,7 +14,7 @@ FIGURE_DETAILS = {
     'font_size': 10.0,
     'space_before': 0.0,
     'space_after': 3.0,
-    'bold': True,
+    'bold': None,
     'italic': None,
 }
 
@@ -29,17 +29,18 @@ def extract_figures(doc):
 
     def _find_figure_captions(p):
         for f in RE_FIG_TITLES.findall(p.text.strip()):
+            style_ok, detail = check_style(p, FIGURE_DETAILS)
             _id = _fig_to_int(f)
-            figures_captions.append(
-                dict(
-                    id=_id,
-                    name=f,
-                    text=p.text.strip(),
-                    style=p.style.name,
-                    style_ok=p.style.name in ['Figure Caption', 'Caption Multi Line', 'Caption'],
-                    alignment=get_paragraph_alignment(p),
-                )
+            figure_detail = dict(
+                id=_id,
+                name=f,
+                text=p.text.strip(),
+                style=p.style.name,
+                style_ok=style_ok and p.style.name in ['Figure Caption', 'Caption Multi Line', 'Caption'],
             )
+            figure_detail.update(detail)
+            # figure_detail.update(detail)
+            figures_captions.append(figure_detail)
 
     for p in doc.paragraphs:
         # find references to figures
