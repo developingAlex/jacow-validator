@@ -156,8 +156,9 @@ def check_style(p, compare):
 
     space_after = any([
         detail['space_after'] == compare['space_after'],
-        (isinstance(compare['space_after'], list) and get_compare(detail['space_after'], compare['space_after'][0],
-                                                                  compare['space_after'][1])),
+        (isinstance(compare['space_after'], list) and
+            detail['space_after'] is not None and
+            get_compare(detail['space_after'], compare['space_after'][0], compare['space_after'][1])),
         (detail['space_after'] is None and compare['space_after'] == 0.0)
     ]),
 
