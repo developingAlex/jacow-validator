@@ -44,7 +44,7 @@
             <h2 class="subtitle">Summary</h2>
             <div class="list is-hoverable">
             {% for i, item in summary.items() %}
-               <a href="#{{ item.anchor }}" class="list-item" style="background-color:#{{ item.ok|pastel_background_style }}">
+               <a href="#{{ item.anchor }}" class="list-item" style="background-color:#{{ item.ok|status_type_background }}">
                 {{ item.ok|tick_cross }} {{ item.title }} {% if item.ok == False %} - {{ item.message }}{% endif %}
                </a>
             {% endfor%}
@@ -66,7 +66,7 @@
             </div>
 
             <div class="box" style="box-shadow: 0 4px 6px rgba(0, 0, 255, 0.1), 0 0 0 2px rgba(0, 0, 255, 0.1)">
-                <h2 class="subtitle" style="padding:10px;background-color:#{{ summary['Styles']['ok']|pastel_background_style }}">
+                <h2 class="subtitle" style="padding:10px;background-color:#{{ summary['Styles']['ok']|status_type_background }}">
                     <a name="{{ summary['Styles']['anchor'] }}"></a>{{ summary['Styles']['ok']|tick_cross }} JACoW Styles</h2>
                 <details style="padding:5px;border:1px lightgray solid;border-radius:5px">
                     <summary>Rules for {{ summary['Styles']['title'] }}</summary>
@@ -97,7 +97,7 @@
             </div>
 
             <div class="box" style="box-shadow: 0 4px 6px rgba(0, 0, 255, 0.1), 0 0 0 2px rgba(0, 0, 255, 0.1)">
-                <h2 class="subtitle" style="padding:10px;background-color:#{{ summary['Margins']['ok']|pastel_background_style }}">
+                <h2 class="subtitle" style="padding:10px;background-color:#{{ summary['Margins']['ok']|status_type_background }}">
                     <a name="{{ summary['Margins']['anchor'] }}"></a>{{ summary['Margins']['ok']|tick_cross }} Page Size and Margins</h2>
                 <details style="padding:5px;border:1px lightgray solid;border-radius:5px">
                     <summary>Rules for {{ summary['Margins']['title'] }}</summary>
@@ -152,7 +152,7 @@
             </div>
 
             <div class="box" style="box-shadow: 0 4px 6px rgba(0, 0, 255, 0.1), 0 0 0 2px rgba(0, 0, 255, 0.1)">
-                <h2 class="subtitle" style="padding:10px;background-color:#{{ summary['Languages']['ok']|pastel_background_style }}">
+                <h2 class="subtitle" style="padding:10px;background-color:#{{ summary['Languages']['ok']|status_type_background }}">
                     <a name="{{ summary['Languages']['anchor'] }}"></a>{{ summary['Languages']['ok']|tick_cross }} Languages</h2>
                 <details style="padding:5px;border:1px lightgray solid;border-radius:5px">
                     <summary>Rules for {{ summary['Languages']['title'] }}</summary>
@@ -190,7 +190,7 @@
             </div>
 
             <div class="box" style="box-shadow: 0 4px 6px rgba(0, 0, 255, 0.1), 0 0 0 2px rgba(0, 0, 255, 0.1)">
-                <h2 class="subtitle" style="padding:10px;background-color:#{{ summary['Title']['ok']|pastel_background_style }}">
+                <h2 class="subtitle" style="padding:10px;background-color:#{{ summary['Title']['ok']|status_type_background }}">
                     <a name="{{ summary['Title']['anchor'] }}"></a>{{ summary['Title']['ok']|tick_cross }} Title</h2>
                 <details style="padding:5px;border:1px lightgray solid;border-radius:5px">
                     <summary>Rules for {{ summary['Title']['title'] }}</summary>
@@ -242,7 +242,7 @@
             </div>
 
             <div class="box" style="box-shadow: 0 4px 6px rgba(0, 0, 255, 0.1), 0 0 0 2px rgba(0, 0, 255, 0.1)">
-                <h2 class="subtitle" style="padding:10px;background-color:#{{ summary['Authors']['ok']|pastel_background_style }}">
+                <h2 class="subtitle" style="padding:10px;background-color:#{{ summary['Authors']['ok']|status_type_background }}">
                     <a name="{{ summary['Authors']['anchor'] }}"></a>{{ summary['Authors']['ok']|tick_cross }} Authors</h2>
                 <details style="padding:5px;border:1px lightgray solid;border-radius:5px">
                     <summary>Rules for {{ summary['Authors']['title'] }}</summary>
@@ -294,7 +294,7 @@
 
 
             <div class="box" style="box-shadow: 0 4px 6px rgba(0, 0, 255, 0.1), 0 0 0 2px rgba(0, 0, 255, 0.1)">
-                <h2 class="subtitle" style="padding:10px;background-color:#{{ summary['Abstract']['ok']|pastel_background_style }}">
+                <h2 class="subtitle" style="padding:10px;background-color:#{{ summary['Abstract']['ok']|status_type_background }}">
                     <a name="abstract"></a>{{ summary['Abstract']['ok']|tick_cross }} Abstract Heading</h2>
                 <details style="padding:5px;border:1px lightgray solid;border-radius:5px">
                     <summary>Rules for {{ summary['Abstract']['title'] }}</summary>
@@ -346,7 +346,7 @@
             </div>
 
             <div class="box" style="box-shadow: 0 4px 6px rgba(0, 0, 255, 0.1), 0 0 0 2px rgba(0, 0, 255, 0.1)">
-                <h2 class="subtitle" style="padding:10px;background-color:#{{ summary['Headings']['ok']|pastel_background_style }}">
+                <h2 class="subtitle" style="padding:10px;background-color:#{{ summary['Headings']['ok']|status_type_background }}">
                     <a name="{{ summary['Headings']['anchor'] }}"></a>{{ summary['Headings']['ok']|tick_cross }} Headings</h2>
                 <details style="padding:5px;border:1px lightgray solid;border-radius:5px">
                     <summary>Rules for {{ summary['Headings']['title'] }}</summary>
@@ -406,7 +406,7 @@
             </div>
 
             <div class="box" style="box-shadow: 0 4px 6px rgba(0, 0, 255, 0.1), 0 0 0 2px rgba(0, 0, 255, 0.1)">
-                <h2 class="subtitle" style="padding:10px;background-color:#{{ summary['References']['ok']|pastel_background_style }}">
+                <h2 class="subtitle" style="padding:10px;background-color:#{{ summary['References']['ok']|status_type_background }}">
                     <a name="references"></a>{{ summary['References']['ok']|tick_cross }} References</h2>
                 <details style="padding:5px;border:1px lightgray solid;border-radius:5px">
                     <summary>Rules for {{ summary['References']['title'] }}</summary>
@@ -479,7 +479,7 @@
             </div>
 
             <div class="box" style="box-shadow: 0 4px 6px rgba(0, 0, 255, 0.1), 0 0 0 2px rgba(0, 0, 255, 0.1)">
-                <h2 class="subtitle" style="padding:10px;background-color:#{{ summary['Figures']['ok']|pastel_background_style }}">
+                <h2 class="subtitle" style="padding:10px;background-color:#{{ summary['Figures']['ok']|status_type_background }}">
                     <a name="figures"></a>{{ summary['Figures']['ok']|tick_cross }} Figures</h2>
                 <details style="padding:5px;border:1px lightgray solid;border-radius:5px">
                     <summary>Rules for {{ summary['Figures']['title'] }}</summary>
@@ -530,6 +530,7 @@
                         {% endfor %}
                     </tbody>
                 </table>
+                {% if figures %}
                 <details style="padding:5px;border:1px lightgray solid;border-radius:5px">
                     <summary>Style Breakdown for {{ summary['Figures']['title'] }}</summary>
                     <table class="table is-bordered">
@@ -566,10 +567,11 @@
                         </tbody>
                     </table>
                 </details>
+                {% endif %}
             </div>
 
             <div class="box" style="box-shadow: 0 4px 6px rgba(0, 0, 255, 0.1), 0 0 0 2px rgba(0, 0, 255, 0.1)">
-                <h2 class="subtitle" style="padding:10px;background-color:#{{ summary['Tables']['ok']|pastel_background_style }}">
+                <h2 class="subtitle" style="padding:10px;background-color:#{{ summary['Tables']['ok']|status_type_background }}">
                     <a name="tables"></a>{{ summary['Tables']['ok']|tick_cross }} Tables</h2>
                 <details style="padding:5px;border:1px lightgray solid;border-radius:5px">
                     <summary>Rules for {{ summary['Tables']['title'] }}</summary>
@@ -625,6 +627,7 @@
                         {% endfor %}
                     </tbody>
                 </table>
+                {% if table_titles %}
                 <details style="padding:5px;border:1px lightgray solid;border-radius:5px">
                     <summary>Style Breakdown for {{ summary['Tables']['title'] }}</summary>
                     <table class="table is-bordered">
@@ -661,10 +664,11 @@
                         </tbody>
                     </table>
                 </details>
+                {% endif %}
             </div>
             {% if summary['SPMS'] %}
             <div class="box" style="box-shadow: 0 4px 6px rgba(0, 0, 255, 0.1), 0 0 0 2px rgba(0, 0, 255, 0.1)">
-                <h2 class="subtitle" style="padding:10px;background-color:#{{ summary['SPMS']['ok']|pastel_background_style }}">
+                <h2 class="subtitle" style="padding:10px;background-color:#{{ summary['SPMS']['ok']|status_type_background }}">
                     <a name="spms"></a>{{ summary['SPMS']['ok']|tick_cross }}
                 {% if reference_csv_url is defined %}
                     Conformance with <a href={{reference_csv_url}}>references.csv</a>

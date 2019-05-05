@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    {% block head %}
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-139451280-1"></script>
     <script>
@@ -18,6 +19,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='vendor/bulma/css/bulma.min.css')}}">
     <link rel="stylesheet" href="{{ url_for('static', filename='vendor/fontawesome/css/all.min.css')}}">
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    {% endblock %}
 </head>
 <body>
 <nav class="navbar" role="navigation" aria-label="main navigation" style="background-image: linear-gradient(to right, lightblue , white);padding:3px;border-bottom:1px blue solid">

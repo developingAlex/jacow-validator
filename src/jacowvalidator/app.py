@@ -42,6 +42,8 @@ app = Flask(__name__)
 app.config.update(
     dict(UPLOADS_DEFAULT_DEST=os.environ.get("UPLOADS_DEFAULT_DEST", "/var/tmp"))
 )
+app.jinja_env.trim_blocks = True
+app.jinja_env.lstrip_blocks = True
 
 configure_uploads(app, (documents,))
 
@@ -64,6 +66,16 @@ def background_style(s):
 @app.template_filter('pastel_background_style')
 def pastel_background_style(s):
     return "DDFFDD" if s else "FFDDDD"
+
+
+@app.template_filter('status_type_background')
+def status_type_background(s):
+    if s == 1 or s is True:
+        return 'DDFFDD'
+    elif s == 2:
+        return 'FFDCA9'
+    else:
+        return "FFDDDD"
 
 
 @app.route("/")
@@ -98,7 +110,7 @@ def upload():
 
             # get page size and margin details
             sections = check_sections(doc)
-            ok = all([tick[1] for tick in sections]) and all([tick[3][2] for tick in sections]),
+            ok = all([tick[1] for tick in sections]) and all([tick[3][2] for tick in sections])
             summary['Margins'] = {
                 'title': 'Page Size and Margins',
                 'ok': ok,
