@@ -4,6 +4,7 @@
 import os
 import csv
 import re
+from .authors import get_author_list
 
 RE_MULTI_SPACE = re.compile(r' +')
 
@@ -77,7 +78,11 @@ def reference_csv_check(filename_minus_ext, title, authors):
                         'author': {
                             'match': authors_match,
                             'docx': authors,
-                            'spms': row[authors_col]
+                            'spms': row[authors_col],
+                            'docx_list': get_author_list(authors),
+                            'spms_list': get_author_list(row[authors_col]),
+                            'report': get_author_list_report(get_author_list(authors),
+                                                             get_author_list(row[authors_col]))
                         }
                     }
 
@@ -92,8 +97,70 @@ def reference_csv_check(filename_minus_ext, title, authors):
                 'author': {
                     'match': False,
                     'docx': authors,
-                    'spms': 'No matching paper found in the spms csv file'
+                    'spms': 'No matching paper found in the spms csv file',
+                    'docx_list': list(),
+                    'spms_list': list(),
+                    'report': list()
                 },
             }
         else:
             raise PaperNotFoundError("No matching paper found in the spms csv file")
+
+
+def get_author_list_report(docx_list, spms_list):
+    """Compares two lists of authors (one sourced from the uploaded docx file
+    and one sourced from the corresponding paper's entry in the SPMS references
+    csv file) and produces a dict array report of the
+    form:
+        [
+            {
+            match: True,
+            docx: "T. Anderson",
+            spms: "T. Anderson"
+            },
+            {
+            match: False,
+            docx: "A. Tiller",
+            spms: ""
+            },
+        ]
+    """
+    # create a copy of spms_list and docx_list so that we can remove items
+    #  without mutating the originals:
+    fixed_spms_list = insert_spaces_after_periods(spms_list)
+    spms_authors_to_check = clone_list(fixed_spms_list)
+    results = list()
+    print('fixed_spms_list')
+    print(fixed_spms_list)
+    print('docx_list')
+    print(docx_list)
+    for author in docx_list:
+        if author in fixed_spms_list:
+            results.append({'match': True, 'docx': author, 'spms': author})
+            spms_authors_to_check.remove(author)
+        else:
+            results.append({'match': False, 'docx': author, 'spms': ''})
+
+    # by now any authors remaining in the spms_authors_to_check list are ones
+    # that had no matching author in the docx list:
+    for author in spms_authors_to_check:
+        results.append({'match': False, 'docx': '', 'spms': author})
+
+    return results
+
+
+def clone_list(list_to_clone):
+    new_list = list()
+    for item in list_to_clone:
+        new_list.append(item)
+    return new_list
+
+
+def insert_spaces_after_periods(author_list_to_adjust):
+    new_list = list()
+    for author in author_list_to_adjust:
+        print(author)
+        fixed_author = author.replace('.', '. ')  # ensure each period is followed by a space
+        fixed_author = fixed_author.replace('  ', ' ')  # remove any duplicate spaces that were made
+        new_list.append(fixed_author)
+    return new_list

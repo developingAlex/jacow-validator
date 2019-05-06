@@ -55,18 +55,21 @@ def get_abstract_and_author(doc):
             break
 
     author_paragraphs = doc.paragraphs[1: abstract['start']]
+
     authors = []
     for p in author_paragraphs:
         if p.text.strip():
+            superscript_removed_text = ''  # remove superscript footnotes
+            for r in p.runs:
+                superscript_removed_text += r.text if not r.font.superscript else ''
             style_ok, detail = check_style(p, AUTHOR_DETAILS)
             author_details = {
-                'text': p.text,
+                'text': superscript_removed_text,
                 'style': p.style.name,
                 'style_ok': style_ok,
             }
             author_details.update(detail)
             authors.append(author_details)
-
     return abstract, authors
 
 
