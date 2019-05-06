@@ -6,8 +6,8 @@ from docx.opc.exceptions import PackageNotFoundError
 from flask import Flask, redirect, render_template, request, url_for, send_file, abort
 from flask_uploads import UploadNotAllowed
 
-from .models import Log
-from jacowvalidator import app, db, documents
+# from .models import Log
+from jacowvalidator import app, documents
 from .page import (get_page_size, get_abstract_and_author)
 from .margins import check_sections
 from .styles import check_jacow_styles
@@ -90,8 +90,8 @@ def upload():
             metadata = doc.core_properties
             summary = {}
 
-            log = Log()
-            log.filename = filename
+            # log = Log()
+            # log.filename = filename
 
             # get style details
             jacow_styles = check_jacow_styles(doc)
@@ -204,8 +204,8 @@ def upload():
                 'details': reference_csv_details,
                 'anchor': 'spms'
             }
-            log.report = 'test'
-            db.session.add(log)
+            # log.report = 'test'
+            # db.session.add(log)
             # db.session.commit()
 
             return render_template("upload.html", processed=True, **locals())
@@ -263,9 +263,11 @@ def resources():
     return render_template("resources.html")
 
 
-@app.route("/log", methods=["GET"])
-def log():
-    if not ('DEV_DEBUG' in os.environ and os.environ['DEV_DEBUG'] == 'True'):
-        abort(403)
-    logs = Log.query.all()
-    return render_template("logs.html", logs=logs)
+# @app.route("/log", methods=["GET"])
+# def log():
+#     if not ('DEV_DEBUG' in os.environ and os.environ['DEV_DEBUG'] == 'True'):
+#         abort(403)
+#     logs = Log.query.all()
+#     Log.query.delete()
+#     db.session.commit()
+#     return render_template("logs.html", logs=logs)

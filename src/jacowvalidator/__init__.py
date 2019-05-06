@@ -15,8 +15,8 @@ app.config.update(
         SQLALCHEMY_TRACK_MODIFICATIONS = False,
     )
 )
-db = SQLAlchemy(app)
-migrate = Migrate(app, db)
+# db = SQLAlchemy(app)
+# migrate = Migrate(app, db)
 
 app.jinja_env.trim_blocks = True
 app.jinja_env.lstrip_blocks = True
