@@ -5,7 +5,12 @@
         <div class="is-size-3">Logs</div><br/>
         <table class="table is-bordered">
         {% for log in logs %}
-            <tr><td>{{ log.filename }}</td><td>{{ log.timestamp.strftime('%d/%m/%Y %H:%M ') }}</td></tr>
+            <tr>
+                <td>{{ log.id }}</td>
+                <td>{{ log.filename }}</td>
+                <td>{{ log.timestamp.strftime('%d/%m/%Y %H:%M ') }}</td>
+                <td>{{ log.report }}</td>
+            </tr>
         {%  endfor %}
         </table>
     </div>

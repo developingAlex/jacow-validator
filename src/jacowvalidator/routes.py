@@ -1,4 +1,5 @@
 import os
+import json
 from datetime import datetime
 from subprocess import run
 from docx import Document
@@ -6,8 +7,8 @@ from docx.opc.exceptions import PackageNotFoundError
 from flask import Flask, redirect, render_template, request, url_for, send_file, abort
 from flask_uploads import UploadNotAllowed
 
-# from .models import Log
-from jacowvalidator import app, documents
+from .models import Log
+from jacowvalidator import app, db, documents
 from .page import (get_page_size, get_abstract_and_author)
 from .margins import check_sections
 from .styles import check_jacow_styles
@@ -16,6 +17,7 @@ from .references import extract_references
 from .heading import get_headings
 from .figures import extract_figures
 from .languages import (get_language_tags, get_language_tags_location, VALID_LANGUAGES)
+from .utils import json_serialise
 
 from .tables import (
     check_table_titles,
@@ -90,8 +92,8 @@ def upload():
             metadata = doc.core_properties
             summary = {}
 
-            # log = Log()
-            # log.filename = filename
+            log = Log()
+            log.filename = filename
 
             # get style details
             jacow_styles = check_jacow_styles(doc)
@@ -204,7 +206,8 @@ def upload():
                 'details': reference_csv_details,
                 'anchor': 'spms'
             }
-            # log.report = 'test'
+
+            # log.report = str(json_serialise(locals()))
             # db.session.add(log)
             # db.session.commit()
 
@@ -268,6 +271,4 @@ def resources():
 #     if not ('DEV_DEBUG' in os.environ and os.environ['DEV_DEBUG'] == 'True'):
 #         abort(403)
 #     logs = Log.query.all()
-#     Log.query.delete()
-#     db.session.commit()
 #     return render_template("logs.html", logs=logs)
