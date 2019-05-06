@@ -206,7 +206,7 @@ def upload():
             }
             log.report = 'test'
             db.session.add(log)
-            db.session.commit()
+            # db.session.commit()
 
             return render_template("upload.html", processed=True, **locals())
         except (PackageNotFoundError, ValueError):
