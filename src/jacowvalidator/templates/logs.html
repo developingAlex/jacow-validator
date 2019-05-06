@@ -9,7 +9,14 @@
                 <td>{{ log.id }}</td>
                 <td>{{ log.filename }}</td>
                 <td>{{ log.timestamp.strftime('%d/%m/%Y %H:%M ') }}</td>
-                <td>{{ log.report }}</td>
+                <td>
+                {% set report = log.report|display_report %}
+                    <table>
+                        {% for item, data in report.items() %}
+                        <tr><td>{{ item }}</td><td>{{ data }}</td></tr>
+                        {% endfor %}
+                    </table>
+                </td>
             </tr>
         {%  endfor %}
         </table>

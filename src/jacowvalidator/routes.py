@@ -4,7 +4,7 @@ from datetime import datetime
 from subprocess import run
 from docx import Document
 from docx.opc.exceptions import PackageNotFoundError
-from flask import Flask, redirect, render_template, request, url_for, send_file, abort
+from flask import redirect, render_template, request, url_for, send_file, abort
 from flask_uploads import UploadNotAllowed
 
 from .models import Log
@@ -61,6 +61,12 @@ def pastel_background_style(s):
     return "DDFFDD" if s else "FFDDDD"
 
 
+@app.template_filter('display_report')
+def display_report(s):
+    report = json.loads(s)
+    return report
+
+
 @app.template_filter('status_type_background')
 def status_type_background(s):
     if s == 1 or s is True:
@@ -69,7 +75,6 @@ def status_type_background(s):
         return 'FFDCA9'
     else:
         return "FFDDDD"
-
 
 
 @app.route("/")
@@ -207,7 +212,7 @@ def upload():
                 'anchor': 'spms'
             }
 
-            # log.report = str(json_serialise(locals()))
+            # log.report = json.dumps(json_serialise(locals()))
             # db.session.add(log)
             # db.session.commit()
 

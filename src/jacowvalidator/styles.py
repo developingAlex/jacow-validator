@@ -153,6 +153,8 @@ def get_compare(inp, relate, cut):
 
 def check_style(p, compare):
     detail = get_style_details(p)
+    # remove paragraph from dict returned since it is not json serialisable
+    del detail['p']
 
     space_before = any([
         detail['space_before'] == compare['space_before'],
