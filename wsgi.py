@@ -1,1 +1,1 @@
-from jacowvalidator.app import app
+from jacowvalidator import app

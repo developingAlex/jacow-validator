@@ -16,7 +16,7 @@ setuptools.setup(
     packages=setuptools.find_packages(where="src"),
     package_dir={"": "src"},
     include_package_data=True,
-    install_requires=['python-docx', 'python-dotenv', 'flask>=1.0.2', 'flask-uploads', 'titlecase'],
+    install_requires=['python-docx', 'python-dotenv', 'flask>=1.0.2', 'flask-uploads', 'titlecase', 'flask-sqlalchemy', 'flask-migrate'],
     test_requires=['pytest', 'pytest-cov'],
     classifiers=[
         "Programming Language :: Python :: 3",
