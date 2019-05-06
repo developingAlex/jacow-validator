@@ -513,20 +513,24 @@
                         <tr>
                             <th>No.</th>
                             <th colspan="2">Caption</th>
+                            <th>Duplicate</th>
                             <th colspan="2">References</th>
                             <th width="30%">Text</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {% for id, fig in figures.items() %}
-                        <tr>
-                            <td>{{ id }}</td>
-                            <td style="white-space: nowrap">{{ fig.name }}</td>
-                            <td>{{ fig.caption_ok|tick_cross }}</td>
-                            <td>{{ fig.refs|join(', ') }}</td>
-                            <td>{{ fig.used|tick_cross }}</td>
-                            <td>{{ fig.text }}</td>
-                        </tr>
+                        {% for id, f in figures.items() %}
+                            {% for fig in f %}
+                            <tr>
+                                <td>{{ id }}</td>
+                                <td style="white-space: nowrap">{{ fig.name }}</td>
+                                <td>{{ fig.caption_ok|tick_cross }}</td>
+                                <td>{{ fig.duplicate|tick_cross }}</td>
+                                <td>{{ fig.refs|join(', ') }}</td>
+                                <td>{{ fig.used|tick_cross }}</td>
+                                <td>{{ fig.text }}</td>
+                            </tr>
+                            {% endfor %}
                         {% endfor %}
                     </tbody>
                 </table>
@@ -551,7 +555,8 @@
                             </tr>
                         </thead>
                         <tbody>
-                            {% for i, item in figures.items() %}
+                        {% for id, f in figures.items() %}
+                            {% for item in f %}
                             <tr>
                                 <td>{{ item.text }}</td>
                                 <td>{{ item.style }}</td>
@@ -564,6 +569,7 @@
                                 <td>{{ item.style_ok|tick_cross }}</td>
                             </tr>
                             {% endfor %}
+                        {% endfor %}
                         </tbody>
                     </table>
                 </details>
@@ -693,6 +699,21 @@
                 {% endif %}
                 </td>
                 </tr>
+                {% if reference_csv_details['author']['report']|length == 1 and reference_csv_details['author']['report'][0]['match'] == False %}
+                <tr><td>Author</td>
+                    <td>
+                        {{False|tick_cross }}
+                    </td>
+
+                    <td>
+                        {{ reference_csv_details['author']['docx'] }}
+                    </td>
+
+                    <td>
+                        {{ reference_csv_details['author']['report'][0]['spms'] }}
+                    </td>
+                </tr>
+                {% else %}
                 {% for result in reference_csv_details['author']['report'] %}
                 <tr><td>{% if loop.index0 == 0 %}Author{% endif %}</td>
                     <td>
@@ -708,6 +729,7 @@
                     </td>
                 </tr>
                 {% endfor %}
+                {% endif %}
                 </tbody>
                 </table>
             </div>

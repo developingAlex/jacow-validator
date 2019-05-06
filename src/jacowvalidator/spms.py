@@ -130,10 +130,6 @@ def get_author_list_report(docx_list, spms_list):
     fixed_spms_list = insert_spaces_after_periods(spms_list)
     spms_authors_to_check = clone_list(fixed_spms_list)
     results = list()
-    print('fixed_spms_list')
-    print(fixed_spms_list)
-    print('docx_list')
-    print(docx_list)
     for author in docx_list:
         if author in fixed_spms_list:
             results.append({'match': True, 'docx': author, 'spms': author})
@@ -159,7 +155,6 @@ def clone_list(list_to_clone):
 def insert_spaces_after_periods(author_list_to_adjust):
     new_list = list()
     for author in author_list_to_adjust:
-        print(author)
         fixed_author = author.replace('.', '. ')  # ensure each period is followed by a space
         fixed_author = fixed_author.replace('  ', ' ')  # remove any duplicate spaces that were made
         new_list.append(fixed_author)

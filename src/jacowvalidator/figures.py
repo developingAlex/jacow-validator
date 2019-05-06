@@ -92,15 +92,29 @@ def extract_figures(doc):
 
     for i in range(1, _last + 1):
         caption = [c for c in figures_captions if c['id'] == i]
-
-        figures[i] = {
-            'refs': list(f['name'] for f in figures_refs if f['id'] == i),
-            'duplicate': len(caption) != 1,
-            'found': len(caption) > 0,
-            'caption_ok': len(caption) == 1 and caption[0]['name'].endswith(':')
-        }
-        figures[i]['used'] = len(figures[i]['refs']) > 0
-        if caption:
-            figures[i].update(**caption[0])
+        figures[i] = []
+        if not caption:
+            refs = list(f['name'] for f in figures_refs if f['id'] == i)
+            figures[i].append({
+                'id': i,
+                'refs': refs,
+                'duplicate': len(caption) != 1,
+                'found': len(caption) > 0,
+                'caption_ok': len(caption) == 1 and c['name'].endswith(':'),
+                'used': len(refs) > 0
+            })
+        else:
+            for c in caption:
+                refs = list(f['name'] for f in figures_refs if f['id'] == i)
+                figure = {
+                    'id': i,
+                    'refs': refs,
+                    'duplicate': len(caption) != 1,
+                    'found': len(caption) > 0,
+                    'caption_ok': len(caption) == 1 and c['name'].endswith(':'),
+                    'used': len(refs) > 0
+                }
+                figure.update(**c)
+                figures[i].append(figure)
 
     return figures
