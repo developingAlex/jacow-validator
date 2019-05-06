@@ -163,7 +163,8 @@ def upload():
                 'ok': all([tick['style_ok'] for tick in headings]),
                 'message': 'Heading issues',
                 'details': headings,
-                'anchor': 'heading'
+                'anchor': 'heading',
+                'showTotal': True,
             }
 
             references_in_text, references_list = extract_references(doc)
@@ -173,7 +174,8 @@ def upload():
                       and all([tick['style_ok'] and tick['used'] and tick['order_ok'] for tick in references_list]),
                 'message': 'Reference issues',
                 'details': references_list,
-                'anchor': 'references'
+                'anchor': 'references',
+                'showTotal': True,
             }
 
             figures = extract_figures(doc)
@@ -186,7 +188,8 @@ def upload():
                 'ok': ok,
                 'message': 'Figure issues',
                 'details': figures,
-                'anchor': 'figures'
+                'anchor': 'figures',
+                'showTotal': True,
             }
 
             table_titles = check_table_titles(doc)
@@ -197,7 +200,8 @@ def upload():
                     for tick in table_titles]),
                 'message': 'Table issues',
                 'details': table_titles,
-                'anchor': 'tables'
+                'anchor': 'tables',
+                'showTotal': True,
             }
 
             if "URL_TO_JACOW_REFERENCES_CSV" in os.environ:

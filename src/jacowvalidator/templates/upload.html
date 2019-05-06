@@ -45,7 +45,8 @@
             <div class="list is-hoverable">
             {% for i, item in summary.items() %}
                <a href="#{{ item.anchor }}" class="list-item" style="background-color:#{{ item.ok|status_type_background }}">
-                {{ item.ok|tick_cross }} {{ item.title }} {% if item.ok == False %} - {{ item.message }}{% endif %}
+                {{ item.ok|tick_cross }} {{ item.title }} {% if item.showTotal %} ({{ item.details|length }}){% endif %}
+                   {% if item.ok == False %} - {{ item.message }}{% endif %}
                </a>
             {% endfor%}
             </div>
