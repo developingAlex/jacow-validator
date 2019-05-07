@@ -87,12 +87,21 @@ open http://localhost:5000/
     
     1. In the parameters type `run`
     
-    1. Add a new environment variable called **FLASK_APP** and set it to the path to the `__init__.py` file in src/jacowvalidator:
+    1. Add a new environment variable called **FLASK_APP** and set it to the path to the `wsgi.py` file in the project root:
     
-        example: FLASK_APP=/home/*user*/apps/jacow-validator/src/jacowvalidator/__init__.py
+        example: FLASK_APP=/home/*user*/apps/jacow-validator/wsgi.py
 
 4. Hitting the (play) or (debug) buttons in pycharm should now work to launch the app which you should now be able to see at http://localhost:5000/ 
 
 ## Testing
     
     pipenv run tox
+
+## Testing in pycharm
+    
+1. Locate the tox.ini file in your file explorer
+
+2. Right click tox.ini and select `run 'Tox'`
+
+3. Note that you may have to reselect your flask run configuration afterwards 
+    in the top right of the IDE.
