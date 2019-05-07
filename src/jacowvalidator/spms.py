@@ -68,12 +68,12 @@ def reference_csv_check(filename_minus_ext, title, authors):
             else:
                 if filename_minus_ext == row[paper_col]:
                     reference_title = RE_MULTI_SPACE.sub(' ', row[title_col].upper())
-                    title_match = title.upper() == reference_title
+                    title_match = title.upper().strip('*') == reference_title
                     report, authors_match = get_author_list_report(authors, row[authors_col])
                     return {
                         'title': {
                             'match': title_match,
-                            'docx': title.upper(),
+                            'docx': title,
                             'spms': reference_title
                         },
                         'author': {
@@ -130,7 +130,7 @@ def get_author_list_report(docx_text, spms_text):
     # create a copy of spms_list and docx_list so that we can remove items
     #  without mutating the originals:
     fixed_spms_list = insert_spaces_after_periods(spms_list)
-    fixed_docx_list = remove_asterisks(insert_spaces_after_periods(docx_list))
+    fixed_docx_list = remove_asterisks_from_str_list(insert_spaces_after_periods(docx_list))
     spms_authors_to_check = clone_list(fixed_spms_list)
     results = list()
     all_authors_match = True
@@ -167,7 +167,7 @@ def insert_spaces_after_periods(author_list_to_adjust):
     return new_list
 
 
-def remove_asterisks(author_list_to_clean):
+def remove_asterisks_from_str_list(author_list_to_clean):
     new_list = list()
     for author in author_list_to_clean:
         fixed_author = author.strip('*')
