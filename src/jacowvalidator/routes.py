@@ -15,6 +15,7 @@ from jacowvalidator.docutils.styles import check_jacow_styles
 from jacowvalidator.docutils.title import extract_title
 from jacowvalidator.docutils.references import extract_references
 from jacowvalidator.docutils.heading import get_headings
+from jacowvalidator.docutils.paragraph import get_paragraphs
 from jacowvalidator.docutils.figures import extract_figures
 from jacowvalidator.docutils.languages import (get_language_tags, get_language_tags_location, VALID_LANGUAGES)
 
@@ -164,6 +165,16 @@ def upload():
                 'message': 'Heading issues',
                 'details': headings,
                 'anchor': 'heading',
+                'showTotal': True,
+            }
+
+            paragraphs = get_paragraphs(doc)
+            summary['Paragraphs'] = {
+                'title': 'Paragraphs',
+                'ok': all([tick['style_ok'] for tick in paragraphs]),
+                'message': 'Paragraph issues',
+                'details': paragraphs,
+                'anchor': 'paragraph',
                 'showTotal': True,
             }
 

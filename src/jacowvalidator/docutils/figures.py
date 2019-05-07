@@ -55,7 +55,6 @@ def extract_figures(doc):
                 style_ok=style_ok and p.style.name in ['Figure Caption', 'Caption Multi Line', 'Caption'],
             )
             figure_detail.update(detail)
-            # figure_detail.update(detail)
             figures_captions.append(figure_detail)
 
     for p in doc.paragraphs:
