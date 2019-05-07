@@ -70,9 +70,9 @@ open http://localhost:5000/
 
 3. **Run** > **Edit Configurations** > Add new configuration (`+` button) > Choose Python
 
-    a. Name it jacow-validator or similar
+    1. Name it jacow-validator or similar
     
-    b. Set the script path to point to the flask that is used by your pipenv virtual environment
+    1. Set the script path to point to the flask that is used by your pipenv virtual environment
         
         1. You can find the location of your virtual environment's files using the command `pipenv --venv` ran from within your project directory
         
@@ -84,9 +84,9 @@ open http://localhost:5000/
             
             /home/*user*/.local/share/virtualenvs/jacow-validator-Awl2i6Az/bin/flask
     
-    c. In the parameters type `run`
+    1. In the parameters type `run`
     
-    d. Add a new environment variable called **FLASK_APP** and set it to the path to the `__init__.py` file in src/jacowvalidator:
+    1. Add a new environment variable called **FLASK_APP** and set it to the path to the `__init__.py` file in src/jacowvalidator:
     
         example: FLASK_APP=/home/*user*/apps/jacow-validator/src/jacowvalidator/__init__.py
 
@@ -95,11 +95,3 @@ open http://localhost:5000/
 ## Testing
     
     pipenv run tox
-
-## Testing in PyCharm
-
-from within your project directory:
-
-`pipenv run tox`
-
-or simply `tox` if you've already activated your virtual environment.
