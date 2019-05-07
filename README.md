@@ -86,9 +86,9 @@ open http://localhost:5000/
     
     c. In the parameters type `run`
     
-    d. Add a new environment variable called **FLASK_APP** and set it to the path to the app.py file in src/jacowvalidator:
+    d. Add a new environment variable called **FLASK_APP** and set it to the path to the `__init__.py` file in src/jacowvalidator:
     
-        example: FLASK_APP=/home/*user*/apps/jacow-validator/src/jacowvalidator/app.py
+        example: FLASK_APP=/home/*user*/apps/jacow-validator/src/jacowvalidator/__init__.py
 
 4. Hitting the (play) or (debug) buttons in pycharm should now work to launch the app which you should now be able to see at http://localhost:5000/ 
 
