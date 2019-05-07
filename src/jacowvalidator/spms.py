@@ -8,6 +8,7 @@ from jacowvalidator.docutils.authors import get_author_list
 
 RE_MULTI_SPACE = re.compile(r' +')
 
+
 class PaperNotFoundError(Exception):
     """Raised when the paper submitted by a user has no matching entry in the
     spms references list of papers"""
@@ -67,12 +68,12 @@ def reference_csv_check(filename_minus_ext, title, authors):
             else:
                 if filename_minus_ext == row[paper_col]:
                     reference_title = RE_MULTI_SPACE.sub(' ', row[title_col].upper())
-                    title_match = title.upper() == reference_title
-                    authors_match = authors == row[authors_col]
+                    title_match = title.upper().strip('*') == reference_title
+                    report, authors_match = get_author_list_report(authors, row[authors_col])
                     return {
                         'title': {
                             'match': title_match,
-                            'docx': title.upper(),
+                            'docx': title,
                             'spms': reference_title
                         },
                         'author': {
@@ -81,8 +82,7 @@ def reference_csv_check(filename_minus_ext, title, authors):
                             'spms': row[authors_col],
                             'docx_list': get_author_list(authors),
                             'spms_list': get_author_list(row[authors_col]),
-                            'report': get_author_list_report(get_author_list(authors),
-                                                             get_author_list(row[authors_col]))
+                            'report': report
                         }
                     }
 
@@ -107,7 +107,7 @@ def reference_csv_check(filename_minus_ext, title, authors):
             raise PaperNotFoundError("No matching paper found in the spms csv file")
 
 
-def get_author_list_report(docx_list, spms_list):
+def get_author_list_report(docx_text, spms_text):
     """Compares two lists of authors (one sourced from the uploaded docx file
     and one sourced from the corresponding paper's entry in the SPMS references
     csv file) and produces a dict array report of the
@@ -125,24 +125,30 @@ def get_author_list_report(docx_list, spms_list):
             },
         ]
     """
+    docx_list = get_author_list(docx_text)
+    spms_list = get_author_list(spms_text)
     # create a copy of spms_list and docx_list so that we can remove items
     #  without mutating the originals:
     fixed_spms_list = insert_spaces_after_periods(spms_list)
+    fixed_docx_list = remove_asterisks_from_str_list(insert_spaces_after_periods(docx_list))
     spms_authors_to_check = clone_list(fixed_spms_list)
     results = list()
-    for author in docx_list:
+    all_authors_match = True
+    for author in fixed_docx_list:
         if author in fixed_spms_list:
             results.append({'match': True, 'docx': author, 'spms': author})
             spms_authors_to_check.remove(author)
         else:
-            results.append({'match': False, 'docx': author, 'spms': ''})
+            all_authors_match = False
+            results.append({'match': False, 'docx': author, 'spms': spms_text})
 
     # by now any authors remaining in the spms_authors_to_check list are ones
     # that had no matching author in the docx list:
     for author in spms_authors_to_check:
-        results.append({'match': False, 'docx': '', 'spms': author})
+        all_authors_match = False
+        results.append({'match': False, 'docx': docx_text, 'spms': author})
 
-    return results
+    return results, all_authors_match
 
 
 def clone_list(list_to_clone):
@@ -157,5 +163,13 @@ def insert_spaces_after_periods(author_list_to_adjust):
     for author in author_list_to_adjust:
         fixed_author = author.replace('.', '. ')  # ensure each period is followed by a space
         fixed_author = fixed_author.replace('  ', ' ')  # remove any duplicate spaces that were made
+        new_list.append(fixed_author)
+    return new_list
+
+
+def remove_asterisks_from_str_list(author_list_to_clean):
+    new_list = list()
+    for author in author_list_to_clean:
+        fixed_author = author.strip('*')
         new_list.append(fixed_author)
     return new_list

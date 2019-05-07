@@ -745,14 +745,10 @@
                 <tbody>
                 <tr><td>Title</td><td>{{ reference_csv_details['title']['match']|tick_cross }}</td>
                 <td>
-                {% if reference_csv_details['title']['match'] == False %}
                     {{ reference_csv_details['title']['docx'] }}
-                {% endif %}
                 </td>
                 <td>
-                {% if reference_csv_details['title']['match'] == False %}
                     {{ reference_csv_details['title']['spms'] }}
-                {% endif %}
                 </td>
                 </tr>
                 {% if reference_csv_details['author']['report']|length == 1 and reference_csv_details['author']['report'][0]['match'] == False %}
