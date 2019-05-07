@@ -2,6 +2,11 @@ from docx.shared import Inches, Mm, Twips
 from .styles import check_style
 
 
+class TrackingOnError(Exception):
+    """Raised when the docx has tracking change on"""
+    pass
+
+
 AUTHOR_DETAILS = {
     'styles': {
         'jacow': 'JACoW_Author List',
@@ -76,3 +81,13 @@ def get_abstract_and_author(doc):
 def convert_twips_to_cm(twips):
     width = Twips(int(twips))
     return round(width.mm / 10, 2)
+
+
+def check_tracking_on(doc):
+    for i, p in enumerate(doc.paragraphs):
+        element = p._element
+        for child in element.iterchildren():
+            if '}ins ' in str(child) or '}del ' in child or 'proofErr' in child:
+                raise TrackingOnError('Tracking is on. Please Accept or Reject tracked changes and resubmit')
+
+    return False

@@ -9,7 +9,7 @@ from flask_uploads import UploadNotAllowed
 
 from .models import Log
 from jacowvalidator import app, db, documents
-from .page import (get_page_size, get_abstract_and_author)
+from .page import (check_tracking_on, get_abstract_and_author, TrackingOnError)
 from .margins import check_sections
 from .styles import check_jacow_styles
 from .title import extract_title
@@ -84,6 +84,7 @@ def hello():
 
 @app.route("/upload", methods=["GET", "POST"])
 def upload():
+    admin = 'DEV_DEBUG' in os.environ and os.environ['DEV_DEBUG'] == 'True'
     if request.method == "POST" and documents.name in request.files:
         try:
             filename = documents.save(request.files[documents.name])
@@ -97,8 +98,8 @@ def upload():
             metadata = doc.core_properties
             summary = {}
 
-            log = Log()
-            log.filename = filename
+            # check whether tracking on
+            result = check_tracking_on(doc)
 
             # get style details
             jacow_styles = check_jacow_styles(doc)
@@ -216,34 +217,57 @@ def upload():
                 'anchor': 'spms'
             }
 
+            # log = Log()
+            # log.filename = filename
             # log.report = json.dumps(json_serialise(locals()))
             # db.session.add(log)
             # db.session.commit()
 
             return render_template("upload.html", processed=True, **locals())
         except (PackageNotFoundError, ValueError):
-            return render_template("upload.html", error=f"Failed to open document {filename}. Is it a valid Word document?")
+            return render_template(
+                "upload.html",
+                filename=filename,
+                error=f"Failed to open document {filename}. Is it a valid Word document?",
+                admin=admin)
+        except TrackingOnError as err:
+            return render_template(
+                "upload.html",
+                filename=filename,
+                error=err,
+                admin=admin)
         except OSError:
-            return render_template("upload.html", error=f"It seems the file {filename} is corrupted")
+            return render_template(
+                "upload.html",
+                filename=filename,
+                error=f"It seems the file {filename} is corrupted",
+                admin=admin)
         except PaperNotFoundError:
-            return render_template("upload.html", processed=True, **locals(), error=f"It seems the file"
-            f" {filename} has no corresponding entry in the SPMS references "
-            f"list. Is your filename the same as your Paper name?")
+            return render_template(
+                "upload.html",
+                processed=True,
+                **locals(),
+                error=f"It seems the file {filename} has no corresponding entry in the SPMS references list. "
+                      f"Is your filename the same as your Paper name?")
         except Exception:
             if app.debug:
                 raise
             else:
                 app.logger.exception("Failed to process document")
-                return render_template("upload.html", error=f"Failed to process document: {filename}")
+                return render_template(
+                    "upload.html",
+                    error=f"Failed to process document: {filename}",
+                    admin=admin)
         finally:
             os.remove(fullpath)
 
-    return render_template("upload.html")
+    return render_template("upload.html", admin=admin)
 
 
 @app.route("/convert", methods=["GET", "POST"])
 def convert():
-    if not ('DEV_DEBUG' in os.environ and os.environ['DEV_DEBUG'] == 'True'):
+    admin = 'DEV_DEBUG' in os.environ and os.environ['DEV_DEBUG'] == 'True'
+    if not admin:
         abort(403)
 
     if request.method == "POST" and documents.name in request.files:
@@ -267,17 +291,19 @@ def convert():
             # only happens on windows I think.
             os.remove(new_doc_path)
 
-    return render_template("convert.html")
+    return render_template("convert.html", admin=admin)
 
 
 @app.route("/resources", methods=["GET"])
 def resources():
-    return render_template("resources.html")
+    admin = 'DEV_DEBUG' in os.environ and os.environ['DEV_DEBUG'] == 'True'
+    return render_template("resources.html", admin=admin)
 
 
-# @app.route("/log", methods=["GET"])
-# def log():
-#     if not ('DEV_DEBUG' in os.environ and os.environ['DEV_DEBUG'] == 'True'):
-#         abort(403)
-#     logs = Log.query.all()
-#     return render_template("logs.html", logs=logs)
+@app.route("/log", methods=["GET"])
+def log():
+    admin = 'DEV_DEBUG' in os.environ and os.environ['DEV_DEBUG'] == 'True'
+    if not admin:
+        abort(403)
+    logs = [] # Log.query.all()
+    return render_template("logs.html", logs=logs, admin=admin)

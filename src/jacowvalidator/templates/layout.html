@@ -37,10 +37,17 @@
       <a href="{{ url_for('upload')}}" class="navbar-item" style="padding-left:10px;padding-right:10px;margin-left:30px">
         JACoW Word (docx) Validator
       </a>
-
       <a href="{{ url_for('resources')}}" class="navbar-item" style="padding-left:10px;padding-right:10px;;margin-left:30px">
         Resources
       </a>
+        {% if admin %}
+      <a href="{{ url_for('convert')}}" class="navbar-item" style="padding-left:10px;padding-right:10px;;margin-left:30px">
+        Convert
+      </a>
+      <a href="{{ url_for('log')}}" class="navbar-item" style="padding-left:10px;padding-right:10px;;margin-left:30px">
+        Logs
+      </a>
+        {% endif %}
       </div>
     </div>
     <div class="navbar-end">

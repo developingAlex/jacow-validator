@@ -33,7 +33,12 @@
         </div>
 
         {% if error %}
-        <div class="container box has-background-danger">{{ error }}</div>
+            {% if filename %}
+                <div class="container">
+                <h1 class="title">Report for {{ filename }}</h1>
+                </div>
+            {% endif %}
+            <div class="container box has-background-danger">{{ error }}</div>
         {% endif %}
 
         {% if processed %}
