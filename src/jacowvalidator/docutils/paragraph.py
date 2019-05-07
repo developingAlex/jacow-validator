@@ -6,12 +6,10 @@ PARAGRAPH_DETAILS = {
         'jacow': 'JACoW_Body Text Indent',
         'normal': 'Body Text Indent',
     },
-    'alignment': 'LEFT',
     'font_size': 10.0,
     'space_before': ['>=', 3.0],
     'space_after': 3.0,
-    'bold': None,
-    'italic': None,
+    'first_line_indent': 9.35
     # 0.33cm indent firstline
 }
 
@@ -26,8 +24,6 @@ def get_paragraphs(doc):
 
     for i, p in enumerate(data):
         # only for paraphaphs that are not references, figure captions, headings
-        # name = [name for name, h in PARAGRAPH_DETAILS.items() if p.style.name in [h['styles']['jacow'], h['styles']['normal']]]
-        #if name:
         if p.text.strip():
             # no need to check after references
             if p.text.lower() == 'references':

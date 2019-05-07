@@ -71,23 +71,32 @@ def get_paragraph_alignment(paragraph):
 
 def get_paragraph_space(paragraph):
     # paragraph formatting style can be overridden by more local definition
-    before, after = paragraph.style.paragraph_format.space_before, paragraph.style.paragraph_format.space_after
+    before, after, first_line_indent = \
+        paragraph.style.paragraph_format.space_before, \
+        paragraph.style.paragraph_format.space_after, \
+        paragraph.style.paragraph_format.first_line_indent
     if before is None and paragraph.style.base_style is not None:
         before = paragraph.style.base_style.paragraph_format.space_before
     if after is None and paragraph.style.base_style is not None:
         after = paragraph.style.base_style.paragraph_format.space_after
+    if first_line_indent is None and paragraph.style.base_style is not None:
+        left_indent = paragraph.style.base_style.paragraph_format.first_line_indent
 
     if paragraph.paragraph_format.space_before is not None:
         before = paragraph.paragraph_format.space_before
     if paragraph.paragraph_format.space_after is not None:
         after = paragraph.paragraph_format.space_after
+    if paragraph.paragraph_format.first_line_indent is not None:
+        first_line_indent = paragraph.paragraph_format.first_line_indent
 
     if before:
         before = before.pt
     if after:
         after = after.pt
+    if first_line_indent:
+        first_line_indent = first_line_indent.pt
 
-    return before, after
+    return before, after, first_line_indent
 
 
 def get_style_font(paragraph):
@@ -136,7 +145,7 @@ def get_style_font(paragraph):
 
 
 def get_style_details(p):
-    space_before, space_after = get_paragraph_space(p)
+    space_before, space_after, first_line_indent = get_paragraph_space(p)
     bold, italic, font_size, all_caps = get_style_font(p)
     alignment = get_paragraph_alignment(p)
     return locals()
@@ -156,60 +165,29 @@ def check_style(p, compare):
     # remove paragraph from dict returned since it is not json serialisable
     del detail['p']
 
-    space_before = any([
-        detail['space_before'] == compare['space_before'],
-        (isinstance(compare['space_before'], list) and
-            detail['space_before'] is not None and
-            get_compare(detail['space_before'], compare['space_before'][0], compare['space_before'][1])),
-        (detail['space_before'] is None and compare['space_before'] == 0.0)
-    ])
-
-    space_after = any([
-        detail['space_after'] == compare['space_after'],
-        (isinstance(compare['space_after'], list) and
-            detail['space_after'] is not None and
-            get_compare(detail['space_after'], compare['space_after'][0], compare['space_after'][1])),
-        (detail['space_after'] is None and compare['space_after'] == 0.0)
-    ])
-
-    if p.style.name in compare['styles']['jacow']:
-        style_ok = all([
-            space_before,
-            space_after,
-            detail['bold'] == compare['bold'],
-            detail['italic'] == compare['italic'],
-            detail['font_size'] == compare['font_size'],
-            detail['alignment'] == compare['alignment']
-        ])
-    else:
-        style_ok = all([
-            space_before,
-            space_after,
-            detail['bold'] == compare['bold'],
-            detail['italic'] == compare['italic'],
-            detail['font_size'] == compare['font_size'],
-            detail['alignment'] == compare['alignment']
-        ])
-
-    # add messages
-    # TODO optimise this
-    if not space_before:
-        if isinstance(compare['space_before'], list):
-            detail['space_before'] = f"{detail['space_before']} should be {' '.join(map(str, compare['space_before']))}"
+    # use list from compare
+    style_ok = True
+    for key, value in compare.items():
+        if key not in detail:
+            continue
+        elif key in ['space_before', 'space_after']:
+            if isinstance(compare[key], list):
+                result = detail[key] is not None and get_compare(detail[key], compare[key][0], compare[key][1])
+                if not result:
+                    detail[key] = f"{detail[key]} should be {' '.join(map(str, compare[key]))}"
+            else:
+                result = any([detail[key] == compare[key], detail[key] is None and compare[key] == 0.0])
+                if not result:
+                    detail[key] = f"{detail[key]} should be {compare[key]}"
         else:
-            detail['space_before'] = f"{detail['space_before']} should be {compare['space_before']}"
-    if not space_after:
-        if isinstance(compare['space_after'], list):
-            detail['space_after'] = f"{detail['space_after']} should be {' '.join(map(str, compare['space_after']))}"
-        else:
-            detail['space_after'] = f"{detail['space_after']} should be {compare['space_after']}"
-    if not detail['bold'] == compare['bold']:
-        detail['bold'] = f"{detail['bold']} should be {compare['bold']}"
-    if not detail['italic'] == compare['italic']:
-        detail['italic'] = f"{detail['italic']} should be {compare['italic']}"
-    if not detail['font_size'] == compare['font_size']:
-        detail['font_size'] = f"{detail['font_size']} should be {compare['font_size']}"
-    if not detail['alignment'] == compare['alignment']:
-        detail['alignment'] = f"{detail['alignment']} should be {compare['alignment']}"
+            result = detail[key] == compare[key]
+            if not result:
+                detail[key] = f"{detail[key]} should be {compare[key]}"
+        if not result:
+            style_ok = False
 
+    # if key not in compare, then change to NA
+    for key, value in detail.items():
+        if key not in compare.keys():
+            detail[key] = 'NA'
     return style_ok, detail

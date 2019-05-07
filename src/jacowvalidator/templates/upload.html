@@ -220,7 +220,7 @@
                         <tr>
                             <th width="25%"></th>
                             <th width="5%">Case Ok</th>
-                            <th width="20%">Name</th>
+                            <th width="20%">Font Name</th>
                             <th width="8%">Alignment</th>
                             <th width="8%">Font Size</th>
                             <th width="8%">Bold</th>
@@ -269,7 +269,7 @@
                             <th colspan="8" width="70%" style="text-align:center">Style</th>
                         </tr>
                         <tr>
-                            <th width="20%">Name</th>
+                            <th width="20%">Font Name</th>
                             <th width="8%">Alignment</th>
                             <th width="8%">Font Size</th>
                             <th width="8%">Bold</th>
@@ -325,7 +325,7 @@
                             <th colspan="8" width="70%" style="text-align:center">Style</th>
                         </tr>
                         <tr>
-                            <th width="20%">Name</th>
+                            <th width="20%">Font Name</th>
                             <th width="8%">Alignment</th>
                             <th width="8%">Font Size</th>
                             <th width="8%">Bold</th>
@@ -383,7 +383,7 @@
                             <th colspan="8" width="70%" style="text-align:center">Style</th>
                         </tr>
                         <tr>
-                            <th width="20%">Name</th>
+                            <th width="20%">Font Name</th>
                             <th width="8%">Alignment</th>
                             <th width="8%">Font Size</th>
                             <th width="8%">Bold</th>
@@ -417,11 +417,11 @@
                 <details style="padding:5px;border:1px lightgray solid;border-radius:5px">
                     <summary>Rules for {{ summary['Paragraphs']['title'] }}</summary>
                     <table class="table is-bordered">
-                        <thead><th>Type</th><th>Details</th><th>Font Size</th><th>Space Before</th><th>Space After</th></thead>
+                        <thead><th>Type</th><th>Details</th><th>Font Size</th><th>Space Before</th><th>Space After</th><th>First Line Indent</th></thead>
                         <tr>
                             <td>Paragraph</td>
                             <td>“JACoW_Body Text Indent” Style, or equivalent style.</td>
-                            <td>10 pt</td><td>≥3 pt</td><td>3 pt</td>
+                            <td>10 pt</td><td>≥3 pt</td><td>3 pt</td><td>0.33cm or 9.35pt</td>
                         </tr>
                     </table>
                 </details>
@@ -433,13 +433,14 @@
                             <th colspan="8" width="70%" style="text-align:center">Style</th>
                         </tr>
                         <tr>
-                            <th width="20%">Name</th>
+                            <th width="20%">Font Name</th>
                             <th width="8%">Alignment</th>
                             <th width="8%">Font Size</th>
                             <th width="8%">Bold</th>
                             <th width="8%">Italic</th>
                             <th width="8%">Space Before</th>
                             <th width="8%">Space After</th>
+                            <th width="8%">Left Indent</th>
                             <th width="5%">Ok</th>
                         </tr>
                     </thead>
@@ -454,6 +455,7 @@
                             <td>{{ item.italic }}</td>
                             <td>{{ item.space_before }}</td>
                             <td>{{ item.space_after }}</td>
+                            <td>{{ item.first_line_indent }}</td>
                             <td>{{ item.style_ok|tick_cross }}</td>
                         </tr>
                         {% endfor %}
@@ -600,7 +602,7 @@
                                 <th colspan="8" width="70%" style="text-align:center">Style</th>
                             </tr>
                             <tr>
-                                <th width="20%">Name</th>
+                                <th width="20%">Font Name</th>
                                 <th width="8%">Alignment</th>
                                 <th width="8%">Font Size</th>
                                 <th width="8%">Bold</th>
@@ -699,7 +701,7 @@
                                 <th colspan="8" width="70%" style="text-align:center">Style</th>
                             </tr>
                             <tr>
-                                <th width="20%">Name</th>
+                                <th width="20%">Font Name</th>
                                 <th width="8%">Alignment</th>
                                 <th width="8%">Font Size</th>
                                 <th width="8%">Bold</th>
