@@ -37,18 +37,19 @@ where you saved the file.
     
 4. Ensure pipenv is installed:
     
-    a. For linux, ensure homebrew is installed - could require a restart
+    1. For linux, ensure homebrew is installed - could require a restart
 
-    b. `brew install pipenv`
+    1. `brew install pipenv`
     
-    c. alternatively without homebrew: `pip install pipenv`
+    1. alternatively without homebrew: `pip install pipenv`
 
-1. Ensure your pipenv is running the latest version of python:
+5. Ensure your pipenv is running the latest version of python:
     
     1. In a terminal `cd` into your project's directory 
     
     1. `pipenv install python 3.7` (this project makes use of syntax only available in python > 3.5)
-    
+
+6. Ensure dependencies are installed: `pipenv install`
 
 ## Running
 
@@ -70,9 +71,9 @@ open http://localhost:5000/
 
 3. **Run** > **Edit Configurations** > Add new configuration (`+` button) > Choose Python
 
-    a. Name it jacow-validator or similar
+    1. Name it jacow-validator or similar
     
-    b. Set the script path to point to the flask that is used by your pipenv virtual environment
+    1. Set the script path to point to the flask that is used by your pipenv virtual environment
         
         1. You can find the location of your virtual environment's files using the command `pipenv --venv` ran from within your project directory
         
@@ -84,11 +85,11 @@ open http://localhost:5000/
             
             /home/*user*/.local/share/virtualenvs/jacow-validator-Awl2i6Az/bin/flask
     
-    c. In the parameters type `run`
+    1. In the parameters type `run`
     
-    d. Add a new environment variable called **FLASK_APP** and set it to the path to the app.py file in src/jacowvalidator:
+    1. Add a new environment variable called **FLASK_APP** and set it to the path to the `wsgi.py` file in the project root:
     
-        example: FLASK_APP=/home/*user*/apps/jacow-validator/src/jacowvalidator/app.py
+        example: FLASK_APP=/home/*user*/apps/jacow-validator/wsgi.py
 
 4. Hitting the (play) or (debug) buttons in pycharm should now work to launch the app which you should now be able to see at http://localhost:5000/ 
 
@@ -96,10 +97,11 @@ open http://localhost:5000/
     
     pipenv run tox
 
-## Testing in PyCharm
+## Testing in pycharm
+    
+1. Locate the tox.ini file in your file explorer
 
-from within your project directory:
+2. Right click tox.ini and select `run 'Tox'`
 
-`pipenv run tox`
-
-or simply `tox` if you've already activated your virtual environment.
+3. Note that you may have to reselect your flask run configuration afterwards 
+    in the top right of the IDE.
