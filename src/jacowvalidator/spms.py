@@ -81,8 +81,7 @@ def reference_csv_check(filename_minus_ext, title, authors):
                             'spms': row[authors_col],
                             'docx_list': get_author_list(authors),
                             'spms_list': get_author_list(row[authors_col]),
-                            'report': get_author_list_report(get_author_list(authors),
-                                                             get_author_list(row[authors_col]))
+                            'report': get_author_list_report(authors, row[authors_col])
                         }
                     }
 
@@ -107,7 +106,7 @@ def reference_csv_check(filename_minus_ext, title, authors):
             raise PaperNotFoundError("No matching paper found in the spms csv file")
 
 
-def get_author_list_report(docx_list, spms_list):
+def get_author_list_report(docx_text, spms_text):
     """Compares two lists of authors (one sourced from the uploaded docx file
     and one sourced from the corresponding paper's entry in the SPMS references
     csv file) and produces a dict array report of the
@@ -125,6 +124,8 @@ def get_author_list_report(docx_list, spms_list):
             },
         ]
     """
+    docx_list = get_author_list(docx_text)
+    spms_list = get_author_list(spms_text)
     # create a copy of spms_list and docx_list so that we can remove items
     #  without mutating the originals:
     fixed_spms_list = insert_spaces_after_periods(spms_list)
@@ -135,12 +136,12 @@ def get_author_list_report(docx_list, spms_list):
             results.append({'match': True, 'docx': author, 'spms': author})
             spms_authors_to_check.remove(author)
         else:
-            results.append({'match': False, 'docx': author, 'spms': ''})
+            results.append({'match': False, 'docx': author, 'spms': spms_text})
 
     # by now any authors remaining in the spms_authors_to_check list are ones
     # that had no matching author in the docx list:
     for author in spms_authors_to_check:
-        results.append({'match': False, 'docx': '', 'spms': author})
+        results.append({'match': False, 'docx': docx_text, 'spms': author})
 
     return results
 
