@@ -2,7 +2,7 @@ from pathlib import Path
 from docx import Document
 
 from jacowvalidator.test_utils import replace_identifying_text
-from jacowvalidator.references import extract_references
+from jacowvalidator.docutils.references import extract_references
 
 test_dir = Path(__file__).parent / 'data'
 

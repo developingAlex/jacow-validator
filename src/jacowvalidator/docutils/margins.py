@@ -1,5 +1,5 @@
 from lxml.etree import _Element
-from .page import get_page_size, convert_twips_to_cm
+from jacowvalidator.docutils.page import get_page_size, convert_twips_to_cm
 
 
 def check_sections(doc):

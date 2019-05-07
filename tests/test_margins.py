@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from jacowvalidator.margins import check_margins_A4
+from jacowvalidator.docutils.margins import check_margins_A4
 
 
 test_dir = Path(__file__).parent / 'data'

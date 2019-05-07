@@ -6,7 +6,7 @@ from docx.table import _Cell, _Row, Table
 from docx.text.paragraph import Paragraph
 from lxml.etree import _Element
 
-from .styles import check_style
+from jacowvalidator.docutils.styles import check_style
 from titlecase import titlecase
 
 RE_TABLE_LIST = re.compile(r'^Table \d+:')

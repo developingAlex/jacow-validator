@@ -1,4 +1,4 @@
-from .styles import check_style
+from jacowvalidator.docutils.styles import check_style
 
 TITLE_DETAILS = {
     'styles': {

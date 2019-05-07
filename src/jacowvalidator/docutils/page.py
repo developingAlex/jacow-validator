@@ -1,5 +1,5 @@
 from docx.shared import Inches, Mm, Twips
-from .styles import check_style
+from jacowvalidator.docutils.styles import check_style
 
 
 class TrackingOnError(Exception):
@@ -88,6 +88,6 @@ def check_tracking_on(doc):
         element = p._element
         for child in element.iterchildren():
             if '}ins ' in str(child) or '}del ' in child or 'proofErr' in child:
-                raise TrackingOnError('Tracking is on. Please Accept or Reject tracked changes and resubmit')
+                raise TrackingOnError('Tracking Changes is on. Please Accept or Reject tracked changes, turn off track changes and resubmit')
 
     return False

@@ -4,7 +4,7 @@
 import os
 import csv
 import re
-from .authors import get_author_list
+from jacowvalidator.docutils.authors import get_author_list
 
 RE_MULTI_SPACE = re.compile(r' +')
 

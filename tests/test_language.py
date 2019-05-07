@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from jacowvalidator.languages import get_language_tags
+from jacowvalidator.docutils.languages import get_language_tags
 
 test_dir = Path(__file__).parent / 'data'
 

@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from jacowvalidator.tables import check_table_titles, get_table_paragraphs, check_is_floating
+from jacowvalidator.docutils.tables import check_table_titles, get_table_paragraphs, check_is_floating
 
 test_dir = Path(__file__).parent / 'data'
 

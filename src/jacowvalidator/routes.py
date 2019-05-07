@@ -7,19 +7,18 @@ from docx.opc.exceptions import PackageNotFoundError
 from flask import redirect, render_template, request, url_for, send_file, abort
 from flask_uploads import UploadNotAllowed
 
+from jacowvalidator import app, documents
 from .models import Log
-from jacowvalidator import app, db, documents
-from .page import (check_tracking_on, get_abstract_and_author, TrackingOnError)
-from .margins import check_sections
-from .styles import check_jacow_styles
-from .title import extract_title
-from .references import extract_references
-from .heading import get_headings
-from .figures import extract_figures
-from .languages import (get_language_tags, get_language_tags_location, VALID_LANGUAGES)
-from .utils import json_serialise
+from jacowvalidator.docutils.page import (check_tracking_on, get_abstract_and_author, TrackingOnError)
+from jacowvalidator.docutils.margins import check_sections
+from jacowvalidator.docutils.styles import check_jacow_styles
+from jacowvalidator.docutils.title import extract_title
+from jacowvalidator.docutils.references import extract_references
+from jacowvalidator.docutils.heading import get_headings
+from jacowvalidator.docutils.figures import extract_figures
+from jacowvalidator.docutils.languages import (get_language_tags, get_language_tags_location, VALID_LANGUAGES)
 
-from .tables import (
+from jacowvalidator.docutils.tables import (
     check_table_titles,
 )
 
@@ -305,5 +304,5 @@ def log():
     admin = 'DEV_DEBUG' in os.environ and os.environ['DEV_DEBUG'] == 'True'
     if not admin:
         abort(403)
-    logs = [] # Log.query.all()
+    logs = [] #Log.query.all()
     return render_template("logs.html", logs=logs, admin=admin)

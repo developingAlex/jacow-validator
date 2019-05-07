@@ -1,7 +1,7 @@
 import re
 from collections import OrderedDict
 from itertools import chain
-from .styles import check_style
+from jacowvalidator.docutils.styles import check_style
 
 RE_FIG_TITLES = re.compile(r'(^Figure \d+[.:])')
 RE_FIG_INTEXT = re.compile(r'(Fig.\s?\d+|Figure\s?\d+[.\s]+)')

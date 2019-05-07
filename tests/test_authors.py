@@ -1,4 +1,4 @@
-from jacowvalidator.authors import get_author_list
+from jacowvalidator.docutils.authors import get_author_list
 
 
 def test_simple_author_extraction():
