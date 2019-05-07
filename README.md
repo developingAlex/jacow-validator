@@ -37,18 +37,19 @@ where you saved the file.
     
 4. Ensure pipenv is installed:
     
-    a. For linux, ensure homebrew is installed - could require a restart
+    1. For linux, ensure homebrew is installed - could require a restart
 
-    b. `brew install pipenv`
+    1. `brew install pipenv`
     
-    c. alternatively without homebrew: `pip install pipenv`
+    1. alternatively without homebrew: `pip install pipenv`
 
-1. Ensure your pipenv is running the latest version of python:
+5. Ensure your pipenv is running the latest version of python:
     
     1. In a terminal `cd` into your project's directory 
     
     1. `pipenv install python 3.7` (this project makes use of syntax only available in python > 3.5)
-    
+
+6. Ensure dependencies are installed: `pipenv install`
 
 ## Running
 
