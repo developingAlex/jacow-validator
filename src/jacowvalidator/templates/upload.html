@@ -178,21 +178,30 @@
                     </div>
                 </details>
                 <br/>
-                <ul>
-                    {% for lang in language_summary %}
-                    <li> {{ lang }}</li>
-                    {% endfor %}
-                </ul>
-                <details style="padding:5px;border:1px lightgray solid;border-radius:5px">
-                <ul>
-                    {% for lang in languages %}
-                        {% if languages[lang] not in ['en-US', 'en-GB', 'en-AU'] %}
-                        <li>{{ languages[lang] }} - {{ lang }}</li>
-                        {% endif %}
-                    {% endfor %}
-                </ul>
-                <br/>
-                </details>
+                {% if summary['Languages']['ok'] == False %}
+                    Non English proofing languages were found in document, please set all document content proofing language to English.
+
+                    <ul>
+                        {% for lang in language_summary %}
+                        <li> {{ lang }}</li>
+                        {% endfor %}
+                    </ul>
+                    {# dont display for the moment #}
+                    {% if languages and False %}
+                        <details style="padding:5px;border:1px lightgray solid;border-radius:5px">
+                        <ul>
+                            {% for lang in languages %}
+                                {% if languages[lang] not in ['en-US', 'en-GB', 'en-AU'] %}
+                                <li>{{ languages[lang] }} - {{ lang }}</li>
+                                {% endif %}
+                            {% endfor %}
+                        </ul>
+                        <br/>
+                        </details>
+                    {% endif %}
+                {% else %}
+                    English proofing languages were found in document
+                {% endif %}
             </div>
 
             <div class="box" style="box-shadow: 0 4px 6px rgba(0, 0, 255, 0.1), 0 0 0 2px rgba(0, 0, 255, 0.1)">
@@ -376,6 +385,8 @@
                     </table>
                 </details>
                 <br/>
+                <details open="{{  summary['Headings']['ok'] }}" style="padding:5px;border:1px lightgray solid;border-radius:5px">
+                <summary>Style Breakdown for {{ summary['Headings']['title'] }}</summary>
                 <table class="table is-bordered">
                     <thead>
                         <tr>
@@ -409,11 +420,12 @@
                         {% endfor %}
                     </tbody>
                 </table>
+                </details>
             </div>
 
             <div class="box" style="box-shadow: 0 4px 6px rgba(0, 0, 255, 0.1), 0 0 0 2px rgba(0, 0, 255, 0.1)">
-                <h2 class="subtitle" style="padding:10px;background-color:#{{ summary['Headings']['ok']|status_type_background }}">
-                    <a name="{{ summary['Paragraphs']['anchor'] }}"></a>{{ summary['Paragraphs']['ok']|tick_cross }} Paragraphs</h2>
+                <h2 class="subtitle" style="padding:10px;background-color:#{{ summary['Paragraphs']['ok']|status_type_background }}">
+                    <a name="{{ summary['Paragraphs']['anchor'] }}"></a>{{ summary['Paragraphs']['ok']|tick_cross }} {{ summary['Paragraphs']['title'] }} </h2>
                 <details style="padding:5px;border:1px lightgray solid;border-radius:5px">
                     <summary>Rules for {{ summary['Paragraphs']['title'] }}</summary>
                     <table class="table is-bordered">
@@ -426,6 +438,8 @@
                     </table>
                 </details>
                 <br/>
+                <details open="{{  summary['Paragraphs']['ok'] }}" style="padding:5px;border:1px lightgray solid;border-radius:5px">
+                <summary>Style Breakdown for {{ summary['Paragraphs']['title'] }}</summary>
                 <table class="table is-bordered">
                     <thead>
                         <tr>
@@ -461,6 +475,7 @@
                         {% endfor %}
                     </tbody>
                 </table>
+                </details>
             </div>
 
             <div class="box" style="box-shadow: 0 4px 6px rgba(0, 0, 255, 0.1), 0 0 0 2px rgba(0, 0, 255, 0.1)">
@@ -477,8 +492,25 @@
                     <li>When greater than 9 references the first 9 must be “JACoW_Reference #1-9 when >= 10 Refs” Style, and 10 and onwards must be “JACoW_Reference #10 onwards” Style.</li>
                     <li>All references must be numbered [n] and have a tab between the ] and the start of the reference text. (note many authors put spaces in which stuffs up the spacing.</li>
                     </ul>
+                    <table class="table is-bordered">
+                        <thead><th>Type</th><th>Details</th><td>Alignment</td><th>Font Size</th><th>Space Before</th><th>Space After</th><th>Indent</th><th>Hanging Indent</th></thead>
+                        <tr>
+                            <td>Reference</td>
+                            <td>“JACoW_References when ≤ 9” Style, or equivalent style.</td><td>Justified</td>
+                            <td>9 pt</td><td>0 pt</td><td>3 pt</td><td>0</td><td>0.52 cm</td>
+                        </tr>
+                        <tr>
+                            <td>Reference</td>
+                            <td>“JACoW_Reference #1-9 when >= 10 Refs” Style, or equivalent style.</td><td>Justified</td>
+                            <td>9 pt</td><td>0 pt</td><td>3 pt</td><td>0.16 cm</td><td>0.52 cm</td>
+                        </tr>
+                        <tr>
+                            <td>Reference</td>
+                            <td>“JACoW_Reference #10 onwards” Style, or equivalent style.</td><td>Justified</td>
+                            <td>9 pt</td><td>0 pt</td><td>3 pt</td><td>0</td><td>0.68 cm</td>
+                        </tr>
+                    </table>
                 </details>
-
                 {% if not references_list %}
                 <p class="has-text-weight-bold has-text-danger">No references found at end of document. Please check formatting.</p>
                 {% else %}
@@ -593,7 +625,7 @@
                     </tbody>
                 </table>
                 {% if figures %}
-                <details style="padding:5px;border:1px lightgray solid;border-radius:5px">
+                <details open style="padding:5px;border:1px lightgray solid;border-radius:5px">
                     <summary>Style Breakdown for {{ summary['Figures']['title'] }}</summary>
                     <table class="table is-bordered">
                         <thead>
@@ -692,7 +724,7 @@
                     </tbody>
                 </table>
                 {% if table_titles %}
-                <details style="padding:5px;border:1px lightgray solid;border-radius:5px">
+                <details open style="padding:5px;border:1px lightgray solid;border-radius:5px">
                     <summary>Style Breakdown for {{ summary['Tables']['title'] }}</summary>
                     <table class="table is-bordered">
                         <thead>
