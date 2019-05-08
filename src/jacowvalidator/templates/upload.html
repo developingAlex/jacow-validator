@@ -18,7 +18,7 @@
         {% if processed %}
             {% import "section_macro.html" as section_helper %}
             <div class="container">
-            <h1 class="title"><a name="top"/>Report for {{ filename }}</h1>
+            <h1 class="title"><a name="top"></a>Report for {{ filename }}</h1>
 
             <div class="container box" style="box-shadow: 0 4px 6px rgba(0, 0, 255, 0.1), 0 0 0 2px rgba(0, 0, 255, 0.1)">
                 <h2 class="subtitle">Summary</h2>
@@ -53,7 +53,7 @@
                 'columns': ['style', 'style_ok']}
             %}
             {{ section_helper.add_section(section,
-                    [],
+                    {},
                     '',
                     '<p>The latest JACoW Template must be used.<br/>
                         Standard JACoW Style’s must embedded in the document.</p>',
@@ -68,7 +68,7 @@
             %}
 
             {{ section_helper.add_section(section,
-                    [],
+                    {},
                     '',
                     '<h3 class="subtitle is-6">Documents MUST be based on A4 or US Letter</h3>
                     <table class="table is-bordered">
@@ -92,15 +92,17 @@
                     Check gutter setting (Space between columns), for all section with more than 1 column, should be 0.51cm.',
                     extra_info, False) }}
 
-            <div class="box" style="box-shadow: 0 4px 6px rgba(0, 0, 255, 0.1), 0 0 0 2px rgba(0, 0, 255, 0.1)">
-                <a href="#top">Top <i class="fas fa-arrow-circle-up"></i></a>
-                <h2 class="subtitle" style="padding:10px;background-color:#{{ summary['Languages']['ok']|status_type_background }}">
-                    <a name="{{ summary['Languages']['anchor'] }}"></a>{{ summary['Languages']['ok']|tick_cross }} Languages
-                </h2>
-                <details style="padding:5px;border:1px lightgray solid;border-radius:5px">
-                    <summary>Rules for {{ summary['Languages']['title'] }}</summary>
-                    <div style="padding-left:10px">
-                    <p>Document overall language should be set to English for proofing tools.<br/>
+
+            {% set section = summary['Languages'] %}
+            {% if summary['Languages']['ok'] == False %}
+                {% set extra_info = 'Non English proofing languages were found in document, please set all document content proofing language to English.' %}
+            {% else %}
+                {% set extra_info = 'English proofing languages were found.' %}
+            {% endif %}
+            {{ section_helper.add_section(section,
+                    {},
+                    '',
+                    '<p>Document overall language should be set to English for proofing tools.<br/>
                     Below are the codes that should be in the list</p>
                     <table class="table is-bordered">
                         <thead><tr><th colspan="2">English Codes</th></tr></thead>
@@ -111,69 +113,43 @@
                         <tr><td>en-nz</td><td>English (New Zealand)</td></tr>
                         </tbody>
                     </table>
-                    If you want to look up other codes, you can do so <a href="https://www.andiamo.co.uk/resources/iso-language-codes/" target="_blank">here</a>
-                    </div>
-                </details>
-                <br/>
-                {% if summary['Languages']['ok'] == False %}
-                    Non English proofing languages were found in document, please set all document content proofing language to English.
+                    If you want to look up other codes, you can do so <a href="https://www.andiamo.co.uk/resources/iso-language-codes/" target="_blank">here</a>',
+                    extra_info, False) }}
 
-                    <ul>
-                        {% for lang in language_summary %}
-                        <li> {{ lang }}</li>
-                        {% endfor %}
-                    </ul>
-                    {# dont display for the moment #}
-                    {% if languages and False %}
-                        <details style="padding:5px;border:1px lightgray solid;border-radius:5px">
-                        <ul>
-                            {% for lang in languages %}
-                                {% if languages[lang] not in ['en-US', 'en-GB', 'en-AU'] %}
-                                <li>{{ languages[lang] }} - {{ lang }}</li>
-                                {% endif %}
-                            {% endfor %}
-                        </ul>
-                        <br/>
-                        </details>
-                    {% endif %}
-                {% else %}
-                    English proofing languages were found in document
-                {% endif %}
-            </div>
 
             {% set section = summary['Title'] %}
-                {% if not title.case_ok %}
+            {% if not title.case_ok %}
                 {% set extra_info = '<p class="has-text-weight-bold has-text-danger">Title should be at least 70% uppercase</p>' %}
             {% else %}
                 {% set extra_info = '' %}
             {% endif %}
             {{ section_helper.add_section(section,
-                    [],
+                    {},
                     '<tr>
                         <td>PAPER TITLE</td>
                         <td>“JACoW_Paper Title” Style, or equivalent style.</td>
-                        <td>Centered</td><td>14 pt</td><td>Bold</td><td>Title should contain greater than 70% of CAPITAL Letters, can’t be simple Title Case.</td><td>0 pt</td><td>3 pt</td>
+                        <td>Centered</td><td>14 pt</td><td>Bold</td><td>Title should contain greater than 70% of CAPITAL Letters, can’t be simple Title Case.</td><td>0 pt</td><td>3 pt</td><td>NA</td>
                     </tr>',
                     '',
                     extra_info) }}
 
             {% set section = summary['Authors'] %}
             {{ section_helper.add_section(section,
-                    [],
+                    {},
                     '<tr>
                         <td>Author List</td>
                         <td>“JACoW_Author Title” Style, or equivalent style.</td>
-                        <td>Centered</td><td>12 pt</td><td>None</td><td>UPPER and lowercase</td><td>9 pt</td><td>12 pt</td>
+                        <td>Centered</td><td>12 pt</td><td>None</td><td>UPPER and lowercase</td><td>9 pt</td><td>12 pt</td><td>NA</td>
                     </tr>',
                     '') }}
 
             {% set section = summary['Abstract'] %}
             {{ section_helper.add_section(section,
-                    [],
+                    {},
                     '<tr>
                         <td>Abstract_Heading</td>
                         <td>“JACoW_Abstract_Heading” Style, or equivalent style.</td>
-                        <td>Left or None</td><td>12 pt</td><td>Italic</td><td></td><td>0 pt</td><td>3 pt</td>
+                        <td>Left or None</td><td>12 pt</td><td>Italic</td><td></td><td>0 pt</td><td>3 pt</td><td>NA</td>
                     </tr>',
                     '<ul>
                         <li>Must Say Abstract</li>
@@ -182,30 +158,30 @@
 
             {% set section = summary['Headings'] %}
             {{ section_helper.add_section(section,
-                        [],
+                        {},
                         '<tr>
                             <td>SECTION  HEADING</td>
                             <td>“JACoW_Section Heading” Style, or equivalent style.</td>
-                            <td>Centered</td><td>12 pt</td><td>Bold</td><td>All Caps where appropriate</td><td>9 pt</td><td>3 pt</td>
+                            <td>Centered</td><td>12 pt</td><td>Bold</td><td>All Caps where appropriate</td><td>9 pt</td><td>3 pt</td><td>NA</td>
                         </tr>
                         <tr>
                             <td>Sub-Section Heading</td>
                             <td>“JACoW_Subsection Heading” Style, or equivalent style.</td>
-                            <td>Left or None</td><td>12 pt</td><td>Italic</td><td>Title Case.</td><td>6 pt</td><td>3 pt</td>
+                            <td>Left or None</td><td>12 pt</td><td>Italic</td><td>Title Case.</td><td>6 pt</td><td>3 pt</td><td>NA</td>
                         </tr>
                         <tr>
                             <td>Third Level Heading</td>
                             <td>“JACoW_Third-Level Heading” Style, or equivalent style</td>
-                            <td>Left or None</td><td>10 pt</td><td>Bold</td><td>Title Case, and run into the paragraph.</td><td>6 pt</td><td>0 pt</td>
+                            <td>Left or None</td><td>10 pt</td><td>Bold</td><td>Title Case, and run into the paragraph.</td><td>6 pt</td><td>0 pt</td><td>NA</td>
                         </tr>') }}
 
             {% set section = summary['Paragraphs'] %}
             {{ section_helper.add_section(section,
-                        {'truncate_text':True},
+                        {'truncate_text':true},
                         '<tr>
                             <td>Paragraph</td>
                             <td>“JACoW_Body Text Indent” Style, or equivalent style.</td>
-                            <td>Justified</td><td>10 pt</td><td>≥3 pt</td><td>3 pt</td><td>0.33cm or 9.35pt</td>
+                            <td>Justified</td><td>10 pt</td><td>NA</td><td>NA</td><td>≥3 pt</td><td>3 pt</td><td>0.33cm or 9.35pt</td>
                         </tr>') }}
 
 
@@ -302,14 +278,31 @@
                 {% endif %}
             </div>
 
-            <div class="box" style="box-shadow: 0 4px 6px rgba(0, 0, 255, 0.1), 0 0 0 2px rgba(0, 0, 255, 0.1)">
-                <a href="#top">Top <i class="fas fa-arrow-circle-up"></i></a>
-                <h2 class="subtitle" style="padding:10px;background-color:#{{ summary['Figures']['ok']|status_type_background }}">
-                    <a name="figures"></a>{{ summary['Figures']['ok']|tick_cross }} Figures
-                </h2>
-                <details style="padding:5px;border:1px lightgray solid;border-radius:5px">
-                    <summary>Rules for {{ summary['Figures']['title'] }}</summary>
-                    <ul>
+            {% set section = summary['Figures'] %}
+            {% set extra_info = {'ok':section['ok'],'title':'Use Breakdown', 'headers': '<thead>
+                        <tr>
+                            <th>No.</th>
+                            <th colspan="2">Caption</th>
+                            <th>Unique</th>
+                            <th colspan="2">References</th>
+                            <th width="30%">Text</th>
+                        </tr>
+                    </thead>',
+                'columns': ['id', 'name', 'caption_ok', 'unique', 'refs', 'used', 'text'],'multi':true}
+            %}
+            {{ section_helper.add_section(section,
+                    {'style_multi':true},
+                    '<tr>
+                            <td>Figure Caption</td>
+                            <td>“Figure Caption” Style, or equivalent style.</td>
+                            <td>Centered</td><td>10 pt</td><td>3 pt</td><td>≥3 pt</td><td>NA</td><td>NA</td><td>NA</td>
+                        </tr>
+                        <tr>
+                            <td>Figure Caption Multi Line</td>
+                            <td>“Figure Caption Multi Line” Style, or equivalent style.</td>
+                            <td>Justified</td><td>10 pt</td><td>3 pt</td><td>≥3 pt</td><td>NA</td><td>NA</td><td>NA</td>
+                        </tr>',
+                    '<ul>
                         <li>Figure captions must be directly below the figure</li>
                         <li>Figure must be numbered in the order they are referred to in the main text.</li>
                         <li>Figure numbers must be unique and not duplicated, or skip numbers in the series.</li>
@@ -318,121 +311,11 @@
                         <li>Figure captions must start with “Figure n:”.</li>
                         <li>In text references to the figure if mid-sentence must be “Fig. n”, at the start of a sentence it maybe “Figure n”.</li>
                         <li>Figures must have a “.” On the end of the final line.</li>
-                    </ul>
-                    <table class="table is-bordered">
-                        <thead><tr><th>Type</th><th>Details</th><th>Alignment</th><th>Font Size</th><th>Space Before</th><th>Space After</th></tr></thead>
-                        <tr>
-                            <td>Figure Caption</td>
-                            <td>“Figure Caption” Style, or equivalent style.</td>
-                            <td>Centered</td><td>10 pt</td><td>3 pt</td><td>≥3 pt</td>
-                        </tr>
-                        <tr>
-                            <td>Figure Caption Multi Line</td>
-                            <td>“Figure Caption Multi Line” Style, or equivalent style.</td>
-                            <td>Justified</td><td>10 pt</td><td>3 pt</td><td>≥3 pt</td>
-                        </tr>
-                    </table>
-                </details>
-                <br/>
-                <table class="table is-bordered">
-                    <thead>
-                        <tr>
-                            <th>No.</th>
-                            <th colspan="2">Caption</th>
-                            <th>Unique</th>
-                            <th colspan="2">References</th>
-                            <th width="30%">Text</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for id, f in figures.items() %}
-                            {% for fig in f %}
-                            <tr>
-                                <td>{{ id }}</td>
-                                <td style="white-space: nowrap">{{ fig.name }}</td>
-                                <td>{{ fig.caption_ok|tick_cross }}</td>
-                                <td>{{ fig.unique|tick_cross }}</td>
-                                <td>{{ fig.refs|join(', ') }}</td>
-                                <td>{{ fig.used|tick_cross }}</td>
-                                <td>{{ fig.text }}</td>
-                            </tr>
-                            {% endfor %}
-                        {% endfor %}
-                    </tbody>
-                </table>
-                {% if figures %}
-                <details open style="padding:5px;border:1px lightgray solid;border-radius:5px">
-                    <summary>Style Breakdown for {{ summary['Figures']['title'] }}</summary>
-                    <table class="table is-bordered">
-                        <thead>
-                            <tr>
-                                <th rowspan="2" width="30%" style="text-align:center">Text</th>
-                                <th colspan="8" width="70%" style="text-align:center">Style</th>
-                            </tr>
-                            <tr>
-                                <th width="20%">Font Name</th>
-                                <th width="8%">Alignment</th>
-                                <th width="8%">Font Size</th>
-                                <th width="8%">Bold</th>
-                                <th width="8%">Italic</th>
-                                <th width="8%">Space Before</th>
-                                <th width="8%">Space After</th>
-                                <th width="5%">Ok</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        {% for id, f in figures.items() %}
-                            {% for item in f %}
-                            <tr>
-                                <td>{{ item.text }}</td>
-                                <td>{{ item.style }}</td>
-                                <td {% if 'should be' in item.alignment|string %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ item.alignment }}</td>
-                                <td {% if 'should be' in item.font_size|string %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ item.font_size }}</td>
-                                <td {% if 'should be' in item.bold|string %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ item.bold }}</td>
-                                <td {% if 'should be' in item.italic|string %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ item.italic }}</td>
-                                <td {% if 'should be' in item.space_before|string %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ item.space_before }}</td>
-                                <td {% if 'should be' in item.space_after|string %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ item.space_after }}</td>
-                                <td {% if item.style_ok == False %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ item.style_ok|tick_cross }}</td>
-                            </tr>
-                            {% endfor %}
-                        {% endfor %}
-                        </tbody>
-                    </table>
-                </details>
-                {% endif %}
-            </div>
+                    </ul>',
+                    extra_info, True) }}
 
-            <div class="box" style="box-shadow: 0 4px 6px rgba(0, 0, 255, 0.1), 0 0 0 2px rgba(0, 0, 255, 0.1)">
-                <a href="#top">Top <i class="fas fa-arrow-circle-up"></i></a>
-                <h2 class="subtitle" style="padding:10px;background-color:#{{ summary['Tables']['ok']|status_type_background }}">
-                    <a name="tables"></a>{{ summary['Tables']['ok']|tick_cross }} Tables
-                </h2>
-                <details style="padding:5px;border:1px lightgray solid;border-radius:5px">
-                    <summary>Rules for {{ summary['Tables']['title'] }}</summary>
-                    <ul>
-                        <li>Table captions are actually titles, this means that they are in Title Case, and don’t have a “.” At the end, well unless exceeds 2 lines.</li>
-                        <li>The table caption is centred if 1 line (“Table Caption” Style), and Justified if 2 or more (“Table Caption Multi Line” Style.  The table caption must appear above the Table.</li>
-                        <li>All tables must be numbered in the order they appear in the document and not skip a number in the sequence.</li>
-                        <li>All tables start with “Table n:”.</li>
-                        <li>All tables must be referred to in the main text and use “Table n”. </li>
-                    </ul>
-                    <table class="table is-bordered">
-                        <thead><tr><th>Type</th><th>Details</th><th>Alignment</th><th>Font Size</th><th>Space Before</th><th>Space After</th></tr></thead>
-                        <tr>
-                            <td>Table Caption</td>
-                            <td>“Table Caption” Style, or equivalent style.</td>
-                            <td>Centered</td><td>10 pt</td><td>≥3 pt</td><td>3 pt</td>
-                        </tr>
-                        <tr>
-                            <td>Table Caption Multi Line</td>
-                            <td>“Table Caption Multi Line” Style, or equivalent style.</td>
-                            <td>Justified</td><td>10 pt</td><td>≥3 pt</td><td>3 pt</td>
-                        </tr>
-                    </table>
-                </details>
-                <br/>
-                <table class="table is-bordered">
-                    <thead>
+            {% set section = summary['Tables'] %}
+            {% set extra_info = {'ok':section['ok'],'title':'Use Breakdown', 'headers': '<thead>
                         <tr>
                             <th>No.</th>
                             <th colspan="3">Caption</th>
@@ -440,66 +323,31 @@
                             <th>Order</th>
                             <th>Table</th>
                         </tr>
-                    </thead>
-                    <tbody>
-                        {% for title in table_titles %}
-                        <tr>
-                            <td>{{ title.id }}</td>
-                            <td>{{ title.text }}</td>
-                            <td>{{ title.text_format_ok|tick_cross }}</td>
-                            <td>
-                                <ul style="list-style-type: circle; padding-left: 5px">
-                                {% for message in title.text_format_message %}
-                                    <li>{{ message }}</li>
-                                {% endfor %}
-                                </ul>
-                            </td>
-                            <td>{{ title.used }}</td>
-                            <td>{{ title.order_ok|tick_cross }}</td>
-                            <td>{{ title.table }}</td>
+                    </thead>',
+                'columns': ['id', 'text', 'text_format_ok', 'text_format_message', 'used', 'order_ok', 'table']}
+            %}
+
+            {{ section_helper.add_section(section,
+                    {},
+                        '<tr>
+                            <td>Table Caption</td>
+                            <td>“Table Caption” Style, or equivalent style.</td>
+                            <td>Centered</td><td>10 pt</td><td>NA</td><td>NA</td><td>≥3 pt</td><td>3 pt</td><td>NA</td>
                         </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-                {% if table_titles %}
-                <details open style="padding:5px;border:1px lightgray solid;border-radius:5px">
-                    <summary>Style Breakdown for {{ summary['Tables']['title'] }}</summary>
-                    <table class="table is-bordered">
-                        <thead>
-                            <tr>
-                                <th rowspan="2" width="30%" style="text-align:center">Text</th>
-                                <th colspan="8" width="70%" style="text-align:center">Style</th>
-                            </tr>
-                            <tr>
-                                <th width="20%">Font Name</th>
-                                <th width="8%">Alignment</th>
-                                <th width="8%">Font Size</th>
-                                <th width="8%">Bold</th>
-                                <th width="8%">Italic</th>
-                                <th width="8%">Space Before</th>
-                                <th width="8%">Space After</th>
-                                <th width="5%">Ok</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for item in table_titles %}
-                            <tr>
-                                <td>{{ item.text }}</td>
-                                <td>{{ item.style }}</td>
-                                <td {% if 'should be' in item.alignment|string %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ item.alignment }}</td>
-                                <td {% if 'should be' in item.font_size|string %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ item.font_size }}</td>
-                                <td {% if 'should be' in item.bold|string %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ item.bold }}</td>
-                                <td {% if 'should be' in item.italic|string %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ item.italic }}</td>
-                                <td {% if 'should be' in item.space_before|string %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ item.space_before }}</td>
-                                <td {% if 'should be' in item.space_after|string %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ item.space_after }}</td>
-                                <td {% if item.style_ok == False %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ item.style_ok|tick_cross }}</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </details>
-                {% endif %}
-            </div>
+                        <tr>
+                            <td>Table Caption Multi Line</td>
+                            <td>“Table Caption Multi Line” Style, or equivalent style.</td>
+                            <td>Justified</td><td>10 pt</td><td>NA</td><td>NA</td><td>≥3 pt</td><td>3 pt</td><td>NA</td>
+                        </tr>',
+                    '<ul>
+                        <li>Table captions are actually titles, this means that they are in Title Case, and don’t have a “.” At the end, well unless exceeds 2 lines.</li>
+                        <li>The table caption is centred if 1 line (“Table Caption” Style), and Justified if 2 or more (“Table Caption Multi Line” Style.  The table caption must appear above the Table.</li>
+                        <li>All tables must be numbered in the order they appear in the document and not skip a number in the sequence.</li>
+                        <li>All tables start with “Table n:”.</li>
+                        <li>All tables must be referred to in the main text and use “Table n”. </li>
+                    </ul>',
+                    extra_info, True) }}
+
             {% if summary['SPMS'] %}
             <div class="box" style="box-shadow: 0 4px 6px rgba(0, 0, 255, 0.1), 0 0 0 2px rgba(0, 0, 255, 0.1)">
                 <a href="#top">Top <i class="fas fa-arrow-circle-up"></i></a>

@@ -2,17 +2,17 @@
  <div class="box" style="box-shadow: 0 4px 6px rgba(0, 0, 255, 0.1), 0 0 0 2px rgba(0, 0, 255, 0.1)">
     <a href="#top">Top <i class="fas fa-arrow-circle-up"></i></a>
     <h2 class="subtitle" style="padding:10px;background-color:#{{ section['ok']|status_type_background }}">
-        <a name="{{section['anchor'] }}"></a>{{ section['ok']|tick_cross }} {{ section['title'] }}
+        <a name="{{section['anchor'] }}"></a>{{ section['ok']|tick_cross }} {{ section['title'] }} {% if section.showTotal %} ({{ section.details|length }}){% endif %}
     </h2>
     {% if rules or extra_rules %}
     <details style="border:1px lightgray solid;border-radius:2px">
         <summary style="padding:5px;border: 1px solid grey;border-radius:2px; background-color:#fcfcfc">Rules for {{ section['title'] }}</summary>
         <div style="padding-left:20px"> {{ extra_rules|safe }}</div>
         {% if rules %}
-        <table class="table is-bordered">
+        <table class="table is-bordered" style="width:100%">
             <thead>
                 <tr>
-                    <th>Type</th><th>Details</th><th>Alignment</th><th>Font Size</th><th>Font Style</th><th>Case</th><th>Space Before</th><th>Space After</th>
+                    <th>Type</th><th>Details</th><th>Alignment</th><th>Font Size</th><th>Font Style</th><th>Case</th><th>Space Before</th><th>Space After</th><th>First Line Indent</th>
                 </tr>
             </thead>
             {{ rules|safe }}
@@ -21,21 +21,26 @@
     </details>
     <br/>
     {% endif %}
-    {% if extra_info %}
+    {% if 'ok' in extra_info %}
         <details {% if extra_info['ok'] == false %} open {% endif %} style="border:1px lightgray solid;border-radius:2px">
         <summary style="padding:5px;border:1px solid grey;border-radius:2px; background-color:#fcfcfc">{{ extra_info['title'] }} for {{ section['title'] }}</summary>
-        {{ make_table(section['details'], extra_info['headers'], extra_info['columns']) }}
+            {% if extra_info['multi'] %}
+                {{ make_table_multi(section['details'], extra_info['headers'], extra_info['columns']) }}
+            {%  else %}
+                {{ make_table(section['details'], extra_info['headers'], extra_info['columns']) }}
+            {% endif %}
         </details>
         <br/>
+    {% elif extra_info %}
+        {{ extra_info }}
     {% endif %}
     {% if show_styles %}
     <details {% if section['ok'] == false %} open {% endif %} style="border:1px lightgray solid;border-radius:2px">
-    <summary style="padding:5px;border: 1px solid grey;border-radius:2px; background-color:#fcfcfc">Style Breakdown for {{ section['title'] }}</summary>
-    <table class="table is-bordered">
-        <thead>
+        <summary style="padding:5px;border: 1px solid grey;border-radius:2px; background-color:#fcfcfc">Style Breakdown for {{ section['title'] }}</summary>
+        {% set headers = '<thead>
             <tr>
                 <th rowspan="2" width="30%" style="text-align:center">Text</th>
-                <th colspan="8" width="70%" style="text-align:center">Style</th>
+                <th colspan="9" width="70%" style="text-align:center">Style</th>
             </tr>
             <tr>
                 <th width="20%">Font Name</th>
@@ -45,49 +50,72 @@
                 <th width="8%">Italic</th>
                 <th width="8%">Space Before</th>
                 <th width="8%">Space After</th>
+                <th width="8%">First Line Indent</th>
                 <th width="5%">Ok</th>
             </tr>
-        </thead>
-        <tbody>
-            {% for item in section['details'] %}
-            <tr>
-                <td title="{{ item.text }}">{% if args['truncate_text'] %}{{ item.text|truncate(100) }} {% else %} {{ item.text }} {% endif %}</td>
-                <td>{{ item.style }}</td>
-                <td {% if 'should be' in item.alignment|string %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ item.alignment }}</td>
-                <td {% if 'should be' in item.font_size|string %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ item.font_size }}</td>
-                <td {% if 'should be' in item.bold|string %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ item.bold }}</td>
-                <td {% if 'should be' in item.italic|string %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ item.italic }}</td>
-                <td {% if 'should be' in item.space_before|string %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ item.space_before }}</td>
-                <td {% if 'should be' in item.space_after|string %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ item.space_after }}</td>
-                <td {% if item.style_ok == False %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ item.style_ok|tick_cross }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+        </thead>' %}
+        {% set columns = ['text','style','alignment','font_size','bold','italic','space_before','space_after','first_line_indent','style_ok'] %}
+        {% if args['style_multi'] %}
+            {{ make_table_multi(section['details'], headers, columns, true, args) }}
+        {% else %}
+            {{ make_table(section['details'], headers, columns, true, args) }}
+        {% endif %}
     </details>
     {% endif %}
 </div>
 {%- endmacro %}
 
-{% macro make_table(data, headers, columns, show_errors) -%}
-    <table class="table is-bordered">
+{% macro make_table(data, headers, columns, show_errors, args={}) -%}
+    <table class="table is-bordered" style="width:100%">
         {{ headers|safe }}
         {% for row in data %}
             <tr>
             {% for col in columns %}
                 {% set value = row[col] %}
-                {% if col == 'loop.index' %}
-                    <td>{{ loop.index }}</td>
-                {% elif value is sameas true or value is sameas false %}
-                    <td {% if value == false %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}> {{ value|tick_cross }}</td>
-                 {%  elif show_errors %}
-                    <td {% if 'should be' in value|string %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ value }}</td>
-                {% else %}
-                    <td>{{ value }}</td>
-                {% endif %}
-                </td>
+                {{ make_cell(col, value, loop, args) }}
             {% endfor %}
             </tr>
         {% endfor %}
     </table>
+{%- endmacro %}
+
+{% macro make_table_multi(data, headers, columns, show_errors, args={}) -%}
+    <table class="table is-bordered" style="width:100%">
+        {{ headers|safe }}
+        {% for id, id_row in data.items() %}
+            {% for item in id_row %}
+            <tr>
+            {% for col in columns %}
+                {% set value = item[col] %}
+                {% if col == 'id' %}
+                    {% set value = id %}
+                {% endif %}
+                {{ make_cell(col, value, loop, args) }}
+            {% endfor %}
+            </tr>
+            {% endfor %}
+        {% endfor %}
+    </table>
+{%- endmacro %}
+
+{% macro make_cell(col, value, loop, args) -%}
+    {% if col == 'loop.index' %}
+        <td>{{ loop.index }}</td>
+    {% elif col == 'text' %}
+        <td title="{{ value }}">{% if args['truncate_text'] %}{{ value|truncate(100) }} {% else %} {{ value }} {% endif %}</td>
+    {% elif 'ok' in col|string and value is sameas true or value is sameas false %}
+        <td {% if value == false %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}> {{ value|tick_cross }}</td>
+    {% elif value is iterable and value is not string %}
+        <td>
+            <ul style="list-style-type: circle; padding-left: 5px">
+            {% for item in value %}
+                <li>{{ item }}</li>
+            {% endfor %}
+            </ul>
+        </td>
+    {% elif show_errors %}
+        <td {% if 'should be' in value|string %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ value }}</td>
+    {% else %}
+        <td>{{ value }}</td>
+    {% endif %}
 {%- endmacro %}
