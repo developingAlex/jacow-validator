@@ -50,7 +50,9 @@ National Synchrotron Radiation Research Center, Hsinchu, Taiwan, R.O.C`
     """
     potential_authors = text.replace(' and ', ', ').split(', ')
     filtered_authors = list()
-    my_name_pattern = re.compile("(\\w\\.\\ ?)+([\\w]{2,}\\ ?)+")
+    my_name_pattern = re.compile("(-?\\w\\.\\ ?)+([\\w]{2,}\\ ?)+")
+    # the allowance of an optional hyphen preceding an initial is to satisfy a
+    # common pattern observed with the papers coming out of asia.
     for author in potential_authors:
         if my_name_pattern.match(author):   # match has an implied ^ at the start
             # which is ok for our purposes.

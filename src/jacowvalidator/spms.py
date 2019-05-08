@@ -129,8 +129,8 @@ def get_author_list_report(docx_text, spms_text):
     spms_list = get_author_list(spms_text)
     # create a copy of spms_list and docx_list so that we can remove items
     #  without mutating the originals:
-    fixed_spms_list = insert_spaces_after_periods(spms_list)
-    fixed_docx_list = remove_asterisks_from_str_list(insert_spaces_after_periods(docx_list))
+    fixed_spms_list = normalize_author_names(spms_list)
+    fixed_docx_list = normalize_author_names(docx_list)
     spms_authors_to_check = clone_list(fixed_spms_list)
     results = list()
     all_authors_match = True
@@ -140,13 +140,13 @@ def get_author_list_report(docx_text, spms_text):
             spms_authors_to_check.remove(author)
         else:
             all_authors_match = False
-            results.append({'match': False, 'docx': author, 'spms': spms_text})
+            results.append({'match': False, 'docx': author, 'spms': ''})
 
     # by now any authors remaining in the spms_authors_to_check list are ones
     # that had no matching author in the docx list:
     for author in spms_authors_to_check:
         all_authors_match = False
-        results.append({'match': False, 'docx': docx_text, 'spms': author})
+        results.append({'match': False, 'docx': '', 'spms': author})
 
     return results, all_authors_match
 
@@ -167,9 +167,12 @@ def insert_spaces_after_periods(author_list_to_adjust):
     return new_list
 
 
-def remove_asterisks_from_str_list(author_list_to_clean):
+def normalize_author_names(author_list_to_clean):
     new_list = list()
-    for author in author_list_to_clean:
-        fixed_author = author.strip('*')
-        new_list.append(fixed_author)
+    for author in insert_spaces_after_periods(author_list_to_clean):
+        # ignore asterisks when comparing:
+        fixed_author = author.replace('*', '')
+        # ignore hyphens when comparing:
+        fixed_author = fixed_author.replace('-', '')
+        new_list.append(fixed_author.strip())
     return new_list

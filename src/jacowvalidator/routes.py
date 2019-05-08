@@ -217,7 +217,7 @@ def upload():
 
             if "URL_TO_JACOW_REFERENCES_CSV" in os.environ:
                 reference_csv_url = os.environ["URL_TO_JACOW_REFERENCES_CSV"]
-            author_text = ''.join([a['text'] for a in authors])
+            author_text = ''.join([a['text']+", " for a in authors])
             reference_csv_details = reference_csv_check(paper_name, title['text'], author_text)
             summary['SPMS'] = {
                 'title': 'Jacow References',
