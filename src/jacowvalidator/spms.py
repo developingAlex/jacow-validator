@@ -174,5 +174,5 @@ def normalize_author_names(author_list_to_clean):
         fixed_author = author.replace('*', '')
         # ignore hyphens when comparing:
         fixed_author = fixed_author.replace('-', '')
-        new_list.append(fixed_author)
+        new_list.append(fixed_author.strip())
     return new_list
