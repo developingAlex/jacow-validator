@@ -429,11 +429,11 @@
                 <details style="padding:5px;border:1px lightgray solid;border-radius:5px">
                     <summary>Rules for {{ summary['Paragraphs']['title'] }}</summary>
                     <table class="table is-bordered">
-                        <thead><th>Type</th><th>Details</th><th>Font Size</th><th>Space Before</th><th>Space After</th><th>First Line Indent</th></thead>
+                        <thead><th>Type</th><th>Details</th><th>Alignment</th><th>Font Size</th><th>Space Before</th><th>Space After</th><th>First Line Indent</th></thead>
                         <tr>
                             <td>Paragraph</td>
                             <td>“JACoW_Body Text Indent” Style, or equivalent style.</td>
-                            <td>10 pt</td><td>≥3 pt</td><td>3 pt</td><td>0.33cm or 9.35pt</td>
+                            <td>Justified</td><td>10 pt</td><td>≥3 pt</td><td>3 pt</td><td>0.33cm or 9.35pt</td>
                         </tr>
                     </table>
                 </details>
@@ -493,7 +493,7 @@
                     <li>All references must be numbered [n] and have a tab between the ] and the start of the reference text. (note many authors put spaces in which stuffs up the spacing.</li>
                     </ul>
                     <table class="table is-bordered">
-                        <thead><th>Type</th><th>Details</th><td>Alignment</td><th>Font Size</th><th>Space Before</th><th>Space After</th><th>Indent</th><th>Hanging Indent</th></thead>
+                        <thead><th>Type</th><th>Details</th><th>Alignment</th><th>Font Size</th><th>Space Before</th><th>Space After</th><th>Indent</th><th>Hanging Indent</th></thead>
                         <tr>
                             <td>Reference</td>
                             <td>“JACoW_References when ≤ 9” Style, or equivalent style.</td><td>Justified</td>
@@ -603,7 +603,7 @@
                         <tr>
                             <th>No.</th>
                             <th colspan="2">Caption</th>
-                            <th>Duplicate</th>
+                            <th>Unique</th>
                             <th colspan="2">References</th>
                             <th width="30%">Text</th>
                         </tr>
@@ -615,7 +615,7 @@
                                 <td>{{ id }}</td>
                                 <td style="white-space: nowrap">{{ fig.name }}</td>
                                 <td>{{ fig.caption_ok|tick_cross }}</td>
-                                <td>{{ fig.duplicate|tick_cross }}</td>
+                                <td>{{ fig.unique|tick_cross }}</td>
                                 <td>{{ fig.refs|join(', ') }}</td>
                                 <td>{{ fig.used|tick_cross }}</td>
                                 <td>{{ fig.text }}</td>

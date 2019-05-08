@@ -6,11 +6,11 @@ PARAGRAPH_DETAILS = {
         'jacow': 'JACoW_Body Text Indent',
         'normal': 'Body Text Indent',
     },
+    'alignment': 'JUSTIFY',
     'font_size': 10.0,
     'space_before': ['>=', 3.0],
     'space_after': 3.0,
-    'first_line_indent': 9.35
-    # 0.33cm indent firstline
+    'first_line_indent': 9.35  # 0.33cm
 }
 
 

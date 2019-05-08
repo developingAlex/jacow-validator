@@ -97,7 +97,7 @@ def extract_figures(doc):
             figures[i].append({
                 'id': i,
                 'refs': refs,
-                'duplicate': len(caption) != 1,
+                'unique': len(caption) == 1,
                 'found': len(caption) > 0,
                 'caption_ok': len(caption) == 1 and c['name'].endswith(':'),
                 'used': len(refs) > 0
@@ -108,7 +108,7 @@ def extract_figures(doc):
                 figure = {
                     'id': i,
                     'refs': refs,
-                    'duplicate': len(caption) != 1,
+                    'unique': len(caption) == 1,
                     'found': len(caption) > 0,
                     'caption_ok': len(caption) == 1 and c['name'].endswith(':'),
                     'used': len(refs) > 0
