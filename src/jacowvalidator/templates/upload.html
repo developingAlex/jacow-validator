@@ -16,6 +16,7 @@
         {% endif %}
 
         {% if processed %}
+            {% import "section_macro.html" as section_helper %}
             <div class="container">
             <h1 class="title"><a name="top"/>Report for {{ filename }}</h1>
 
@@ -45,47 +46,31 @@
                 {% endif %}
             </div>
 
-            <div class="box" style="box-shadow: 0 4px 6px rgba(0, 0, 255, 0.1), 0 0 0 2px rgba(0, 0, 255, 0.1)">
-                <h2 class="subtitle" style="padding:10px;background-color:#{{ summary['Styles']['ok']|status_type_background }}">
-                    <a name="{{ summary['Styles']['anchor'] }}"></a>{{ summary['Styles']['ok']|tick_cross }} JACoW Styles
-                </h2>
-                <details style="padding:5px;border:1px lightgray solid;border-radius:5px">
-                    <summary>Rules for {{ summary['Styles']['title'] }}</summary>
-                    <div style="padding-left:10px">
-                    <p>The latest JACoW Template must be used.<br/>
-                        Standard JACoW Style’s must embedded in the document.</p>
-                    </div>
-                </details>
-                <br/>
-                <details style="padding:5px;border:1px lightgray solid;border-radius:5px">
-                    <table class="table is-bordered">
-                        <thead>
-                            <tr>
-                                <th>Style</th>
-                                <th>Embedded in Document</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for style, style_ok in jacow_styles.items() %}
-                            <tr>
-                                <td>{{ style }}</td>
-                                <td>{{ style_ok|tick_cross }}</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </details>
-            </div>
+            {% set section = summary['Styles'] %}
+            {% set extra_info = {'ok':section['ok'],'title':'Style Breakdown', 'headers': '<thead><tr>
+                            <th>Style</th><th>Embedded in Document</th>
+                        </tr></thead>',
+                'columns': ['style', 'style_ok']}
+            %}
+            {{ section_helper.add_section(section,
+                    [],
+                    '',
+                    '<p>The latest JACoW Template must be used.<br/>
+                        Standard JACoW Style’s must embedded in the document.</p>',
+                    extra_info, False) }}
 
-            <div class="box" style="box-shadow: 0 4px 6px rgba(0, 0, 255, 0.1), 0 0 0 2px rgba(0, 0, 255, 0.1)">
-                <a href="#top">Top <i class="fas fa-arrow-circle-up"></i></a>
-                <h2 class="subtitle" style="padding:10px;background-color:#{{ summary['Margins']['ok']|status_type_background }}">
-                    <a name="{{ summary['Margins']['anchor'] }}"></a>{{ summary['Margins']['ok']|tick_cross }} Page Size and Margins
-                </h2>
-                <details style="padding:5px;border:1px lightgray solid;border-radius:5px">
-                    <summary>Rules for {{ summary['Margins']['title'] }}</summary>
-                    <div style="padding-left:10px">
-                    <h3 class="subtitle is-6">Documents MUST be based on A4 or US Letter</h3>
+            {% set section = summary['Margins'] %}
+            {% set extra_info = {'ok':section['ok'],'title':'Style Breakdown', 'headers': '<thead><tr>
+                            <th>Section</th><th>Page Size</th><th colspan="2">Margins</th>
+                            <th>Columns</th><th colspan="2">Column Gutter (cm)</th>
+                        </tr> </thead>',
+                'columns': ['loop.index', 'page_size', 'margins', 'margins_ok', 'col_number', 'col_gutter', 'col_ok']}
+            %}
+
+            {{ section_helper.add_section(section,
+                    [],
+                    '',
+                    '<h3 class="subtitle is-6">Documents MUST be based on A4 or US Letter</h3>
                     <table class="table is-bordered">
                         <thead><tr><th colspan="2">A4</th></tr></thead>
                         <tbody>
@@ -104,35 +89,8 @@
                         <tr><td>Right</td><td>1.02in</td></tr>
                         </tbody>
                     </table>
-                    Check gutter setting (Space between columns), for all section with more than 1 column, should be 0.51cm.
-                    </div>
-                </details>
-                <br/>
-                <table class="table is-bordered">
-                    <thead>
-                        <tr>
-                            <th>Section</th>
-                            <th>Page Size</th>
-                            <th colspan="2">Margins</th>
-                            <th>Columns</th>
-                            <th colspan="2">Column Gutter (cm)</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for page_size, margins_ok, margins, cols in sections %}
-                        <tr>
-                            <td>{{ loop.index }}</td>
-                            <td>{{ page_size }}</td>
-                            <td>{{ margins }}</td>
-                            <td>{{ margins_ok|tick_cross }}</td>
-                            <td>{{ cols[0] }}</td>
-                            <td>{{ cols[1] }}</td>
-                            <td>{{ cols[2]|tick_cross }}</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+                    Check gutter setting (Space between columns), for all section with more than 1 column, should be 0.51cm.',
+                    extra_info, False) }}
 
             <div class="box" style="box-shadow: 0 4px 6px rgba(0, 0, 255, 0.1), 0 0 0 2px rgba(0, 0, 255, 0.1)">
                 <a href="#top">Top <i class="fas fa-arrow-circle-up"></i></a>
@@ -183,190 +141,49 @@
                 {% endif %}
             </div>
 
-            <div class="box" style="box-shadow: 0 4px 6px rgba(0, 0, 255, 0.1), 0 0 0 2px rgba(0, 0, 255, 0.1)">
-                <a href="#top">Top <i class="fas fa-arrow-circle-up"></i></a>
-                <h2 class="subtitle" style="padding:10px;background-color:#{{ summary['Title']['ok']|status_type_background }}">
-                    <a name="{{ summary['Title']['anchor'] }}"></a>{{ summary['Title']['ok']|tick_cross }} Title
-                </h2>
-                <details style="padding:5px;border:1px lightgray solid;border-radius:5px">
-                    <summary>Rules for {{ summary['Title']['title'] }}</summary>
-                    <table class="table is-bordered">
-                        <thead>
-                            <tr>
-                                <th>Type</th><th>Details</th><th>Alignment</th><th>Font Size</th><th>Font Style</th><th>Case</th><th>Space Before</th><th>Space After</th>
-                            </tr>
-                        </thead>
-                        <tr>
-                            <td>PAPER TITLE</td>
-                            <td>“JACoW_Paper Title” Style, or equivalent style.</td>
-                            <td>Centered</td><td>14 pt</td><td>Bold</td><td>Title should contain greater than 70% of CAPITAL Letters, can’t be simple Title Case.</td><td>0 pt</td><td>3 pt</td>
-                        </tr>
-                    </table>
-                </details>
-                <br/>
-                {% if not title.case_ok %}<p class="has-text-weight-bold has-text-danger">Title should be atleast 70% uppercase</p>{% endif %}
-                <table class="table is-bordered">
-                    <thead>
-                        <tr>
-                            <th colspan="2" width="30%" style="text-align:center">Text</th>
-                            <th colspan="8" width="70%" style="text-align:center">Style</th>
-                        </tr>
-                        <tr>
-                            <th width="25%"></th>
-                            <th width="5%">Case Ok</th>
-                            <th width="20%">Font Name</th>
-                            <th width="8%">Alignment</th>
-                            <th width="8%">Font Size</th>
-                            <th width="8%">Bold</th>
-                            <th width="8%">Italic</th>
-                            <th width="8%">Space Before</th>
-                            <th width="8%">Space After</th>
-                            <th width="5%">Ok</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>{{ title.text }}</td>
-                            <td>{{ title.case_ok|tick_cross }}</td>
-                            <td>{{ title.style }}</td>
-                            <td {% if 'should be' in title.alignment|string %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ title.alignment }}</td>
-                            <td {% if 'should be' in title.font_size|string %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ title.font_size }}</td>
-                            <td {% if 'should be' in title.bold|string %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ title.bold }}</td>
-                            <td {% if 'should be' in title.italic|string %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ title.italic }}</td>
-                            <td {% if 'should be' in title.space_before|string %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ title.space_before }}</td>
-                            <td {% if 'should be' in title.space_after|string %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ title.space_after }}</td>
-                            <td {% if title.style_ok == False %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ title.style_ok|tick_cross }}</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+            {% set section = summary['Title'] %}
+                {% if not title.case_ok %}
+                {% set extra_info = '<p class="has-text-weight-bold has-text-danger">Title should be at least 70% uppercase</p>' %}
+            {% else %}
+                {% set extra_info = '' %}
+            {% endif %}
+            {{ section_helper.add_section(section,
+                    [],
+                    '<tr>
+                        <td>PAPER TITLE</td>
+                        <td>“JACoW_Paper Title” Style, or equivalent style.</td>
+                        <td>Centered</td><td>14 pt</td><td>Bold</td><td>Title should contain greater than 70% of CAPITAL Letters, can’t be simple Title Case.</td><td>0 pt</td><td>3 pt</td>
+                    </tr>',
+                    '',
+                    extra_info) }}
 
-            <div class="box" style="box-shadow: 0 4px 6px rgba(0, 0, 255, 0.1), 0 0 0 2px rgba(0, 0, 255, 0.1)">
-                <a href="#top">Top <i class="fas fa-arrow-circle-up"></i></a>
-                <h2 class="subtitle" style="padding:10px;background-color:#{{ summary['Authors']['ok']|status_type_background }}">
-                    <a name="{{ summary['Authors']['anchor'] }}"></a>{{ summary['Authors']['ok']|tick_cross }} Authors
-                </h2>
-                <details style="padding:5px;border:1px lightgray solid;border-radius:5px">
-                    <summary>Rules for {{ summary['Authors']['title'] }}</summary>
-                    <table class="table is-bordered">
-                        <thead>
-                            <tr>
-                                <th>Type</th><th>Details</th><th>Alignment</th><th>Font Size</th><th>Font Style</th><th>Case</th><th>Space Before</th><th>Space After</th>
-                            </tr>
-                        </thead>
-                        <tr>
-                            <td>Author List</td>
-                            <td>“JACoW_Author Title” Style, or equivalent style.</td>
-                            <td>Centered</td><td>12 pt</td><td>None</td><td>UPPER and lowercase</td><td>9 pt</td><td>12 pt</td>
-                        </tr>
-                    </table>
-                </details>
-                <br/>
-                <table class="table is-bordered">
-                    <thead>
-                        <tr>
-                            <th rowspan="2" width="30%" style="text-align:center">Text</th>
-                            <th colspan="8" width="70%" style="text-align:center">Style</th>
-                        </tr>
-                        <tr>
-                            <th width="20%">Font Name</th>
-                            <th width="8%">Alignment</th>
-                            <th width="8%">Font Size</th>
-                            <th width="8%">Bold</th>
-                            <th width="8%">Italic</th>
-                            <th width="8%">Space Before</th>
-                            <th width="8%">Space After</th>
-                            <th width="5%">Ok</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for item in authors %}
-                        <tr>
-                            <td>{{ item.text }}</td>
-                            <td>{{ item.style }}</td>
-                            <td {% if 'should be' in item.alignment|string %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ item.alignment }}</td>
-                            <td {% if 'should be' in item.font_size|string %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ item.font_size }}</td>
-                            <td {% if 'should be' in item.bold|string %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ item.bold }}</td>
-                            <td {% if 'should be' in item.italic|string %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ item.italic }}</td>
-                            <td {% if 'should be' in item.space_before|string %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ item.space_before }}</td>
-                            <td {% if 'should be' in item.space_after|string %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ item.space_after }}</td>
-                            <td {% if item.style_ok == False %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ item.style_ok|tick_cross }}</td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
-                <br/>
-            </div>
+            {% set section = summary['Authors'] %}
+            {{ section_helper.add_section(section,
+                    [],
+                    '<tr>
+                        <td>Author List</td>
+                        <td>“JACoW_Author Title” Style, or equivalent style.</td>
+                        <td>Centered</td><td>12 pt</td><td>None</td><td>UPPER and lowercase</td><td>9 pt</td><td>12 pt</td>
+                    </tr>',
+                    '') }}
 
-
-            <div class="box" style="box-shadow: 0 4px 6px rgba(0, 0, 255, 0.1), 0 0 0 2px rgba(0, 0, 255, 0.1)">
-                <a href="#top">Top <i class="fas fa-arrow-circle-up"></i></a>
-                <h2 class="subtitle" style="padding:10px;background-color:#{{ summary['Abstract']['ok']|status_type_background }}">
-                    <a name="abstract"></a>{{ summary['Abstract']['ok']|tick_cross }} Abstract Heading
-                </h2>
-                <details style="padding:5px;border:1px lightgray solid;border-radius:5px">
-                    <summary>Rules for {{ summary['Abstract']['title'] }}</summary>
-                    <ul>
+            {% set section = summary['Abstract'] %}
+            {{ section_helper.add_section(section,
+                    [],
+                    '<tr>
+                        <td>Abstract_Heading</td>
+                        <td>“JACoW_Abstract_Heading” Style, or equivalent style.</td>
+                        <td>Left or None</td><td>12 pt</td><td>Italic</td><td></td><td>0 pt</td><td>3 pt</td>
+                    </tr>',
+                    '<ul>
                         <li>Must Say Abstract</li>
                         <li>Be in the “JACoW_Abstract_Heading” style.</li>
-                    </ul>
-                    <table class="table is-bordered">
-                        <thead>
-                            <tr>
-                                <th>Type</th><th>Details</th><th>Alignment</th><th>Font Size</th><th>Font Style</th><th>Case</th><th>Space Before</th><th>Space After</th>
-                            </tr>
-                        </thead>
-                        <tr>
-                            <td>Abstract_Heading</td>
-                            <td>“JACoW_Abstract_Heading” Style, or equivalent style.</td>
-                            <td>Left or None</td><td>12 pt</td><td>Italic</td><td></td><td>0 pt</td><td>3 pt</td>
-                        </tr>
-                    </table>
-                </details>
-                <br/>
-                <table class="table is-bordered">
-                    <thead>
-                        <tr>
-                            <th rowspan="2" width="30%" style="text-align:center">Text</th>
-                            <th colspan="8" width="70%" style="text-align:center">Style</th>
-                        </tr>
-                        <tr>
-                            <th width="20%">Font Name</th>
-                            <th width="8%">Alignment</th>
-                            <th width="8%">Font Size</th>
-                            <th width="8%">Bold</th>
-                            <th width="8%">Italic</th>
-                            <th width="8%">Space Before</th>
-                            <th width="8%">Space After</th>
-                            <th width="5%">Ok</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>{{ abstract.text }}</td>
-                            <td>{{ abstract.style }}</td>
-                            <td {% if 'should be' in abstract.alignment|string %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ abstract.alignment }}</td>
-                            <td {% if 'should be' in abstract.font_size|string %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ abstract.font_size }}</td>
-                            <td {% if 'should be' in abstract.bold|string %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ abstract.bold }}</td>
-                            <td {% if 'should be' in abstract.italic|string %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ abstract.italic }}</td>
-                            <td {% if 'should be' in abstract.space_before|string %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ abstract.space_before }}</td>
-                            <td {% if 'should be' in abstract.space_after|string %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ abstract.space_after }}</td>
-                            <td {% if abstract.style_ok == False %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ abstract.style_ok|tick_cross }}</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+                    </ul>') }}
 
-            <div class="box" style="box-shadow: 0 4px 6px rgba(0, 0, 255, 0.1), 0 0 0 2px rgba(0, 0, 255, 0.1)">
-                <a href="#top">Top <i class="fas fa-arrow-circle-up"></i></a>
-                <h2 class="subtitle" style="padding:10px;background-color:#{{ summary['Headings']['ok']|status_type_background }}">
-                    <a name="{{ summary['Headings']['anchor'] }}"></a>{{ summary['Headings']['ok']|tick_cross }} Headings
-                </h2>
-                <details style="padding:5px;border:1px lightgray solid;border-radius:5px">
-                    <summary>Rules for {{ summary['Headings']['title'] }}</summary>
-                    <table class="table is-bordered">
-                        <thead><tr><th>Type</th><th>Details</th><th>Alignment</th><th>Font Size</th><th>Font Style</th><th>Case</th><th>Space Before</th><th>Space After</th></tr></thead>
-                        <tr>
+            {% set section = summary['Headings'] %}
+            {{ section_helper.add_section(section,
+                        [],
+                        '<tr>
                             <td>SECTION  HEADING</td>
                             <td>“JACoW_Section Heading” Style, or equivalent style.</td>
                             <td>Centered</td><td>12 pt</td><td>Bold</td><td>All Caps where appropriate</td><td>9 pt</td><td>3 pt</td>
@@ -380,114 +197,18 @@
                             <td>Third Level Heading</td>
                             <td>“JACoW_Third-Level Heading” Style, or equivalent style</td>
                             <td>Left or None</td><td>10 pt</td><td>Bold</td><td>Title Case, and run into the paragraph.</td><td>6 pt</td><td>0 pt</td>
-                        </tr>
-                    </table>
-                </details>
-                <br/>
-                <details open="{{  summary['Headings']['ok'] }}" style="padding:5px;border:1px lightgray solid;border-radius:5px">
-                <summary>Style Breakdown for {{ summary['Headings']['title'] }}</summary>
-                <table class="table is-bordered">
-                    <thead>
-                        <tr>
-                            <th rowspan="2" width="30%" style="text-align:center">Text</th>
-                            <th colspan="8" width="70%" style="text-align:center">Style</th>
-                        </tr>
-                        <tr>
-                            <th width="20%">Font Name</th>
-                            <th width="8%">Alignment</th>
-                            <th width="8%">Font Size</th>
-                            <th width="8%">Bold</th>
-                            <th width="8%">Italic</th>
-                            <th width="8%">Space Before</th>
-                            <th width="8%">Space After</th>
-                            <th width="5%">Ok</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for item in headings %}
-                        <tr>
-                            <td>{{ item.text }}</td>
-                            <td>{{ item.style }}</td>
-                            <td {% if 'should be' in item.alignment|string %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ item.alignment }}</td>
-                            <td {% if 'should be' in item.font_size|string %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ item.font_size }}</td>
-                            <td {% if 'should be' in item.bold|string %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ item.bold }}</td>
-                            <td {% if 'should be' in item.italic|string %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ item.italic }}</td>
-                            <td {% if 'should be' in item.space_before|string %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ item.space_before }}</td>
-                            <td {% if 'should be' in item.space_after|string %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ item.space_after }}</td>
-                            <td {% if item.style_ok == False %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ item.style_ok|tick_cross }}</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-                </details>
-            </div>
+                        </tr>') }}
 
-            <div class="box" style="box-shadow: 0 4px 6px rgba(0, 0, 255, 0.1), 0 0 0 2px rgba(0, 0, 255, 0.1)">
-                <a href="#top">Top <i class="fas fa-arrow-circle-up"></i></a>
-                <h2 class="subtitle" style="padding:10px;background-color:#{{ summary['Paragraphs']['ok']|status_type_background }}">
-                    <a name="{{ summary['Paragraphs']['anchor'] }}"></a>{{ summary['Paragraphs']['ok']|tick_cross }} {{ summary['Paragraphs']['title'] }}
-                </h2>
-                <details style="padding:5px;border:1px lightgray solid;border-radius:5px">
-                    <summary>Rules for {{ summary['Paragraphs']['title'] }}</summary>
-                    <table class="table is-bordered">
-                        <thead>
-                            <tr>
-                                <th>Type</th>
-                                <th>Details</th>
-                                <th>Alignment</th>
-                                <th>Font Size</th>
-                                <th>Space Before</th>
-                                <th>Space After</th>
-                                <th>First Line Indent</th>
-                            </tr>
-                        </thead>
-                        <tr>
+            {% set section = summary['Paragraphs'] %}
+            {{ section_helper.add_section(section,
+                        {'truncate_text':True},
+                        '<tr>
                             <td>Paragraph</td>
                             <td>“JACoW_Body Text Indent” Style, or equivalent style.</td>
                             <td>Justified</td><td>10 pt</td><td>≥3 pt</td><td>3 pt</td><td>0.33cm or 9.35pt</td>
-                        </tr>
-                    </table>
-                </details>
-                <br/>
-                <details open="{{  summary['Paragraphs']['ok'] }}" style="padding:5px;border:1px lightgray solid;border-radius:5px">
-                <summary>Style Breakdown for {{ summary['Paragraphs']['title'] }}</summary>
-                <table class="table is-bordered">
-                    <thead>
-                        <tr>
-                            <th rowspan="2" width="30%" style="text-align:center">Text</th>
-                            <th colspan="9" width="70%" style="text-align:center">Style</th>
-                        </tr>
-                        <tr>
-                            <th width="20%">Font Name</th>
-                            <th width="8%">Alignment</th>
-                            <th width="8%">Font Size</th>
-                            <th width="8%">Bold</th>
-                            <th width="8%">Italic</th>
-                            <th width="8%">Space Before</th>
-                            <th width="8%">Space After</th>
-                            <th width="8%">Left Indent</th>
-                            <th width="5%">Ok</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for item in paragraphs %}
-                        <tr>
-                            <td title="{{ item.text }}">{{ item.text|truncate(100) }}</td>
-                            <td>{{ item.style }}</td>
-                            <td {% if 'should be' in item.alignment|string %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ item.alignment }}</td>
-                            <td {% if 'should be' in item.font_size|string %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ item.font_size }}</td>
-                            <td {% if 'should be' in item.bold|string %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ item.bold }}</td>
-                            <td {% if 'should be' in item.italic|string %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ item.italic }}</td>
-                            <td {% if 'should be' in item.space_before|string %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ item.space_before }}</td>
-                            <td {% if 'should be' in item.space_after|string %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ item.space_after }}</td>
-                            <td {% if 'should be' in item.first_line_indent|string %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ item.first_line_indent }}</td>
-                            <td {% if item.style_ok == False %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ item.style_ok|tick_cross }}</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-                </details>
-            </div>
+                        </tr>') }}
+
+
 
             <div class="box" style="box-shadow: 0 4px 6px rgba(0, 0, 255, 0.1), 0 0 0 2px rgba(0, 0, 255, 0.1)">
                 <a href="#top">Top <i class="fas fa-arrow-circle-up"></i></a>

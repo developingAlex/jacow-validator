@@ -25,11 +25,11 @@ OTHER_VALID_STYLES = ['Body Text Indent', 'Normal', 'Caption', 'Heading 3']
 
 # check if th
 def check_jacow_styles(doc):
-    result = {}
+    result = []
     jacow_styles = get_jacow_styles(doc)
 
     for valid_style in VALID_STYLES:
-        result[valid_style] = valid_style in jacow_styles
+        result.append({'style': valid_style, 'style_ok': valid_style in jacow_styles})
 
     return result
 

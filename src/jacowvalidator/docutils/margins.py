@@ -5,13 +5,16 @@ from jacowvalidator.docutils.page import get_page_size, convert_twips_to_cm
 def check_sections(doc):
     sections = []
     for i, section in enumerate(doc.sections):
+        cols = get_columns(section)
         sections.append(
-            (
-                get_page_size(section),
-                check_margins(section),
-                get_margins(section),
-                get_columns(section),
-            )
+            {
+                'page_size': get_page_size(section),
+                'margins_ok': check_margins(section),
+                'margins': get_margins(section),
+                'col_number': cols[0],
+                'col_gutter': cols[1],
+                'col_ok': cols[2],
+            }
         )
     return sections
 

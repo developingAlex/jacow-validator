@@ -105,7 +105,7 @@ def upload():
             jacow_styles = check_jacow_styles(doc)
             summary['Styles'] = {
                 'title': 'JACoW Styles',
-                'ok': all([tick for _, tick in jacow_styles.items()]),
+                'ok': all([tick['style_ok'] for tick in jacow_styles]),
                 'message': 'Styles issues',
                 'details': jacow_styles,
                 'anchor': 'styles'
@@ -113,12 +113,12 @@ def upload():
 
             # get page size and margin details
             sections = check_sections(doc)
-            ok = all([tick[1] for tick in sections]) and all([tick[3][2] for tick in sections])
+            ok = all([tick['margins_ok'] for tick in sections]) and all([tick['col_ok'] for tick in sections])
             summary['Margins'] = {
                 'title': 'Page Size and Margins',
                 'ok': ok,
                 'message': 'Margins',
-                'detail': sections,
+                'details': sections,
                 'anchor': 'pagesize'
             }
 
@@ -138,7 +138,7 @@ def upload():
                 'title': 'Title',
                 'ok': title['style_ok'] and title['case_ok'],
                 'message': 'Title issues',
-                'details': title,
+                'details': [title],
                 'anchor': 'title'
             }
 
@@ -151,10 +151,10 @@ def upload():
                 'anchor': 'author'
             }
             summary['Abstract'] = {
-                'title': 'Abstract',
+                'title': 'Abstract Heading',
                 'ok': abstract['style_ok'],
                 'message': 'Abstract issues',
-                'details': abstract,
+                'details': [abstract],
                 'anchor': 'abstract'
             }
 
