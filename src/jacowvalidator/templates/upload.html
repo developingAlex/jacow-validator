@@ -803,21 +803,18 @@
                     {{ reference_csv_details['title']['spms'] }}
                 </td>
                 </tr>
-                {% if reference_csv_details['author']['report']|length == 1 and reference_csv_details['author']['report'][0]['match'] == False %}
-                <tr><td>Author</td>
+                <tr><td>Extracted Author List</td>
                     <td>
-                        {{False|tick_cross }}
+                        {{reference_csv_details['author']['match']|tick_cross }}
                     </td>
-
                     <td>
                         {{ reference_csv_details['author']['docx'] }}
                     </td>
 
                     <td>
-                        {{ reference_csv_details['author']['report'][0]['spms'] }}
+                        {{ reference_csv_details['author']['spms'] }}
                     </td>
                 </tr>
-                {% else %}
                 {% for result in reference_csv_details['author']['report'] %}
                 <tr><td>{% if loop.index0 == 0 %}Author{% endif %}</td>
                     <td>
@@ -833,7 +830,6 @@
                     </td>
                 </tr>
                 {% endfor %}
-                {% endif %}
                 </tbody>
                 </table>
             </div>
