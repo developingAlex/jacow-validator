@@ -140,13 +140,13 @@ def get_author_list_report(docx_text, spms_text):
             spms_authors_to_check.remove(author)
         else:
             all_authors_match = False
-            results.append({'match': False, 'docx': author, 'spms': spms_text})
+            results.append({'match': False, 'docx': author, 'spms': ''})
 
     # by now any authors remaining in the spms_authors_to_check list are ones
     # that had no matching author in the docx list:
     for author in spms_authors_to_check:
         all_authors_match = False
-        results.append({'match': False, 'docx': docx_text, 'spms': author})
+        results.append({'match': False, 'docx': '', 'spms': author})
 
     return results, all_authors_match
 
