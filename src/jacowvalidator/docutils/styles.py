@@ -80,7 +80,7 @@ def get_paragraph_space(paragraph):
     if after is None and paragraph.style.base_style is not None:
         after = paragraph.style.base_style.paragraph_format.space_after
     if first_line_indent is None and paragraph.style.base_style is not None:
-        left_indent = paragraph.style.base_style.paragraph_format.first_line_indent
+        first_line_indent = paragraph.style.base_style.paragraph_format.first_line_indent
 
     if paragraph.paragraph_format.space_before is not None:
         before = paragraph.paragraph_format.space_before

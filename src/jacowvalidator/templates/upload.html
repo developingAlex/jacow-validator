@@ -4,33 +4,7 @@
         <div class="container is-clearfix">
         {% if commit_sha and commit_date %}<p class="is-size-7 is-pulled-right"><b>Updated:</b> {{ commit_date.strftime('%H:%M %d/%m/%Y') }} [<b>{{ commit_sha }}</b>]</p>{% endif %}
         </div>
-        <div class="container box" style="box-shadow: 0 4px 6px rgba(0, 0, 255, 0.1), 0 0 0 2px rgba(0, 0, 255, 0.1)">
-            <form method="POST" enctype="multipart/form-data" action="{{ url_for('upload') }}">
-                <div class="columns">
-                    <div class="column">
-                        <div class="file has-name">
-                            <label class="file-label">
-                                <input id="file" class="file-input" type="file" name="document">
-                                <span class="file-cta" style="background-color:lightblue">
-                                    <span class="file-icon">
-                                        <i class="fas fa-upload"></i>
-                                    </span>
-                                    <span class="file-label" style="background-color:lightblue">
-                                        Choose a file…
-                                    </span>
-                                </span>
-                                <span id="filename" class="file-name">
-                                </span>
-                            </label>
-                        </div><br/>
-                        <button class="button" style="background-color:lightblue" type="submit">Scan</button>
-                    </div>
-                    <div class="column">
-                        <img src="{{ url_for('static', filename='cat.png')}}" width="104" height="122" alt="jacow validator logo">
-                    </div>
-                </div>
-            </form>
-        </div>
+        {% include "_fileupload.html" ignore missing %}
 
         {% if error %}
             {% if filename %}
@@ -42,20 +16,20 @@
         {% endif %}
 
         {% if processed %}
-                    <div class="container">
-            <h1 class="title">Report for {{ filename }}</h1>
+            <div class="container">
+            <h1 class="title"><a name="top"/>Report for {{ filename }}</h1>
 
-        <div class="container box" style="box-shadow: 0 4px 6px rgba(0, 0, 255, 0.1), 0 0 0 2px rgba(0, 0, 255, 0.1)">
-            <h2 class="subtitle">Summary</h2>
-            <div class="list is-hoverable">
-            {% for i, item in summary.items() %}
-               <a href="#{{ item.anchor }}" class="list-item" style="background-color:#{{ item.ok|status_type_background }}">
-                {{ item.ok|tick_cross }} {{ item.title }} {% if item.showTotal %} ({{ item.details|length }}){% endif %}
-                   {% if item.ok == False %} - {{ item.message }}{% endif %}
-               </a>
-            {% endfor%}
+            <div class="container box" style="box-shadow: 0 4px 6px rgba(0, 0, 255, 0.1), 0 0 0 2px rgba(0, 0, 255, 0.1)">
+                <h2 class="subtitle">Summary</h2>
+                <div class="list is-hoverable">
+                {% for i, item in summary.items() %}
+                   <a href="#{{ item.anchor }}" class="list-item" style="background-color:#{{ item.ok|status_type_background }}">
+                    {{ item.ok|tick_cross }} {{ item.title }} {% if item.showTotal %} ({{ item.details|length }}){% endif %}
+                       {% if item.ok == False %} - {{ item.message }}{% endif %}
+                   </a>
+                {% endfor%}
+                </div>
             </div>
-        </div>
 
             <div class="box" style="box-shadow: 0 4px 6px rgba(0, 0, 255, 0.1), 0 0 0 2px rgba(0, 0, 255, 0.1)">
                 <h2 class="subtitle"><a name="meta"></a>Word Document loaded successfully</h2>
@@ -73,7 +47,8 @@
 
             <div class="box" style="box-shadow: 0 4px 6px rgba(0, 0, 255, 0.1), 0 0 0 2px rgba(0, 0, 255, 0.1)">
                 <h2 class="subtitle" style="padding:10px;background-color:#{{ summary['Styles']['ok']|status_type_background }}">
-                    <a name="{{ summary['Styles']['anchor'] }}"></a>{{ summary['Styles']['ok']|tick_cross }} JACoW Styles</h2>
+                    <a name="{{ summary['Styles']['anchor'] }}"></a>{{ summary['Styles']['ok']|tick_cross }} JACoW Styles
+                </h2>
                 <details style="padding:5px;border:1px lightgray solid;border-radius:5px">
                     <summary>Rules for {{ summary['Styles']['title'] }}</summary>
                     <div style="padding-left:10px">
@@ -103,14 +78,16 @@
             </div>
 
             <div class="box" style="box-shadow: 0 4px 6px rgba(0, 0, 255, 0.1), 0 0 0 2px rgba(0, 0, 255, 0.1)">
+                <a href="#top">Top <i class="fas fa-arrow-circle-up"></i></a>
                 <h2 class="subtitle" style="padding:10px;background-color:#{{ summary['Margins']['ok']|status_type_background }}">
-                    <a name="{{ summary['Margins']['anchor'] }}"></a>{{ summary['Margins']['ok']|tick_cross }} Page Size and Margins</h2>
+                    <a name="{{ summary['Margins']['anchor'] }}"></a>{{ summary['Margins']['ok']|tick_cross }} Page Size and Margins
+                </h2>
                 <details style="padding:5px;border:1px lightgray solid;border-radius:5px">
                     <summary>Rules for {{ summary['Margins']['title'] }}</summary>
                     <div style="padding-left:10px">
                     <h3 class="subtitle is-6">Documents MUST be based on A4 or US Letter</h3>
                     <table class="table is-bordered">
-                        <thead><th colspan="2">A4</th></thead>
+                        <thead><tr><th colspan="2">A4</th></tr></thead>
                         <tbody>
                         <tr><td>Top</td><td>37mm</td></tr>
                         <tr><td>Bottom</td><td>19mm</td></tr>
@@ -119,7 +96,7 @@
                         </tbody>
                     </table>
                     <table class="table is-bordered">
-                        <thead><th colspan="2">US Letter</th></thead>
+                        <thead><tr><th colspan="2">US Letter</th></tr></thead>
                         <tbody>
                         <tr><td>Top</td><td>0.75in</td></tr>
                         <tr><td>Bottom</td><td>0.75in</td></tr>
@@ -158,15 +135,17 @@
             </div>
 
             <div class="box" style="box-shadow: 0 4px 6px rgba(0, 0, 255, 0.1), 0 0 0 2px rgba(0, 0, 255, 0.1)">
+                <a href="#top">Top <i class="fas fa-arrow-circle-up"></i></a>
                 <h2 class="subtitle" style="padding:10px;background-color:#{{ summary['Languages']['ok']|status_type_background }}">
-                    <a name="{{ summary['Languages']['anchor'] }}"></a>{{ summary['Languages']['ok']|tick_cross }} Languages</h2>
+                    <a name="{{ summary['Languages']['anchor'] }}"></a>{{ summary['Languages']['ok']|tick_cross }} Languages
+                </h2>
                 <details style="padding:5px;border:1px lightgray solid;border-radius:5px">
                     <summary>Rules for {{ summary['Languages']['title'] }}</summary>
                     <div style="padding-left:10px">
                     <p>Document overall language should be set to English for proofing tools.<br/>
                     Below are the codes that should be in the list</p>
                     <table class="table is-bordered">
-                        <thead><th colspan="2">English Codes</th></thead>
+                        <thead><tr><th colspan="2">English Codes</th></tr></thead>
                         <tbody>
                         <tr><td>en-GB</td><td>English (United Kingdom)</td></tr>
                         <tr><td>en-US</td><td>English (United States)</td></tr>
@@ -205,12 +184,18 @@
             </div>
 
             <div class="box" style="box-shadow: 0 4px 6px rgba(0, 0, 255, 0.1), 0 0 0 2px rgba(0, 0, 255, 0.1)">
+                <a href="#top">Top <i class="fas fa-arrow-circle-up"></i></a>
                 <h2 class="subtitle" style="padding:10px;background-color:#{{ summary['Title']['ok']|status_type_background }}">
-                    <a name="{{ summary['Title']['anchor'] }}"></a>{{ summary['Title']['ok']|tick_cross }} Title</h2>
+                    <a name="{{ summary['Title']['anchor'] }}"></a>{{ summary['Title']['ok']|tick_cross }} Title
+                </h2>
                 <details style="padding:5px;border:1px lightgray solid;border-radius:5px">
                     <summary>Rules for {{ summary['Title']['title'] }}</summary>
                     <table class="table is-bordered">
-                        <thead><th>Type</th><th>Details</th><th>Alignment</th><th>Font Size</th><th>Font Style</th><th>Case</th><th>Space Before</th><th>Space After</th></thead>
+                        <thead>
+                            <tr>
+                                <th>Type</th><th>Details</th><th>Alignment</th><th>Font Size</th><th>Font Style</th><th>Case</th><th>Space Before</th><th>Space After</th>
+                            </tr>
+                        </thead>
                         <tr>
                             <td>PAPER TITLE</td>
                             <td>“JACoW_Paper Title” Style, or equivalent style.</td>
@@ -244,25 +229,31 @@
                             <td>{{ title.text }}</td>
                             <td>{{ title.case_ok|tick_cross }}</td>
                             <td>{{ title.style }}</td>
-                            <td>{{ title.alignment }}</td>
-                            <td>{{ title.font_size }}</td>
-                            <td>{{ title.bold }}</td>
-                            <td>{{ title.italic }}</td>
-                            <td>{{ title.space_before }}</td>
-                            <td>{{ title.space_after }}</td>
-                            <td>{{ title.style_ok|tick_cross }}</td>
+                            <td {% if 'should be' in title.alignment|string %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ title.alignment }}</td>
+                            <td {% if 'should be' in title.font_size|string %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ title.font_size }}</td>
+                            <td {% if 'should be' in title.bold|string %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ title.bold }}</td>
+                            <td {% if 'should be' in title.italic|string %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ title.italic }}</td>
+                            <td {% if 'should be' in title.space_before|string %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ title.space_before }}</td>
+                            <td {% if 'should be' in title.space_after|string %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ title.space_after }}</td>
+                            <td {% if title.style_ok == False %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ title.style_ok|tick_cross }}</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
 
             <div class="box" style="box-shadow: 0 4px 6px rgba(0, 0, 255, 0.1), 0 0 0 2px rgba(0, 0, 255, 0.1)">
+                <a href="#top">Top <i class="fas fa-arrow-circle-up"></i></a>
                 <h2 class="subtitle" style="padding:10px;background-color:#{{ summary['Authors']['ok']|status_type_background }}">
-                    <a name="{{ summary['Authors']['anchor'] }}"></a>{{ summary['Authors']['ok']|tick_cross }} Authors</h2>
+                    <a name="{{ summary['Authors']['anchor'] }}"></a>{{ summary['Authors']['ok']|tick_cross }} Authors
+                </h2>
                 <details style="padding:5px;border:1px lightgray solid;border-radius:5px">
                     <summary>Rules for {{ summary['Authors']['title'] }}</summary>
                     <table class="table is-bordered">
-                        <thead><th>Type</th><th>Details</th><th>Alignment</th><th>Font Size</th><th>Font Style</th><th>Case</th><th>Space Before</th><th>Space After</th></thead>
+                        <thead>
+                            <tr>
+                                <th>Type</th><th>Details</th><th>Alignment</th><th>Font Size</th><th>Font Style</th><th>Case</th><th>Space Before</th><th>Space After</th>
+                            </tr>
+                        </thead>
                         <tr>
                             <td>Author List</td>
                             <td>“JACoW_Author Title” Style, or equivalent style.</td>
@@ -289,17 +280,17 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for author in authors %}
+                        {% for item in authors %}
                         <tr>
-                            <td>{{ author.text }}</td>
-                            <td>{{ author.style }}</td>
-                            <td>{{ author.alignment }}</td>
-                            <td>{{ author.font_size }}</td>
-                            <td>{{ author.bold }}</td>
-                            <td>{{ author.italic }}</td>
-                            <td>{{ author.space_before }}</td>
-                            <td>{{ author.space_after }}</td>
-                            <td>{{ author.style_ok|tick_cross }}</td>
+                            <td>{{ item.text }}</td>
+                            <td>{{ item.style }}</td>
+                            <td {% if 'should be' in item.alignment|string %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ item.alignment }}</td>
+                            <td {% if 'should be' in item.font_size|string %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ item.font_size }}</td>
+                            <td {% if 'should be' in item.bold|string %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ item.bold }}</td>
+                            <td {% if 'should be' in item.italic|string %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ item.italic }}</td>
+                            <td {% if 'should be' in item.space_before|string %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ item.space_before }}</td>
+                            <td {% if 'should be' in item.space_after|string %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ item.space_after }}</td>
+                            <td {% if item.style_ok == False %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ item.style_ok|tick_cross }}</td>
                         </tr>
                     {% endfor %}
                     </tbody>
@@ -309,8 +300,10 @@
 
 
             <div class="box" style="box-shadow: 0 4px 6px rgba(0, 0, 255, 0.1), 0 0 0 2px rgba(0, 0, 255, 0.1)">
+                <a href="#top">Top <i class="fas fa-arrow-circle-up"></i></a>
                 <h2 class="subtitle" style="padding:10px;background-color:#{{ summary['Abstract']['ok']|status_type_background }}">
-                    <a name="abstract"></a>{{ summary['Abstract']['ok']|tick_cross }} Abstract Heading</h2>
+                    <a name="abstract"></a>{{ summary['Abstract']['ok']|tick_cross }} Abstract Heading
+                </h2>
                 <details style="padding:5px;border:1px lightgray solid;border-radius:5px">
                     <summary>Rules for {{ summary['Abstract']['title'] }}</summary>
                     <ul>
@@ -318,7 +311,11 @@
                         <li>Be in the “JACoW_Abstract_Heading” style.</li>
                     </ul>
                     <table class="table is-bordered">
-                        <thead><th>Type</th><th>Details</th><th>Alignment</th><th>Font Size</th><th>Font Style</th><th>Case</th><th>Space Before</th><th>Space After</th></thead>
+                        <thead>
+                            <tr>
+                                <th>Type</th><th>Details</th><th>Alignment</th><th>Font Size</th><th>Font Style</th><th>Case</th><th>Space Before</th><th>Space After</th>
+                            </tr>
+                        </thead>
                         <tr>
                             <td>Abstract_Heading</td>
                             <td>“JACoW_Abstract_Heading” Style, or equivalent style.</td>
@@ -348,25 +345,27 @@
                         <tr>
                             <td>{{ abstract.text }}</td>
                             <td>{{ abstract.style }}</td>
-                            <td>{{ abstract.alignment }}</td>
-                            <td>{{ abstract.font_size }}</td>
-                            <td>{{ abstract.bold }}</td>
-                            <td>{{ abstract.italic }}</td>
-                            <td>{{ abstract.space_before }}</td>
-                            <td>{{ abstract.space_after }}</td>
-                            <td>{{ abstract.style_ok|tick_cross }}</td>
+                            <td {% if 'should be' in abstract.alignment|string %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ abstract.alignment }}</td>
+                            <td {% if 'should be' in abstract.font_size|string %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ abstract.font_size }}</td>
+                            <td {% if 'should be' in abstract.bold|string %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ abstract.bold }}</td>
+                            <td {% if 'should be' in abstract.italic|string %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ abstract.italic }}</td>
+                            <td {% if 'should be' in abstract.space_before|string %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ abstract.space_before }}</td>
+                            <td {% if 'should be' in abstract.space_after|string %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ abstract.space_after }}</td>
+                            <td {% if abstract.style_ok == False %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ abstract.style_ok|tick_cross }}</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
 
             <div class="box" style="box-shadow: 0 4px 6px rgba(0, 0, 255, 0.1), 0 0 0 2px rgba(0, 0, 255, 0.1)">
+                <a href="#top">Top <i class="fas fa-arrow-circle-up"></i></a>
                 <h2 class="subtitle" style="padding:10px;background-color:#{{ summary['Headings']['ok']|status_type_background }}">
-                    <a name="{{ summary['Headings']['anchor'] }}"></a>{{ summary['Headings']['ok']|tick_cross }} Headings</h2>
+                    <a name="{{ summary['Headings']['anchor'] }}"></a>{{ summary['Headings']['ok']|tick_cross }} Headings
+                </h2>
                 <details style="padding:5px;border:1px lightgray solid;border-radius:5px">
                     <summary>Rules for {{ summary['Headings']['title'] }}</summary>
                     <table class="table is-bordered">
-                        <thead><th>Type</th><th>Details</th><th>Alignment</th><th>Font Size</th><th>Font Style</th><th>Case</th><th>Space Before</th><th>Space After</th></thead>
+                        <thead><tr><th>Type</th><th>Details</th><th>Alignment</th><th>Font Size</th><th>Font Style</th><th>Case</th><th>Space Before</th><th>Space After</th></tr></thead>
                         <tr>
                             <td>SECTION  HEADING</td>
                             <td>“JACoW_Section Heading” Style, or equivalent style.</td>
@@ -409,13 +408,13 @@
                         <tr>
                             <td>{{ item.text }}</td>
                             <td>{{ item.style }}</td>
-                            <td>{{ item.alignment }}</td>
-                            <td>{{ item.font_size }}</td>
-                            <td>{{ item.bold }}</td>
-                            <td>{{ item.italic }}</td>
-                            <td>{{ item.space_before }}</td>
-                            <td>{{ item.space_after }}</td>
-                            <td>{{ item.style_ok|tick_cross }}</td>
+                            <td {% if 'should be' in item.alignment|string %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ item.alignment }}</td>
+                            <td {% if 'should be' in item.font_size|string %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ item.font_size }}</td>
+                            <td {% if 'should be' in item.bold|string %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ item.bold }}</td>
+                            <td {% if 'should be' in item.italic|string %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ item.italic }}</td>
+                            <td {% if 'should be' in item.space_before|string %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ item.space_before }}</td>
+                            <td {% if 'should be' in item.space_after|string %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ item.space_after }}</td>
+                            <td {% if item.style_ok == False %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ item.style_ok|tick_cross }}</td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -424,12 +423,24 @@
             </div>
 
             <div class="box" style="box-shadow: 0 4px 6px rgba(0, 0, 255, 0.1), 0 0 0 2px rgba(0, 0, 255, 0.1)">
+                <a href="#top">Top <i class="fas fa-arrow-circle-up"></i></a>
                 <h2 class="subtitle" style="padding:10px;background-color:#{{ summary['Paragraphs']['ok']|status_type_background }}">
-                    <a name="{{ summary['Paragraphs']['anchor'] }}"></a>{{ summary['Paragraphs']['ok']|tick_cross }} {{ summary['Paragraphs']['title'] }} </h2>
+                    <a name="{{ summary['Paragraphs']['anchor'] }}"></a>{{ summary['Paragraphs']['ok']|tick_cross }} {{ summary['Paragraphs']['title'] }}
+                </h2>
                 <details style="padding:5px;border:1px lightgray solid;border-radius:5px">
                     <summary>Rules for {{ summary['Paragraphs']['title'] }}</summary>
                     <table class="table is-bordered">
-                        <thead><th>Type</th><th>Details</th><th>Alignment</th><th>Font Size</th><th>Space Before</th><th>Space After</th><th>First Line Indent</th></thead>
+                        <thead>
+                            <tr>
+                                <th>Type</th>
+                                <th>Details</th>
+                                <th>Alignment</th>
+                                <th>Font Size</th>
+                                <th>Space Before</th>
+                                <th>Space After</th>
+                                <th>First Line Indent</th>
+                            </tr>
+                        </thead>
                         <tr>
                             <td>Paragraph</td>
                             <td>“JACoW_Body Text Indent” Style, or equivalent style.</td>
@@ -444,7 +455,7 @@
                     <thead>
                         <tr>
                             <th rowspan="2" width="30%" style="text-align:center">Text</th>
-                            <th colspan="8" width="70%" style="text-align:center">Style</th>
+                            <th colspan="9" width="70%" style="text-align:center">Style</th>
                         </tr>
                         <tr>
                             <th width="20%">Font Name</th>
@@ -461,16 +472,16 @@
                     <tbody>
                         {% for item in paragraphs %}
                         <tr>
-                            <td>{{ item.text }}</td>
+                            <td title="{{ item.text }}">{{ item.text|truncate(100) }}</td>
                             <td>{{ item.style }}</td>
-                            <td>{{ item.alignment }}</td>
-                            <td>{{ item.font_size }}</td>
-                            <td>{{ item.bold }}</td>
-                            <td>{{ item.italic }}</td>
-                            <td>{{ item.space_before }}</td>
-                            <td>{{ item.space_after }}</td>
-                            <td>{{ item.first_line_indent }}</td>
-                            <td>{{ item.style_ok|tick_cross }}</td>
+                            <td {% if 'should be' in item.alignment|string %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ item.alignment }}</td>
+                            <td {% if 'should be' in item.font_size|string %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ item.font_size }}</td>
+                            <td {% if 'should be' in item.bold|string %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ item.bold }}</td>
+                            <td {% if 'should be' in item.italic|string %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ item.italic }}</td>
+                            <td {% if 'should be' in item.space_before|string %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ item.space_before }}</td>
+                            <td {% if 'should be' in item.space_after|string %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ item.space_after }}</td>
+                            <td {% if 'should be' in item.first_line_indent|string %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ item.first_line_indent }}</td>
+                            <td {% if item.style_ok == False %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ item.style_ok|tick_cross }}</td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -479,8 +490,10 @@
             </div>
 
             <div class="box" style="box-shadow: 0 4px 6px rgba(0, 0, 255, 0.1), 0 0 0 2px rgba(0, 0, 255, 0.1)">
+                <a href="#top">Top <i class="fas fa-arrow-circle-up"></i></a>
                 <h2 class="subtitle" style="padding:10px;background-color:#{{ summary['References']['ok']|status_type_background }}">
-                    <a name="references"></a>{{ summary['References']['ok']|tick_cross }} References</h2>
+                    <a name="references"></a>{{ summary['References']['ok']|tick_cross }} References
+                </h2>
                 <details style="padding:5px;border:1px lightgray solid;border-radius:5px">
                     <summary>Rules for {{ summary['References']['title'] }}</summary>
                     <ul>
@@ -493,7 +506,7 @@
                     <li>All references must be numbered [n] and have a tab between the ] and the start of the reference text. (note many authors put spaces in which stuffs up the spacing.</li>
                     </ul>
                     <table class="table is-bordered">
-                        <thead><th>Type</th><th>Details</th><th>Alignment</th><th>Font Size</th><th>Space Before</th><th>Space After</th><th>Indent</th><th>Hanging Indent</th></thead>
+                        <thead><tr><th>Type</th><th>Details</th><th>Alignment</th><th>Font Size</th><th>Space Before</th><th>Space After</th><th>Indent</th><th>Hanging Indent</th></tr></thead>
                         <tr>
                             <td>Reference</td>
                             <td>“JACoW_References when ≤ 9” Style, or equivalent style.</td><td>Justified</td>
@@ -569,8 +582,10 @@
             </div>
 
             <div class="box" style="box-shadow: 0 4px 6px rgba(0, 0, 255, 0.1), 0 0 0 2px rgba(0, 0, 255, 0.1)">
+                <a href="#top">Top <i class="fas fa-arrow-circle-up"></i></a>
                 <h2 class="subtitle" style="padding:10px;background-color:#{{ summary['Figures']['ok']|status_type_background }}">
-                    <a name="figures"></a>{{ summary['Figures']['ok']|tick_cross }} Figures</h2>
+                    <a name="figures"></a>{{ summary['Figures']['ok']|tick_cross }} Figures
+                </h2>
                 <details style="padding:5px;border:1px lightgray solid;border-radius:5px">
                     <summary>Rules for {{ summary['Figures']['title'] }}</summary>
                     <ul>
@@ -584,7 +599,7 @@
                         <li>Figures must have a “.” On the end of the final line.</li>
                     </ul>
                     <table class="table is-bordered">
-                        <thead><th>Type</th><th>Details</th><th>Alignment</th><th>Font Size</th><th>Space Before</th><th>Space After</th></thead>
+                        <thead><tr><th>Type</th><th>Details</th><th>Alignment</th><th>Font Size</th><th>Space Before</th><th>Space After</th></tr></thead>
                         <tr>
                             <td>Figure Caption</td>
                             <td>“Figure Caption” Style, or equivalent style.</td>
@@ -650,13 +665,13 @@
                             <tr>
                                 <td>{{ item.text }}</td>
                                 <td>{{ item.style }}</td>
-                                <td>{{ item.alignment }}</td>
-                                <td>{{ item.font_size }}</td>
-                                <td>{{ item.bold }}</td>
-                                <td>{{ item.italic }}</td>
-                                <td>{{ item.space_before }}</td>
-                                <td>{{ item.space_after }}</td>
-                                <td>{{ item.style_ok|tick_cross }}</td>
+                                <td {% if 'should be' in item.alignment|string %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ item.alignment }}</td>
+                                <td {% if 'should be' in item.font_size|string %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ item.font_size }}</td>
+                                <td {% if 'should be' in item.bold|string %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ item.bold }}</td>
+                                <td {% if 'should be' in item.italic|string %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ item.italic }}</td>
+                                <td {% if 'should be' in item.space_before|string %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ item.space_before }}</td>
+                                <td {% if 'should be' in item.space_after|string %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ item.space_after }}</td>
+                                <td {% if item.style_ok == False %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ item.style_ok|tick_cross }}</td>
                             </tr>
                             {% endfor %}
                         {% endfor %}
@@ -667,8 +682,10 @@
             </div>
 
             <div class="box" style="box-shadow: 0 4px 6px rgba(0, 0, 255, 0.1), 0 0 0 2px rgba(0, 0, 255, 0.1)">
+                <a href="#top">Top <i class="fas fa-arrow-circle-up"></i></a>
                 <h2 class="subtitle" style="padding:10px;background-color:#{{ summary['Tables']['ok']|status_type_background }}">
-                    <a name="tables"></a>{{ summary['Tables']['ok']|tick_cross }} Tables</h2>
+                    <a name="tables"></a>{{ summary['Tables']['ok']|tick_cross }} Tables
+                </h2>
                 <details style="padding:5px;border:1px lightgray solid;border-radius:5px">
                     <summary>Rules for {{ summary['Tables']['title'] }}</summary>
                     <ul>
@@ -679,7 +696,7 @@
                         <li>All tables must be referred to in the main text and use “Table n”. </li>
                     </ul>
                     <table class="table is-bordered">
-                        <thead><th>Type</th><th>Details</th><th>Alignment</th><th>Font Size</th><th>Space Before</th><th>Space After</th></thead>
+                        <thead><tr><th>Type</th><th>Details</th><th>Alignment</th><th>Font Size</th><th>Space Before</th><th>Space After</th></tr></thead>
                         <tr>
                             <td>Table Caption</td>
                             <td>“Table Caption” Style, or equivalent style.</td>
@@ -748,13 +765,13 @@
                             <tr>
                                 <td>{{ item.text }}</td>
                                 <td>{{ item.style }}</td>
-                                <td>{{ item.alignment }}</td>
-                                <td>{{ item.font_size }}</td>
-                                <td>{{ item.bold }}</td>
-                                <td>{{ item.italic }}</td>
-                                <td>{{ item.space_before }}</td>
-                                <td>{{ item.space_after }}</td>
-                                <td>{{ item.style_ok|tick_cross }}</td>
+                                <td {% if 'should be' in item.alignment|string %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ item.alignment }}</td>
+                                <td {% if 'should be' in item.font_size|string %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ item.font_size }}</td>
+                                <td {% if 'should be' in item.bold|string %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ item.bold }}</td>
+                                <td {% if 'should be' in item.italic|string %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ item.italic }}</td>
+                                <td {% if 'should be' in item.space_before|string %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ item.space_before }}</td>
+                                <td {% if 'should be' in item.space_after|string %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ item.space_after }}</td>
+                                <td {% if item.style_ok == False %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ item.style_ok|tick_cross }}</td>
                             </tr>
                             {% endfor %}
                         </tbody>
@@ -764,6 +781,7 @@
             </div>
             {% if summary['SPMS'] %}
             <div class="box" style="box-shadow: 0 4px 6px rgba(0, 0, 255, 0.1), 0 0 0 2px rgba(0, 0, 255, 0.1)">
+                <a href="#top">Top <i class="fas fa-arrow-circle-up"></i></a>
                 <h2 class="subtitle" style="padding:10px;background-color:#{{ summary['SPMS']['ok']|status_type_background }}">
                     <a name="spms"></a>{{ summary['SPMS']['ok']|tick_cross }}
                 {% if reference_csv_url is defined %}
@@ -774,7 +792,7 @@
                 </h2>
                 <table class="table is-bordered">
                 <thead>
-                    <th>Type</th><th>Match</th><th>Docx</th><th>SPMS</th>
+                    <tr><th>Type</th><th>Match</th><th>Docx</th><th>SPMS</th></tr>
                 </thead>
                 <tbody>
                 <tr><td>Title</td><td>{{ reference_csv_details['title']['match']|tick_cross }}</td>
@@ -824,12 +842,6 @@
         {% endif %}
     </section>
    <script type="application/javascript">
-        const file = document.getElementById("file");
-        file.onchange = function(){
-            if(file.files.length > 0) {
-              document.getElementById('filename').innerHTML = file.files[0].name;
-            }
-        };
         document.addEventListener('DOMContentLoaded', () => {
           // Get all "navbar-burger" elements
           const $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
