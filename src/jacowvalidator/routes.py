@@ -182,7 +182,7 @@ def upload():
             summary['References'] = {
                 'title': 'References',
                 'ok': references_list
-                      and all([tick['style_ok'] and tick['used'] and tick['order_ok'] for tick in references_list]),
+                      and all([tick['style_ok'] and tick['used_ok'] and tick['order_ok'] for tick in references_list]),
                 'message': 'Reference issues',
                 'details': references_list,
                 'anchor': 'references',
@@ -220,9 +220,9 @@ def upload():
                 author_text = ''.join([a['text']+", " for a in authors])
                 reference_csv_details = reference_csv_check(paper_name, title['text'], author_text)
                 summary['SPMS'] = {
-                    'title': 'Jacow References',
+                    'title': 'SPMS Abstract Title Author Check',
                     'ok': reference_csv_details['title']['match'] and reference_csv_details['author']['match'],
-                    'message': 'Jacow Reference CSV issues',
+                    'message': 'SPMS Abstract Title Author Check issues',
                     'details': reference_csv_details['summary'],
                     'anchor': 'spms'
                 }

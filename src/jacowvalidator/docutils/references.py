@@ -1,10 +1,47 @@
 import re
 from itertools import chain
-
+from jacowvalidator.docutils.styles import check_style
 
 RE_REFS_LIST = re.compile(r'^\[([\d]+)\]')
 RE_REFS_LIST_TAB = re.compile(r'^\[([\d]+)\]\t')
 RE_REFS_INTEXT = re.compile(r'(?<!^)\[([\d ,-]+)\]')
+
+
+REFERENCE_DETAILS = {
+    'styles': {
+        'jacow': 'JACoW_References when ≤ 9',
+    },
+    'alignment': 'JUSTIFY',
+    'font_size': 9.0,
+    'space_before': 0.0,
+    'space_after': 3.0,
+    'hanging_indent':  0.0,
+    'first_line_indent': -14.75, # 0.52 cm,
+}
+
+REFERENCE_LESS_DETAILS= {
+    'styles': {
+        'jacow': 'JACoW_Reference #1-9 when >= 10 Refs',
+    },
+    'alignment': 'JUSTIFY',
+    'font_size': 9.0,
+    'space_before': 3.0,
+    'space_after': 3.0,
+    'hanging_indent': 0, # 0.16 cm,
+    'first_line_indent': -14.75, # 0.52 cm,
+}
+
+REFERENCE_MORE_DETAILS= {
+    'styles': {
+        'jacow': 'JACoW_Reference #10 onwards',
+    },
+    'alignment': 'JUSTIFY',
+    'font_size': 9.0,
+    'space_before': 0.0,
+    'space_after': 3.0,
+    'hanging_indent':  0.0,
+    'first_line_indent': 0, # 0.68 cm,
+}
 
 
 def _ref_to_int(ref):
@@ -81,19 +118,26 @@ def extract_references(doc):
     for i, ref in enumerate(references_list, 1):
         if ref['id'] in seen:
             ref['duplicate'] = True
+            ref['unique_ok'] = False
+        else:
+            ref['unique_ok'] = True
         seen.add(ref['id'])
         ref['order_ok'] = i == ref['id'] and i not in out_of_order
-        ref['used'] = i in used_references
+        ref['used_ok'] = i in used_references
 
         if not RE_REFS_LIST_TAB.search(ref['text']):
             ref['text_error'] = f"Number format error should be [{i}] followed by a tab"
 
         if ref_count <= 9:
+            style_ok, detail = check_style(p, REFERENCE_DETAILS)
             ref['style_ok'] = ref['style'] == 'JACoW_Reference when <= 9 Refs'
         else:
             if i <= 9:
+                style_ok, detail = check_style(p, REFERENCE_LESS_DETAILS)
                 ref['style_ok'] = ref['style'] == 'JACoW_Reference #1-9 when >= 10 Refs'
             else:
+                style_ok, detail = check_style(p, REFERENCE_MORE_DETAILS)
                 ref['style_ok'] = ref['style'] == 'JACoW_Reference #10 onwards'
+        ref.update(detail)
 
     return references_in_text, references_list

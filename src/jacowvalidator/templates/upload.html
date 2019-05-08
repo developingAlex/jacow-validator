@@ -185,15 +185,35 @@
                         </tr>') }}
 
 
-
-            <div class="box" style="box-shadow: 0 4px 6px rgba(0, 0, 255, 0.1), 0 0 0 2px rgba(0, 0, 255, 0.1)">
-                <a href="#top">Top <i class="fas fa-arrow-circle-up"></i></a>
-                <h2 class="subtitle" style="padding:10px;background-color:#{{ summary['References']['ok']|status_type_background }}">
-                    <a name="references"></a>{{ summary['References']['ok']|tick_cross }} References
-                </h2>
-                <details style="padding:5px;border:1px lightgray solid;border-radius:5px">
-                    <summary>Rules for {{ summary['References']['title'] }}</summary>
-                    <ul>
+            {% set section = summary['References'] %}
+            {% set extra_info = {'ok':section['ok'],'title':'Use Breakdown', 'headers': '<thead>
+                            <tr>
+                                <th>No.</th>
+                                <th>Used</th>
+                                <th>Order</th>
+                                <th>Unique</th>
+                            </tr>
+                        </thead>',
+                'columns': ['id', 'used_ok', 'order_ok', 'unique_ok']}
+            %}
+            {{ section_helper.add_section(section,
+                    {},
+                    '<tr>
+                        <td>Reference</td>
+                        <td>“JACoW_References when ≤ 9” Style, or equivalent style.</td><td>Justified</td>
+                        <td>9 pt</td><td>NA</td><td>NA</td><td>0 pt</td><td>3 pt</td><td>Hanging: 0<br/>First Line: -14.75pt or 0.52 cm</td>
+                    </tr>
+                    <tr>
+                        <td>Reference</td>
+                        <td>“JACoW_Reference #1-9 when >= 10 Refs” Style, or equivalent style.</td><td>Justified</td>
+                        <td>9 pt</td><td>NA</td><td>NA</td><td>0 pt</td><td>3 pt</td><td>Hanging: 0.16cm<br/>First Line: -14.75pt or 0.52cm</td>
+                    </tr>
+                    <tr>
+                        <td>Reference</td>
+                        <td>“JACoW_Reference #10 onwards” Style, or equivalent style.</td><td>Justified</td>
+                        <td>9 pt</td><td>NA</td><td>NA</td><td>0 pt</td><td>3 pt</td><td>Hanging: 0<br/>First Line: 0.68cm</td>
+                    </tr>',
+                    '<ul>
                     <li>All references must be ordered in the reference list based on when they first are referred to in the main text.</li>
                     <li>References in the main text can be [n], or [n1, n2, n5, etc.], or [n – n3].</li>
                     <li>A reference can be referred to multiple times in the main text as required.</li>
@@ -201,82 +221,8 @@
                     <li>Reference lists which have 9 or less references must be “JACoW_Reference when <= 9 Refs” Style.</li>
                     <li>When greater than 9 references the first 9 must be “JACoW_Reference #1-9 when >= 10 Refs” Style, and 10 and onwards must be “JACoW_Reference #10 onwards” Style.</li>
                     <li>All references must be numbered [n] and have a tab between the ] and the start of the reference text. (note many authors put spaces in which stuffs up the spacing.</li>
-                    </ul>
-                    <table class="table is-bordered">
-                        <thead><tr><th>Type</th><th>Details</th><th>Alignment</th><th>Font Size</th><th>Space Before</th><th>Space After</th><th>Indent</th><th>Hanging Indent</th></tr></thead>
-                        <tr>
-                            <td>Reference</td>
-                            <td>“JACoW_References when ≤ 9” Style, or equivalent style.</td><td>Justified</td>
-                            <td>9 pt</td><td>0 pt</td><td>3 pt</td><td>0</td><td>0.52 cm</td>
-                        </tr>
-                        <tr>
-                            <td>Reference</td>
-                            <td>“JACoW_Reference #1-9 when >= 10 Refs” Style, or equivalent style.</td><td>Justified</td>
-                            <td>9 pt</td><td>0 pt</td><td>3 pt</td><td>0.16 cm</td><td>0.52 cm</td>
-                        </tr>
-                        <tr>
-                            <td>Reference</td>
-                            <td>“JACoW_Reference #10 onwards” Style, or equivalent style.</td><td>Justified</td>
-                            <td>9 pt</td><td>0 pt</td><td>3 pt</td><td>0</td><td>0.68 cm</td>
-                        </tr>
-                    </table>
-                </details>
-                {% if not references_list %}
-                <p class="has-text-weight-bold has-text-danger">No references found at end of document. Please check formatting.</p>
-                {% else %}
-                {% for reference in references_list if not reference.style_ok %}
-                {% if loop.index0 == 0 %}<h3 class="has-text-weight-bold">References with wrong style</h3>{% endif %}
-                <p>[{{ reference.id }}] <b>Style:</b> {{ reference.style }}</p>
-                {% else %}
-                <p>{{ true|tick_cross }} reference styles okay</p>
-                {% endfor %}
-
-                {% for reference in references_list if not reference.used %}
-                {% if loop.index0 == 0 %}<h3 class="has-text-weight-bold">Unused references</h3>{% endif %}
-                <p>{{ reference.text }}</p>
-                {% else %}
-                <p>{{ true|tick_cross }} all references used</p>
-                {% endfor %}
-
-                {% for reference in references_list if not reference.order_ok %}
-                {% if loop.index0 == 0 %}<h3 class="has-text-weight-bold">Out of order references</h3>{% endif %}
-                <p>{{ reference.text }}</p>
-                {% else %}
-                <p>{{ true|tick_cross }} all references are in correct order</p>
-                {% endfor %}
-                <br/>
-                <details style="padding:5px;border:1px lightgray solid;border-radius:5px">
-                    <summary>Details</summary>
-                    <table class="table is-bordered">
-                        <thead>
-                            <tr>
-                                <th>No.</th>
-                                <th>Used</th>
-                                <th>Order</th>
-                                <th colspan="2">Style</th>
-                                <th>Text</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        {% for reference in references_list %}
-                            <tr>
-                                <td>{{ reference.id }}</td>
-                                <td class="{{ 'has-background-danger' if not reference.used }}">{{ reference.used|tick_cross }}</td>
-                                <td class="{{ 'has-background-danger' if not reference.order_ok }}">{{ reference.order_ok|tick_cross }}</td>
-                                <td class="{{ 'has-background-danger' if not reference.style_ok }}">{{ reference.style_ok|tick_cross }}</td>
-                                <td class="is-size-7">{{ reference.style }}</td>
-                                <td>
-                                    {{ reference.text }}
-                                    {% if reference.text_error %}<p class="has-text-weight-bold has-text-danger">{{ reference.text_error }}</p>{% endif %}
-                                    {% if reference.duplicate %}<p class="has-text-weight-bold has-text-danger">Duplicate reference number</p>{% endif %}
-                                </td>
-                            </tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
-                </details>
-                {% endif %}
-            </div>
+                    </ul>',
+                    extra_info, True) }}
 
             {% set section = summary['Figures'] %}
             {% set extra_info = {'ok':section['ok'],'title':'Use Breakdown', 'headers': '<thead>
