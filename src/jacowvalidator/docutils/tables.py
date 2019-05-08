@@ -216,6 +216,7 @@ def check_table_titles(doc):
             'text_format_ok': result,
             'text_format_message': message,
             'used': used_count,
+            'used_ok': used_count > 0,
             'order_ok': f'Table {count}' in order_check,
             'style': title.style.name,
             'style_ok': style_ok and title.style.name in ['Caption', 'Table Caption', 'Table Caption Multi Line'],

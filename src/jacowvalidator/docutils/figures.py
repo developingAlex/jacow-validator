@@ -97,10 +97,10 @@ def extract_figures(doc):
             figures[i].append({
                 'id': i,
                 'refs': refs,
-                'unique': len(caption) == 1,
-                'found': len(caption) > 0,
+                'unique_ok': len(caption) == 1,
+                'found_ok': len(caption) > 0,
                 'caption_ok': len(caption) == 1 and c['name'].endswith(':'),
-                'used': len(refs) > 0
+                'used_ok': len(refs) > 0
             })
         else:
             for c in caption:
@@ -108,10 +108,10 @@ def extract_figures(doc):
                 figure = {
                     'id': i,
                     'refs': refs,
-                    'unique': len(caption) == 1,
-                    'found': len(caption) > 0,
+                    'unique_ok': len(caption) == 1,
+                    'found_ok': len(caption) > 0,
                     'caption_ok': len(caption) == 1 and c['name'].endswith(':'),
-                    'used': len(refs) > 0
+                    'used_ok': len(refs) > 0
                 }
                 figure.update(**c)
                 figures[i].append(figure)

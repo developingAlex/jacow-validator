@@ -177,7 +177,7 @@
 
             {% set section = summary['Paragraphs'] %}
             {{ section_helper.add_section(section,
-                        {'truncate_text':true},
+                        {'truncate_text':200},
                         '<tr>
                             <td>Paragraph</td>
                             <td>“JACoW_Body Text Indent” Style, or equivalent style.</td>
@@ -189,15 +189,16 @@
             {% set extra_info = {'ok':section['ok'],'title':'Use Breakdown', 'headers': '<thead>
                             <tr>
                                 <th>No.</th>
+                                <th colspan="3">Text</th>
                                 <th>Used</th>
                                 <th>Order</th>
                                 <th>Unique</th>
                             </tr>
                         </thead>',
-                'columns': ['id', 'used_ok', 'order_ok', 'unique_ok']}
+                'columns': ['id', 'text', 'text_error', 'text_ok', 'used_ok', 'order_ok', 'unique_ok']}
             %}
             {{ section_helper.add_section(section,
-                    {},
+                    {'truncate_text':50},
                     '<tr>
                         <td>Reference</td>
                         <td>“JACoW_References when ≤ 9” Style, or equivalent style.</td><td>Justified</td>
@@ -234,7 +235,7 @@
                             <th width="30%">Text</th>
                         </tr>
                     </thead>',
-                'columns': ['id', 'name', 'caption_ok', 'unique', 'refs', 'used', 'text'],'multi':true}
+                'columns': ['id', 'name', 'caption_ok', 'unique_ok', 'refs', 'used_ok', 'text'],'multi':true}
             %}
             {{ section_helper.add_section(section,
                     {'style_multi':true},
@@ -265,12 +266,12 @@
                         <tr>
                             <th>No.</th>
                             <th colspan="3">Caption</th>
-                            <th>Used</th>
+                            <th colspan="2">Used</th>
                             <th>Order</th>
                             <th>Table</th>
                         </tr>
                     </thead>',
-                'columns': ['id', 'text', 'text_format_ok', 'text_format_message', 'used', 'order_ok', 'table']}
+                'columns': ['id', 'text', 'text_format_ok', 'text_format_message', 'used', 'used_ok', 'order_ok', 'table']}
             %}
 
             {{ section_helper.add_section(section,

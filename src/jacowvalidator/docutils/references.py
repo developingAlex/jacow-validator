@@ -16,7 +16,7 @@ REFERENCE_DETAILS = {
     'space_before': 0.0,
     'space_after': 3.0,
     'hanging_indent':  0.0,
-    'first_line_indent': -14.75, # 0.52 cm,
+    'first_line_indent': -14.75,  # 0.52 cm,
 }
 
 REFERENCE_LESS_DETAILS= {
@@ -25,10 +25,10 @@ REFERENCE_LESS_DETAILS= {
     },
     'alignment': 'JUSTIFY',
     'font_size': 9.0,
-    'space_before': 3.0,
+    'space_before': 0.0,
     'space_after': 3.0,
     'hanging_indent': 0, # 0.16 cm,
-    'first_line_indent': -14.75, # 0.52 cm,
+    'first_line_indent': -14.75,  # 0.52 cm,
 }
 
 REFERENCE_MORE_DETAILS= {
@@ -40,7 +40,7 @@ REFERENCE_MORE_DETAILS= {
     'space_before': 0.0,
     'space_after': 3.0,
     'hanging_indent':  0.0,
-    'first_line_indent': 0, # 0.68 cm,
+    'first_line_indent': -18.7,  # 0.68 cm,
 }
 
 
@@ -87,7 +87,7 @@ def extract_references(doc):
             should_find = references_list[-1]['id'] + 1
             if str(should_find) in p.text.strip()[:4]: # only look in first 4 chars
                 references_list.append(
-                    dict(id=should_find, text=p.text.strip(), style=p.style.name, text_error=f"Number format wrong should be [{should_find}]")
+                    dict(id=should_find, text=p.text.strip(), style=p.style.name, text_ok=False, text_error=f"Number format wrong should be [{should_find}]")
                 )
 
     # check references in body are in correct order
@@ -124,9 +124,11 @@ def extract_references(doc):
         seen.add(ref['id'])
         ref['order_ok'] = i == ref['id'] and i not in out_of_order
         ref['used_ok'] = i in used_references
+        ref['text_ok'] = True
 
         if not RE_REFS_LIST_TAB.search(ref['text']):
             ref['text_error'] = f"Number format error should be [{i}] followed by a tab"
+            ref['text_ok'] = False
 
         if ref_count <= 9:
             style_ok, detail = check_style(p, REFERENCE_DETAILS)

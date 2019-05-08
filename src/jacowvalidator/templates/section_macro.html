@@ -27,9 +27,9 @@
         <details {% if extra_info['ok'] == false %} open {% endif %} style="border:1px lightgray solid;border-radius:2px">
         <summary style="padding:5px;border:1px solid grey;border-radius:2px; background-color:#fcfcfc">{{ extra_info['title'] }} for {{ section['title'] }}</summary>
             {% if extra_info['multi'] %}
-                {{ make_table_multi(section['details'], extra_info['headers'], extra_info['columns']) }}
+                {{ make_table_multi(section['details'], extra_info['headers'], extra_info['columns'], args) }}
             {%  else %}
-                {{ make_table(section['details'], extra_info['headers'], extra_info['columns']) }}
+                {{ make_table(section['details'], extra_info['headers'], extra_info['columns'], args) }}
             {% endif %}
         </details>
         <br/>
@@ -41,33 +41,33 @@
         <summary style="padding:5px;border: 1px solid grey;border-radius:2px; background-color:#fcfcfc">Style Breakdown for {{ section['title'] }}</summary>
         {% set headers = '<thead>
             <tr>
-                <th rowspan="2" width="30%" style="text-align:center">Text</th>
-                <th colspan="9" width="70%" style="text-align:center">Style</th>
+                <th rowspan="2" width="25%" style="text-align:center">Text</th>
+                <th colspan="9" width="75%" style="text-align:center">Style</th>
             </tr>
             <tr>
                 <th width="20%">Font Name</th>
-                <th width="8%">Alignment</th>
-                <th width="8%">Font Size</th>
-                <th width="8%">Bold</th>
-                <th width="8%">Italic</th>
-                <th width="8%">Space Before</th>
-                <th width="8%">Space After</th>
-                <th width="8%">First Line Indent</th>
+                <th width="7%">Alignment</th>
+                <th width="7%">Font Size</th>
+                <th width="7%">Bold</th>
+                <th width="7%">Italic</th>
+                <th width="7%">Space Before</th>
+                <th width="7%">Space After</th>
+                <th width="7%">First Line Indent</th>
                 <th width="5%">Ok</th>
             </tr>
         </thead>' %}
         {% set columns = ['text','style','alignment','font_size','bold','italic','space_before','space_after','first_line_indent','style_ok'] %}
         {% if args['style_multi'] %}
-            {{ make_table_multi(section['details'], headers, columns, true, args) }}
+            {{ make_table_multi(section['details'], headers, columns, args) }}
         {% else %}
-            {{ make_table(section['details'], headers, columns, true, args) }}
+            {{ make_table(section['details'], headers, columns, args) }}
         {% endif %}
     </details>
     {% endif %}
 </div>
 {%- endmacro %}
 
-{% macro make_table(data, headers, columns, show_errors, args={}) -%}
+{% macro make_table(data, headers, columns, args={}) -%}
     <table class="table is-bordered" style="width:100%">
         {{ headers|safe }}
         {% for row in data %}
@@ -81,7 +81,7 @@
     </table>
 {%- endmacro %}
 
-{% macro make_table_multi(data, headers, columns, show_errors, args={}) -%}
+{% macro make_table_multi(data, headers, columns, args={}) -%}
     <table class="table is-bordered" style="width:100%">
         {{ headers|safe }}
         {% for id, id_row in data.items() %}
@@ -104,7 +104,7 @@
     {% if col == 'loop.index' %}
         <td>{{ loop.index }}</td>
     {% elif col == 'text' %}
-        <td title="{{ value }}">{% if args['truncate_text'] %}{{ value|truncate(100) }} {% else %} {{ value }} {% endif %}</td>
+        <td title="{{ value }}">{% if args['truncate_text'] %}{{ value|truncate(args['truncate_text']) }} {% else %} {{ value }} {% endif %}</td>
     {% elif 'ok' in col|string and value is sameas true or value is sameas false %}
         <td {% if value == false %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}> {{ value|tick_cross }}</td>
     {% elif value is iterable and value is not string %}
