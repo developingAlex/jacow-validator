@@ -115,9 +115,7 @@
             {% endfor %}
             </ul>
         </td>
-    {% elif show_errors %}
-        <td {% if 'should be' in value|string %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ value }}</td>
     {% else %}
-        <td>{{ value }}</td>
+        <td {% if 'should be' in value|string %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}>{{ value }}</td>
     {% endif %}
 {%- endmacro %}
