@@ -70,6 +70,9 @@ def reference_csv_check(filename_minus_ext, title, authors):
                     reference_title = RE_MULTI_SPACE.sub(' ', row[title_col].upper())
                     title_match = title.upper().strip('*') == reference_title
                     report, authors_match = get_author_list_report(authors, row[authors_col])
+
+                    summary_list = [{'type': 'Author', 'match_ok': result['match'], 'docx': result['docx'], 'spms': result['spms']} for result in report]
+
                     return {
                         'title': {
                             'match': title_match,
@@ -83,7 +86,18 @@ def reference_csv_check(filename_minus_ext, title, authors):
                             'docx_list': get_author_list(authors),
                             'spms_list': get_author_list(row[authors_col]),
                             'report': report
-                        }
+                        },
+                        'summary': [{
+                            'type': 'Title',
+                            'match_ok': title_match,
+                            'docx': title,
+                            'spms': reference_title
+                        }, {
+                            'type': 'Extracted Author List',
+                            'match_ok': authors_match,
+                            'docx': authors,
+                            'spms': row[authors_col],
+                        }, *summary_list],
                     }
 
         # if not returned by now its because the paper wasn't found in the list
@@ -102,6 +116,18 @@ def reference_csv_check(filename_minus_ext, title, authors):
                     'spms_list': list(),
                     'report': list()
                 },
+                'summary': [{
+                    'type': 'title',
+                    'match': False,
+                    'docx': title.upper(),
+                    'spms': 'No matching paper found in the spms csv file'
+                    }, {
+                    'type': 'author',
+                    'match': False,
+                    'docx': authors,
+                    'spms': 'No matching paper found in the spms csv file',
+                }],
+
             }
         else:
             raise PaperNotFoundError("No matching paper found in the spms csv file")

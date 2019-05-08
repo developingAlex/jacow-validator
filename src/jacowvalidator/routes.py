@@ -217,15 +217,15 @@ def upload():
 
             if "URL_TO_JACOW_REFERENCES_CSV" in os.environ:
                 reference_csv_url = os.environ["URL_TO_JACOW_REFERENCES_CSV"]
-            author_text = ''.join([a['text']+", " for a in authors])
-            reference_csv_details = reference_csv_check(paper_name, title['text'], author_text)
-            summary['SPMS'] = {
-                'title': 'Jacow References',
-                'ok': reference_csv_details['title']['match'] and reference_csv_details['author']['match'],
-                'message': 'Jacow Reference CSV issues',
-                'details': reference_csv_details,
-                'anchor': 'spms'
-            }
+                author_text = ''.join([a['text']+", " for a in authors])
+                reference_csv_details = reference_csv_check(paper_name, title['text'], author_text)
+                summary['SPMS'] = {
+                    'title': 'Jacow References',
+                    'ok': reference_csv_details['title']['match'] and reference_csv_details['author']['match'],
+                    'message': 'Jacow Reference CSV issues',
+                    'details': reference_csv_details['summary'],
+                    'anchor': 'spms'
+                }
 
             # log = Log()
             # log.filename = filename

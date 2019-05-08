@@ -349,58 +349,23 @@
                     extra_info, True) }}
 
             {% if summary['SPMS'] %}
-            <div class="box" style="box-shadow: 0 4px 6px rgba(0, 0, 255, 0.1), 0 0 0 2px rgba(0, 0, 255, 0.1)">
-                <a href="#top">Top <i class="fas fa-arrow-circle-up"></i></a>
-                <h2 class="subtitle" style="padding:10px;background-color:#{{ summary['SPMS']['ok']|status_type_background }}">
-                    <a name="spms"></a>{{ summary['SPMS']['ok']|tick_cross }}
-                {% if reference_csv_url is defined %}
-                    Conformance with <a href={{reference_csv_url}}>references.csv</a>
-                {% else %}
-                   Conformance with references.csv
-                {% endif %}
-                </h2>
-                <table class="table is-bordered">
-                <thead>
+                {% set section = summary['SPMS'] %}
+                {% set extra_info = {'ok':section['ok'],'title':'Title and Author Breakdown', 'headers': '<thead>
                     <tr><th>Type</th><th>Match</th><th>Docx</th><th>SPMS</th></tr>
-                </thead>
-                <tbody>
-                <tr><td>Title</td><td>{{ reference_csv_details['title']['match']|tick_cross }}</td>
-                <td>
-                    {{ reference_csv_details['title']['docx'] }}
-                </td>
-                <td>
-                    {{ reference_csv_details['title']['spms'] }}
-                </td>
-                </tr>
-                <tr><td>Extracted Author List</td>
-                    <td>
-                        {{reference_csv_details['author']['match']|tick_cross }}
-                    </td>
-                    <td>
-                        {{ reference_csv_details['author']['docx'] }}
-                    </td>
+                </thead>',
+                    'columns': ['type', 'match_ok', 'docx', 'spms']}
+                %}
+                {% if reference_csv_url is defined %}
+                    {% set title = 'Conformance with <a href=' + reference_csv_url + '>references.csv</a>' %}
+                {% else %}
+                   {% set title = 'Conformance with references.csv' %}
+                {% endif %}
 
-                    <td>
-                        {{ reference_csv_details['author']['spms'] }}
-                    </td>
-                </tr>
-                {% for result in reference_csv_details['author']['report'] %}
-                <tr><td>{% if loop.index0 == 0 %}Author{% endif %}</td>
-                    <td>
-                        {{ result['match']|tick_cross }}
-                    </td>
-
-                    <td>
-                        {{ result['docx'] }}
-                    </td>
-
-                    <td>
-                        {{ result['spms'] }}
-                    </td>
-                </tr>
-                {% endfor %}
-                </tbody>
-                </table>
+                {{ section_helper.add_section(section,
+                        {'section_header':title},
+                        '',
+                        '',
+                        extra_info, False) }}
             </div>
             {% endif %}
         </div>
