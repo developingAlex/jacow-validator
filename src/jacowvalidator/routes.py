@@ -227,7 +227,7 @@ def upload():
             summary['Tables'] = {
                 'title': 'Tables',
                 'ok': all([
-                    all([tick['text_format_ok'], tick['order_ok'], ['style_ok'], tick['used'] > 0])
+                    all([tick['text_format_ok'], tick['order_ok'], tick['style_ok'], tick['used'] > 0])
                     for tick in table_titles]),
                 'message': 'Table issues',
                 'details': table_titles,
