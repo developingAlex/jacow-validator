@@ -1,6 +1,6 @@
 {% macro add_section(section, args, rules, extra_rules='', extra_info='', show_styles=True) -%}
  <div class="box" style="box-shadow: 0 4px 6px rgba(0, 0, 255, 0.1), 0 0 0 2px rgba(0, 0, 255, 0.1)">
-    <a href="#top" style="color:#0e01fe;">Top <i class="fas fa-arrow-circle-up"></i></a>
+    <a href="#top" class="link-color">Top <i class="fas fa-arrow-circle-up"></i></a>
     <h2 class="subtitle" style="padding:10px;background-color:#{{ section['ok']|status_type_background }}">
         <a name="{{section['anchor'] }}"></a>{{ section['ok']|tick_cross }}
         {% if args['section_header'] %} {{ args['section_header']|safe }} {% else %}{{ section['title'] }} {% endif %}
@@ -24,6 +24,7 @@
     <br/>
     {% endif %}
     {% if 'ok' in extra_info %}
+        {% if not (section.showTotal and section['details']|length == 0) %}
         <details {% if extra_info['ok'] == false %} open {% endif %} style="border:1px lightgray solid;border-radius:2px">
         <summary style="padding:5px;border:1px solid grey;border-radius:2px; background-color:#fcfcfc">{{ extra_info['title'] }} for {{ section['title'] }}</summary>
             {% if extra_info['multi'] %}
@@ -33,36 +34,43 @@
             {% endif %}
         </details>
         <br/>
+        {% endif %}
     {% elif extra_info %}
         {{ extra_info }}
     {% endif %}
     {% if show_styles %}
-    <details {% if section['ok'] == false %} open {% endif %} style="border:1px lightgray solid;border-radius:2px">
-        <summary style="padding:5px;border: 1px solid grey;border-radius:2px; background-color:#fcfcfc">Style Breakdown for {{ section['title'] }}</summary>
-        {% set headers = '<thead>
-            <tr>
-                <th rowspan="2" width="25%" style="text-align:center">Text</th>
-                <th colspan="9" width="75%" style="text-align:center">Style</th>
-            </tr>
-            <tr>
-                <th width="20%">Font Name</th>
-                <th width="7%">Alignment</th>
-                <th width="7%">Font Size</th>
-                <th width="7%">Bold</th>
-                <th width="7%">Italic</th>
-                <th width="7%">Space Before</th>
-                <th width="7%">Space After</th>
-                <th width="7%">First Line Indent</th>
-                <th width="5%">Ok</th>
-            </tr>
-        </thead>' %}
-        {% set columns = ['text','style','alignment','font_size','bold','italic','space_before','space_after','first_line_indent','style_ok'] %}
-        {% if args['style_multi'] %}
-            {{ make_table_multi(section['details'], headers, columns, args) }}
+        {% if not section.showTotal or (section.showTotal and section['details']|length > 0) %}
+            <details {% if section['ok'] == false %} open {% endif %} style="border:1px lightgray solid;border-radius:2px">
+                <summary style="padding:5px;border: 1px solid grey;border-radius:2px; background-color:#fcfcfc">Style Breakdown for {{ section['title'] }}</summary>
+                {% set headers = '<thead>
+                    <tr>
+                        <th rowspan="2" width="25%" style="text-align:center">Text</th>
+                        <th colspan="9" width="75%" style="text-align:center">Style</th>
+                    </tr>
+                    <tr>
+                        <th width="20%">Font Name</th>
+                        <th width="7%">Alignment</th>
+                        <th width="7%">Font Size</th>
+                        <th width="7%">Bold</th>
+                        <th width="7%">Italic</th>
+                        <th width="7%">Space Before</th>
+                        <th width="7%">Space After</th>
+                        <th width="7%">First Line Indent</th>
+                        <th width="5%">Ok</th>
+                    </tr>
+                </thead>' %}
+                {% set columns = ['text','style','alignment','font_size','bold','italic','space_before','space_after','first_line_indent','style_ok'] %}
+                {% if args['style_multi'] %}
+                    {{ make_table_multi(section['details'], headers, columns, args) }}
+                {% else %}
+                    {{ make_table(section['details'], headers, columns, args) }}
+                {% endif %}
+            </details>
         {% else %}
-            {{ make_table(section['details'], headers, columns, args) }}
+            <div style="width:100%">
+            <div style="text-align:center;padding:5px;background-color:#{{ False|pastel_background_style }}">No {{ section['title'] }} found at end of document. Please check formatting if there should be some.</div>
+            </div>
         {% endif %}
-    </details>
     {% endif %}
 </div>
 {%- endmacro %}

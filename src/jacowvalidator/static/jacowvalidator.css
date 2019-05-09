@@ -24,6 +24,12 @@
 a:focus {
     outline: #000000 dotted thin;
 }
+a.link-color {
+    color:#0e01fe;
+}
+a.link-color:hover {
+    color:#000000;
+}
 .file-label:focus-within {
     outline: #000000 dotted thin;
 }

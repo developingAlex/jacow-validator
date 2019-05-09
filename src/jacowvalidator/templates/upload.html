@@ -24,7 +24,7 @@
                 <h2 class="subtitle">Summary</h2>
                 <div class="list is-hoverable">
                 {% for i, item in summary.items() %}
-                   <a href="#{{ item.anchor }}" class="list-item" style="color:#0e01fe;background-color:#{{ item.ok|status_type_background }}">
+                   <a href="#{{ item.anchor }}" class="list-item link-color" style="background-color:#{{ item.ok|status_type_background }}">
                     {{ item.ok|tick_cross }} {{ item.title }} {% if item.showTotal %} ({{ item.details|length }}){% endif %}
                        {% if item.ok == False %} - {{ item.message }}{% endif %}
                    </a>
