@@ -36,9 +36,9 @@ def get_paragraphs(doc):
                 break
             # ignore table and figure cations
             # TODO check if any real paragraphs start with figure or table
-            if len(text) < 200 and \
-                    (text.startswith('Table ') or text.startswith('Figure ') or text.startswith('Fig. ')):
+            if text.startswith('Table ') or text.startswith('Figure ') or text.startswith('Fig. '):
                 continue
+
             # short paragraphs are probably headings
             if len(text) < PARAGRAPH_SIZE_MIN:
                 continue
