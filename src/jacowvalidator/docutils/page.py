@@ -78,6 +78,17 @@ def get_abstract_and_author(doc):
     return abstract, authors
 
 
+def get_text(p):
+    text = ''.join([r.text.upper() if r.style.font.all_caps or r.font.all_caps else r.text for r in p.runs])
+    if p.style.font.all_caps or p.style.base_style and p.style.base_style.font.all_caps:
+        text = text.upper()
+    return text
+
+
+def check_title_case(text, ratio=0.7):
+    return (sum(map(str.isupper, text)) / len(list(filter(str.isalpha, text)))) > ratio
+
+
 def convert_twips_to_cm(twips):
     width = Twips(int(twips))
     return round(width.mm / 10, 2)

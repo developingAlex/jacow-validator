@@ -18,6 +18,7 @@ from jacowvalidator.docutils.heading import get_headings
 from jacowvalidator.docutils.paragraph import get_paragraphs
 from jacowvalidator.docutils.figures import extract_figures
 from jacowvalidator.docutils.languages import (get_language_tags, get_language_tags_location, VALID_LANGUAGES)
+from jacowvalidator.docutils.doc import parse_paragraphs, parse_all_paragraphs
 
 from jacowvalidator.docutils.tables import (
     check_table_titles,
@@ -46,9 +47,19 @@ def inject_commit_details():
     return dict(commit_sha=commit_sha, commit_date=commit_date)
 
 
+@app.template_filter('tick_cross2')
+def tick_cross2(s):
+    return "✓" if s else "✗"
+
+
 @app.template_filter('tick_cross')
 def tick_cross(s):
-    return "✓" if s else "✗"
+    if s == 1 or s is True:
+        return '<span style="color:darkgreen">✓</span>' # '<span style="color:darkgreen"><i class="fas fa-check"></i></span>'
+    elif s == 2:
+        return '<span style="color:darkorange"><i class="fas fa-question"></i></span>' # ' 	🤷'
+    else:
+        return '<span style="color:darkred">✗</span>' # '<span style="color:darkred"><i class="fas fa-times"></i></span>'
 
 
 @app.template_filter('background_style')
@@ -77,7 +88,7 @@ def status_type_background(s):
     if s == 1 or s is True:
         return 'DDFFDD'
     elif s == 2:
-        return 'FFDCA9'
+        return 'ffe9cb' #ffedcc
     else:
         return "FFDDDD"
 
@@ -136,6 +147,20 @@ def upload():
                 'details': language_summary,
                 'extra': languages,
                 'anchor': 'language'
+            }
+
+            # get parsed document summary of styles
+            all_summary = parse_all_paragraphs(doc)
+            ok = all([tick['style_ok'] is True for tick in all_summary])
+            if not ok:
+                ok = 2
+            summary['List'] = {
+                'title': 'Parsed Document',
+                'ok': ok,
+                'message': 'Not using only JACoW Styles',
+                'details': all_summary,
+                'anchor': 'list',
+                'showTotal': True,
             }
 
             title = extract_title(doc)
@@ -264,15 +289,15 @@ def upload():
                 **locals(),
                 error=f"It seems the file {filename} has no corresponding entry in the SPMS references list. "
                       f"Is your filename the same as your Paper name?")
-        except Exception:
+        except PaperNotFoundError:
             if app.debug:
                 raise
-            else:
-                app.logger.exception("Failed to process document")
-                return render_template(
-                    "upload.html",
-                    error=f"Failed to process document: {filename}",
-                    admin=admin)
+            # else:
+            #     app.logger.exception("Failed to process document")
+            #     return render_template(
+            #         "upload.html",
+            #         error=f"Failed to process document: {filename}",
+            #         admin=admin)
         finally:
             os.remove(fullpath)
 

@@ -16,6 +16,11 @@ VALID_STYLES = ['JACoW_Abstract_Heading',
                 'JACoW_Section Heading',
                 'JACoW_Subsection Heading']
 
+VALID_NON_JACOW_STYLES = ['Figure Caption',
+                          'Figure Caption Multi Line',
+                          'Table Caption',
+                          'Table Caption Multi Line']
+
 # These are in the jacow templates so may be in docs created from them
 # Caption and Normal for table title and figure title
 # 'Body Text Indent' instead of 'JACoW_Body Text Indent' in a few places
@@ -191,3 +196,37 @@ def check_style(p, compare):
         if not key == 'all_caps' and key not in compare.keys():
             detail[key] = 'NA'
     return style_ok, detail
+
+
+def check_style_detail(p, compare):
+    detail = get_style_details(p)
+    # remove paragraph from dict returned since it is not json serialisable
+    del detail['p']
+
+    # use list from compare
+    style_ok = True
+    for key, value in compare.items():
+        if key not in detail:
+            continue
+        elif key in ['space_before', 'space_after']:
+            if isinstance(compare[key], list):
+                result = detail[key] is not None and get_compare(detail[key], compare[key][0], compare[key][1])
+                if not result:
+                    detail[key] = f"{detail[key]} should be {' '.join(map(str, compare[key]))}"
+            else:
+                result = any([detail[key] == compare[key], detail[key] is None and compare[key] == 0.0])
+                if not result:
+                    detail[key] = f"{detail[key]} should be {compare[key]}"
+        else:
+            result = detail[key] == compare[key]
+            if not result:
+                detail[key] = f"{detail[key]} should be {compare[key]}"
+        if not result:
+            style_ok = False
+        detail['style_ok'] = style_ok
+
+    # if key not in compare, then change to NA
+    for key, value in detail.items():
+        if key not in ['all_caps','style_ok'] and key not in compare.keys():
+            detail[key] = 'NA'
+    return detail

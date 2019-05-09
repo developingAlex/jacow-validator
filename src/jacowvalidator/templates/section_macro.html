@@ -2,7 +2,7 @@
  <div class="box" style="box-shadow: 0 4px 6px rgba(0, 0, 255, 0.1), 0 0 0 2px rgba(0, 0, 255, 0.1)">
     <a href="#top" class="link-color">Top <i class="fas fa-arrow-circle-up"></i></a>
     <h2 class="subtitle" style="padding:10px;background-color:#{{ section['ok']|status_type_background }}">
-        <a name="{{section['anchor'] }}"></a>{{ section['ok']|tick_cross }}
+        <a name="{{section['anchor'] }}"></a>{{ section['ok']|tick_cross|safe }}
         {% if args['section_header'] %} {{ args['section_header']|safe }} {% else %}{{ section['title'] }} {% endif %}
         {% if section.showTotal %} ({{ section.details|length }}){% endif %}
     </h2>
@@ -69,7 +69,7 @@
             </details>
         {% else %}
             <div style="width:100%">
-            <div style="text-align:center;padding:5px;background-color:#{{ False|pastel_background_style }}">No {{ section['title'] }} found at end of document. Please check formatting if there should be some.</div>
+            <div style="text-align:center;padding:5px;background-color:#{{ False|pastel_background_style }}">No {{ section['title'] }} found. Please check formatting if there should be some.</div>
             </div>
         {% endif %}
     {% endif %}
@@ -115,7 +115,7 @@
     {% elif col == 'text' %}
         <td title="{{ value }}">{% if args['truncate_text'] %}{{ value|truncate(args['truncate_text']) }} {% else %} {{ value }} {% endif %}</td>
     {% elif '_ok' in col|string  %}
-        <td style="background-color:#{{ value|pastel_background_style }}"> {{ value|tick_cross }}</td>
+        <td style="background-color:#{{ value|pastel_background_style }}"> {{ value|tick_cross|safe  }}</td>
     {% elif value is iterable and value is not string %}
         <td>
             <ul style="list-style-type: circle; padding-left: 5px">
