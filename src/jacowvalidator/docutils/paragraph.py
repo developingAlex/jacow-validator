@@ -1,3 +1,4 @@
+import re
 from jacowvalidator.docutils.styles import check_style
 
 
@@ -13,6 +14,8 @@ PARAGRAPH_DETAILS = {
     'first_line_indent': 9.35  # 0.33cm
 }
 
+PARAGRAPH_SIZE_MIN = 50
+
 
 def get_paragraphs(doc):
     data = iter(doc.paragraphs)
@@ -24,25 +27,31 @@ def get_paragraphs(doc):
 
     for i, p in enumerate(data):
         # only for paraphaphs that are not references, figure captions, headings
-        if p.text.strip():
+        text = p.text.strip()
+        text = re.sub(' +', ' ', text)
+
+        if text:
             # no need to check after references
-            if p.text.lower() == 'references':
+            if text.lower() == 'references':
                 break
             # ignore table and figure cations
             # TODO check if any real paragraphs start with figure or table
-            if len(p.text) < 200 and \
-                    (p.text.startswith('Table ') or p.text.startswith('Figure ') or p.text.startswith('Fig. ')):
+            if len(text) < 200 and \
+                    (text.startswith('Table ') or text.startswith('Figure ') or text.startswith('Fig. ')):
                 continue
             # short paragraphs are probably headings
-            if len(p.text) < 30:
+            if len(text) < PARAGRAPH_SIZE_MIN:
                 continue
 
             style_ok, detail = check_style(p, PARAGRAPH_DETAILS)
+            if detail['all_caps']:
+                text = text.upper()
+
             paragraph_details = {
                 'type': 'Paragraph',
                 'style': p.style.name,
                 'style_ok': style_ok,
-                'text': p.text
+                'text': text
             }
             paragraph_details.update(detail)
             paragraphs.append(paragraph_details)

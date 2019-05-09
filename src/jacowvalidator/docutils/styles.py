@@ -188,6 +188,6 @@ def check_style(p, compare):
 
     # if key not in compare, then change to NA
     for key, value in detail.items():
-        if key not in compare.keys():
+        if not key == 'all_caps' and key not in compare.keys():
             detail[key] = 'NA'
     return style_ok, detail

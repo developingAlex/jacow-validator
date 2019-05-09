@@ -58,7 +58,12 @@ def background_style(s):
 
 @app.template_filter('pastel_background_style')
 def pastel_background_style(s):
-    return "DDFFDD" if s else "FFDDDD"
+    if s == 1 or s is True:
+        return 'DDFFDD'
+    elif s == 2:
+        return 'FFDCA9'
+    else:
+        return "FFDDDD"
 
 
 @app.template_filter('display_report')
@@ -161,7 +166,7 @@ def upload():
             headings = get_headings(doc)
             summary['Headings'] = {
                 'title': 'Headings',
-                'ok': all([tick['style_ok'] for tick in headings]),
+                'ok': all([tick['style_ok'] == True for tick in headings]),
                 'message': 'Heading issues',
                 'details': headings,
                 'anchor': 'heading',

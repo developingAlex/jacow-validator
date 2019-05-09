@@ -43,16 +43,28 @@ def extract_figures(doc):
         for f in RE_FIG_TITLES.findall(p.text.strip()):
             figure_compare = FIGURE_DETAILS
             # 55 chars is approx where it changes from 1 line to 2 lines
-            if len(p.text.strip()) > 55:
+            text = p.text.strip()
+            if len(text) > 55:
                 figure_compare = FIGURE_MULTI_DETAILS
+
             style_ok, detail = check_style(p, figure_compare)
+            style_name = p.style.name
+            if p.style.name not in ['Figure Caption', 'Caption Multi Line', 'Caption']:
+                final_style_ok = 2
+            else:
+                final_style_ok = style_ok and p.style.name in ['Figure Caption', 'Caption Multi Line', 'Caption']
+
+            if 40 < len(text) < 80:
+                final_style_ok = 2
+                style_name = f"'{style_name}' checking against type '{figure_compare['styles']['jacow']}'"
+
             _id = _fig_to_int(f)
             figure_detail = dict(
                 id=_id,
                 name=f,
-                text=p.text.strip(),
-                style=p.style.name,
-                style_ok=style_ok and p.style.name in ['Figure Caption', 'Caption Multi Line', 'Caption'],
+                text=text,
+                style=style_name,
+                style_ok=final_style_ok,
             )
             figure_detail.update(detail)
             figures_captions.append(figure_detail)

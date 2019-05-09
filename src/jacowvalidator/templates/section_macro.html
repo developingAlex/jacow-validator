@@ -48,9 +48,10 @@
                         <th colspan="9" width="75%" style="text-align:center">Style</th>
                     </tr>
                     <tr>
-                        <th width="20%">Font Name</th>
+                        <th width="20%">Text Style Name</th>
                         <th width="7%">Alignment</th>
                         <th width="7%">Font Size</th>
+                        <th width="7%">All Caps</th>
                         <th width="7%">Bold</th>
                         <th width="7%">Italic</th>
                         <th width="7%">Space Before</th>
@@ -59,7 +60,7 @@
                         <th width="5%">Ok</th>
                     </tr>
                 </thead>' %}
-                {% set columns = ['text','style','alignment','font_size','bold','italic','space_before','space_after','first_line_indent','style_ok'] %}
+                {% set columns = ['text','style','alignment','font_size','all_caps','bold','italic','space_before','space_after','first_line_indent','style_ok'] %}
                 {% if args['style_multi'] %}
                     {{ make_table_multi(section['details'], headers, columns, args) }}
                 {% else %}
@@ -113,8 +114,8 @@
         <td>{{ loop.index }}</td>
     {% elif col == 'text' %}
         <td title="{{ value }}">{% if args['truncate_text'] %}{{ value|truncate(args['truncate_text']) }} {% else %} {{ value }} {% endif %}</td>
-    {% elif 'ok' in col|string and value is sameas true or value is sameas false %}
-        <td {% if value == false %} style="background-color:#{{ False|pastel_background_style }}" {% endif %}> {{ value|tick_cross }}</td>
+    {% elif '_ok' in col|string  %}
+        <td style="background-color:#{{ value|pastel_background_style }}"> {{ value|tick_cross }}</td>
     {% elif value is iterable and value is not string %}
         <td>
             <ul style="list-style-type: circle; padding-left: 5px">
