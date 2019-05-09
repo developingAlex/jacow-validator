@@ -1,7 +1,7 @@
 {% macro add_section(section, args, rules, extra_rules='', extra_info='', show_styles=True) -%}
  <div class="box" style="box-shadow: 0 4px 6px rgba(0, 0, 255, 0.1), 0 0 0 2px rgba(0, 0, 255, 0.1)">
     <a href="#top" class="link-color">Top <i class="fas fa-arrow-circle-up"></i></a>
-    <h2 class="subtitle" style="padding:10px;background-color:#{{ section['ok']|status_type_background }}">
+    <h2 class="subtitle" style="padding:10px;background-color:#{{ section['ok']|pastel_background_style }}">
         <a name="{{section['anchor'] }}"></a>{{ section['ok']|tick_cross|safe }}
         {% if args['section_header'] %} {{ args['section_header']|safe }} {% else %}{{ section['title'] }} {% endif %}
         {% if section.showTotal %} ({{ section.details|length }}){% endif %}

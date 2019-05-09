@@ -72,7 +72,7 @@ def pastel_background_style(s):
     if s == 1 or s is True:
         return 'DDFFDD'
     elif s == 2:
-        return 'FFDCA9'
+        return 'ffedcc' #ffedcc
     else:
         return "FFDDDD"
 
@@ -81,16 +81,6 @@ def pastel_background_style(s):
 def display_report(s):
     report = json.loads(s)
     return report
-
-
-@app.template_filter('status_type_background')
-def status_type_background(s):
-    if s == 1 or s is True:
-        return 'DDFFDD'
-    elif s == 2:
-        return 'ffe9cb' #ffedcc
-    else:
-        return "FFDDDD"
 
 
 @app.route("/")
