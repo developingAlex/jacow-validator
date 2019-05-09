@@ -46,8 +46,11 @@ def get_page_size(section):
 
 def get_abstract_and_author(doc):
     abstract = {}
-
+    title_start = -1
     for i, p in enumerate(doc.paragraphs):
+        if p.text.strip() and title_start == -1:
+            title_start = i
+
         if p.text.strip().lower() == 'abstract':
             style_ok, detail = check_style(p, ABSTRACT_DETAILS)
             abstract = {
@@ -59,7 +62,7 @@ def get_abstract_and_author(doc):
             abstract.update(detail)
             break
 
-    author_paragraphs = doc.paragraphs[1: abstract['start']]
+    author_paragraphs = doc.paragraphs[title_start+1: abstract['start']]
 
     authors = []
     for p in author_paragraphs:

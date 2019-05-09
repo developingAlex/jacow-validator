@@ -292,12 +292,12 @@ def upload():
         except PaperNotFoundError:
             if app.debug:
                 raise
-            # else:
-            #     app.logger.exception("Failed to process document")
-            #     return render_template(
-            #         "upload.html",
-            #         error=f"Failed to process document: {filename}",
-            #         admin=admin)
+            else:
+                app.logger.exception("Failed to process document")
+                return render_template(
+                    "upload.html",
+                    error=f"Failed to process document: {filename}",
+                    admin=admin)
         finally:
             os.remove(fullpath)
 

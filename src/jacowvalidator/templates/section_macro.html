@@ -36,7 +36,7 @@
         <br/>
         {% endif %}
     {% elif extra_info %}
-        {{ extra_info }}
+        {{ extra_info|safe }}
     {% endif %}
     {% if show_styles %}
         {% if not section.showTotal or (section.showTotal and section['details']|length > 0) %}

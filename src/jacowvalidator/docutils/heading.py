@@ -88,24 +88,24 @@ def get_headings(doc):
             }
             heading_details.update(detail)
             headings.append(heading_details)
-        elif 10 < len(text) < PARAGRAPH_SIZE_MIN:
-            # TODO check if any real paragraphs start with figure or table
-            if text.startswith('Table ') or text.startswith('Figure ') or text.startswith('Fig. '):
-                continue
-
-            name = guess_heading_type(p)
-            style_ok, detail = check_style(p, HEADING_DETAILS[name])
-            if detail['all_caps']:
-                text = text.upper()
-
-            final_style_ok = 2
-            heading_details = {
-                'type': name[0],
-                'style': f"'{p.style.name}' checking against heading type: '{name}'",
-                'style_ok': final_style_ok,
-                'text': text
-            }
-            heading_details.update(detail)
-            headings.append(heading_details)
+        # elif 10 < len(text) < PARAGRAPH_SIZE_MIN:
+        #     # TODO check if any real paragraphs start with figure or table
+        #     if text.startswith('Table ') or text.startswith('Figure ') or text.startswith('Fig. '):
+        #         continue
+        #
+        #     name = guess_heading_type(p)
+        #     style_ok, detail = check_style(p, HEADING_DETAILS[name])
+        #     if detail['all_caps']:
+        #         text = text.upper()
+        #
+        #     final_style_ok = 2
+        #     heading_details = {
+        #         'type': name[0],
+        #         'style': f"'{p.style.name}' checking against heading type: '{name}'",
+        #         'style_ok': final_style_ok,
+        #         'text': text
+        #     }
+        #     heading_details.update(detail)
+        #     headings.append(heading_details)
 
     return headings
