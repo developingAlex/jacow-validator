@@ -192,7 +192,7 @@ def upload():
             figures = extract_figures(doc)
             ok = True
             for _, sub in figures.items():
-                ok = ok and all([item['caption_ok'] and item['used'] and item['style_ok'] for item in sub])
+                ok = ok and all([item['caption_ok'] and item['used_ok'] and item['style_ok'] for item in sub])
 
             summary['Figures'] = {
                 'title': 'Figures',
