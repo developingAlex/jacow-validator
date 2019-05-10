@@ -89,7 +89,10 @@ def get_text(p):
 
 
 def check_title_case(text, ratio=0.7):
-    return (sum(map(str.isupper, text)) / len(list(filter(str.isalpha, text)))) > ratio
+    if text:
+        return (sum(map(str.isupper, text)) / len(list(filter(str.isalpha, text)))) > ratio
+    else:
+        return False
 
 
 def convert_twips_to_cm(twips):
