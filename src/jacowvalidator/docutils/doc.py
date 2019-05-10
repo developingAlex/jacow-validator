@@ -50,8 +50,8 @@ DETAILS = {
         },
         'alignment': 'JUSTIFY',
         'font_size': 10.0,
-        'space_before': ['>=', 3.0],
-        'space_after': 3.0,
+        'space_before': 0.0,
+        'space_after': 0.0,
         'first_line_indent': 9.35  # 0.33cm
     },
     'Figure': {
@@ -242,18 +242,23 @@ def parse_all_paragraphs(doc):
 
 
 def parse_paragraphs(doc):
-    abstract_index = reference_index = 0
+    title_index = abstract_index = reference_index = -1
+    title_style_ok = False
+
     summary = {}
     for i, p in enumerate(doc.paragraphs):
         # first paragraph is the title
-        if i == 0:
-            details = get_title_details(p)
-            details.update(check_style_detail(p, DETAILS['Title']))
-            summary['Title'] = {'details': [details] }
-
         text = p.text.strip()
         if not text:
             continue
+
+        # first non empty paragraph is the title
+        # TODO fix since it can go over more than paragraph
+        if title_index == -1:
+            details = get_title_details(p)
+            details.update(check_style_detail(p, DETAILS['Title']))
+            title_style_ok = p.style.name == DETAILS['Title']['styles']['jacow']
+            summary['Title'] = {'details': [details]}
 
         # find abstract heading
         if text.lower() == 'abstract':
@@ -263,7 +268,7 @@ def parse_paragraphs(doc):
             summary['Abstract'] = {'details': [details] }
 
         # all headings, paragraphs captions, figures, tables, equations should be between these two
-        if abstract_index > 0 and reference_index == 0:
+        if abstract_index > 0 and reference_index == -1:
             print(i)
             # check if a known jacow style
             for section_type, section_data in DETAILS.items():
@@ -293,7 +298,7 @@ def parse_paragraphs(doc):
 
     # authors is all the text between title and abstract heading
     summary['Author'] = {'details': [] }
-    for p in doc.paragraphs[1: abstract_index]:
+    for p in doc.paragraphs[title_index+1: abstract_index]:
         if p.text.strip():
             details = get_author_details(p)
             details.update(check_style_detail(p, DETAILS['Author']))

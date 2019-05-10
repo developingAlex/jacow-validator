@@ -9,8 +9,8 @@ PARAGRAPH_DETAILS = {
     },
     'alignment': 'JUSTIFY',
     'font_size': 10.0,
-    'space_before': ['>=', 3.0],
-    'space_after': 3.0,
+    'space_before': 0.0,
+    'space_after': 0.0,
     'first_line_indent': 9.35  # 0.33cm
 }
 
