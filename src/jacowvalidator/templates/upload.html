@@ -61,9 +61,9 @@
 
             {% set section = summary['List'] %}
             {% set extra_info = {'ok':section['ok'],'title':'Breakdown', 'headers': '<thead><tr>
-                            <th style="width:60%">Text</th><th>Style</th><th>JACoW Style</th>
+                            <th style="width:60%">Text</th><th>Style</th><th>In Table</th><th>JACoW Style</th>
                         </tr></thead>',
-                'columns': ['text', 'style', 'style_ok']}
+                'columns': ['text', 'style', 'in_table', 'style_ok']}
             %}
             {{ section_helper.add_section(section,
                     {},

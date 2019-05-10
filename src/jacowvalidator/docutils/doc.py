@@ -213,8 +213,31 @@ def parse_all_paragraphs(doc):
                 'index': i,
                 'style': p.style.name,
                 'text': get_text(p),
-                'style_ok': style_ok
+                'style_ok': style_ok,
+                'in_table': 'No'
             })
+
+    # search for figure captions in tables
+    for t in doc.tables:
+        if len(t.rows) > 2:
+            continue
+        for r in t.rows:
+            if len(r.cells) > 2:
+                continue
+            for c in r.cells:
+                for p in c.paragraphs:
+                    if p.text.strip():
+                        style_ok = p.style.name in VALID_STYLES or p.style.name in VALID_NON_JACOW_STYLES
+                        if not style_ok:
+                            style_ok = 2
+                        all_paragraphs.append({
+                            'index': 0,
+                            'style': p.style.name,
+                            'text': get_text(p),
+                            'style_ok': style_ok,
+                            'in_table': 'Yes'
+                        })
+
     return all_paragraphs
 
 
