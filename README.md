@@ -105,3 +105,10 @@ open http://localhost:5000/
 
 3. Note that you may have to reselect your flask run configuration afterwards 
     in the top right of the IDE.
+
+## Deployment
+
+In the interests of keeping this readme clean and relevant to local
+development, the details of where and how this project was deployed can
+be found in the [deployment readme](./DEPLOYMENT.md)
+
