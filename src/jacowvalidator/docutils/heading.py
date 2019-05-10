@@ -1,6 +1,5 @@
 import re
 from jacowvalidator.docutils.styles import check_style
-from jacowvalidator.docutils.paragraph import PARAGRAPH_SIZE_MIN
 
 HEADING_DETAILS = {
     'Section': {

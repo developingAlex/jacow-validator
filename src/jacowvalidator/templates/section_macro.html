@@ -112,6 +112,8 @@
 {% macro make_cell(col, value, loop, args) -%}
     {% if col == 'loop.index' %}
         <td>{{ loop.index }}</td>
+    {% elif col == 'in_table' %}
+        <td>{{ value|safe }}</td>
     {% elif col == 'text' %}
         <td title="{{ value }}">{% if args['truncate_text'] %}{{ value|truncate(args['truncate_text']) }} {% else %} {{ value }} {% endif %}</td>
     {% elif '_ok' in col|string  %}

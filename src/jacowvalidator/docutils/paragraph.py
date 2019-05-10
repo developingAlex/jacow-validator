@@ -1,6 +1,6 @@
 import re
 from jacowvalidator.docutils.styles import check_style
-
+from jacowvalidator.docutils.heading import HEADING_DETAILS
 
 PARAGRAPH_DETAILS = {
     'styles': {
@@ -34,9 +34,17 @@ def get_paragraphs(doc):
             # no need to check after references
             if text.lower() == 'references':
                 break
+
             # ignore table and figure cations
             # TODO check if any real paragraphs start with figure or table
             if text.startswith('Table ') or text.startswith('Figure ') or text.startswith('Fig. '):
+                continue
+
+            # ignore if heading style
+            name = [name for name, h in HEADING_DETAILS.items() if
+                        p.style.name in [h['styles']['jacow'], h['styles']['normal']]]
+
+            if name:
                 continue
 
             # short paragraphs are probably headings

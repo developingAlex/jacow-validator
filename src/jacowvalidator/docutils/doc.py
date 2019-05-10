@@ -1,9 +1,11 @@
 from jacowvalidator.docutils.styles import check_style_detail, VALID_STYLES, VALID_NON_JACOW_STYLES
 from jacowvalidator.docutils.page import get_text, check_title_case
+from docx.oxml.shape import CT_GraphicalObject, CT_GraphicalObjectData
 
 DETAILS = {
     'Heading': {
         'Section': {
+            'type': 'Section Heading',
             'styles': {
                 'jacow': 'JACoW_Section Heading',
                 'normal': 'Section Heading',
@@ -17,6 +19,7 @@ DETAILS = {
             'case': 'uppercase',
         },
         'Subsection': {
+            'type': 'Section Heading',
             'styles': {
                 'jacow': 'JACoW_Subsection Heading',
                 'normal': 'Subsection Heading',
@@ -30,6 +33,7 @@ DETAILS = {
             'case': 'initialcaps',
         },
         'Third': {
+            'type': 'Section Heading',
             'styles': {
                 'jacow': 'JACoW_Third - Level Heading',
                 'normal': 'Third - Level Heading',
@@ -44,6 +48,7 @@ DETAILS = {
         },
     },
     'Paragraph': {
+        'type': 'Body Text Indent',
         'styles': {
             'jacow': 'JACoW_Body Text Indent',
             'normal': 'Body Text Indent',
@@ -56,8 +61,10 @@ DETAILS = {
     },
     'Figure': {
         'SingleLine': {
+            'type': 'Figure - Single Line',
             'styles': {
                 'jacow': 'Figure Caption',
+                'normal': 'Caption',
             },
             'alignment': 'CENTER',
             'font_size': 10.0,
@@ -67,6 +74,7 @@ DETAILS = {
             'italic': None,
         },
         'MultiLine': {
+            'type': 'Figure - Multi Line',
             'styles': {
                 'jacow': 'Figure Caption Multi Line',
             },
@@ -80,6 +88,7 @@ DETAILS = {
     },
     'Reference': {
         'LessThanNineTotal': {
+            'type': 'References when ≤ 9',
             'styles': {
                 'jacow': 'JACoW_References when ≤ 9',
             },
@@ -91,6 +100,7 @@ DETAILS = {
             'first_line_indent': -14.75,  # 0.52 cm,
         },
         'LessThanNine': {
+            'type': 'Reference #1-9 when >= 10 Refs',
             'styles': {
                 'jacow': 'JACoW_Reference #1-9 when >= 10 Refs',
             },
@@ -102,6 +112,7 @@ DETAILS = {
             'first_line_indent': -14.75,  # 0.52 cm,
         },
         'MoreThanNine': {
+            'type': 'Reference #10 onwards',
             'styles': {
                 'jacow': 'JACoW_Reference #10 onwards',
             },
@@ -115,6 +126,7 @@ DETAILS = {
     },
     'Table': {
         'SingleLine': {
+            'type': 'Table - Single Line',
             'styles': {
                 'jacow': 'Table Caption',
             },
@@ -126,6 +138,7 @@ DETAILS = {
             'italic': None,
         },
         'MultiLine': {
+            'type': 'Table - Multi Line',
             'styles': {
                 'jacow': 'Table Caption Multi Line',
             },
@@ -138,6 +151,7 @@ DETAILS = {
         }
     },
     'Title': {
+        'type': 'Paper Heading',
         'styles': {
             'jacow': 'JACoW_Paper Heading',
             'normal': 'Paper Heading',
@@ -150,6 +164,7 @@ DETAILS = {
         'italic': None,
     },
     'Author': {
+        'type': 'Author List',
         'styles': {
             'jacow': 'JACoW_Author List',
             'normal': 'Author List',
@@ -162,6 +177,7 @@ DETAILS = {
         'italic': None,
     },
     'Abstract': {
+        'type': 'Abstract Heading',
         'styles': {
             'jacow': 'JACoW_Abstract_Heading',
             'normal': 'Abstract_Heading',
@@ -214,16 +230,19 @@ def parse_all_paragraphs(doc):
                 'style': p.style.name,
                 'text': get_text(p),
                 'style_ok': style_ok,
-                'in_table': 'No'
+                'in_table': 'No',
             })
 
     # search for figure captions in tables
+    count = 1
+    show_all = True
     for t in doc.tables:
-        if len(t.rows) > 2:
+        if len(t.rows) > 2 and not show_all:
             continue
         for r in t.rows:
-            if len(r.cells) > 2:
+            if len(r.cells) > 2 and not show_all:
                 continue
+            cell_count = 1
             for c in r.cells:
                 for p in c.paragraphs:
                     if p.text.strip():
@@ -235,8 +254,58 @@ def parse_all_paragraphs(doc):
                             'style': p.style.name,
                             'text': get_text(p),
                             'style_ok': style_ok,
-                            'in_table': 'Yes'
+                            'in_table': f"Table {count}:<br/>row {r._index + 1}, col {cell_count}"
                         })
+                cell_count = cell_count + 1
+        count = count + 1
+
+    # search within inline shapes
+    # for t in doc.inline_shapes:
+    #     for a in t.iterchildren():
+    #         if isinstance(a, CT_GraphicalObject):
+    #             data = [b for b in a.iterchildren() if isinstance(a, CT_GraphicalData)]
+    #             # for b in a.iterchildren():
+
+    #     print(t)
+    #     print(t._inline.__dir__())
+    #     for i in t._inline.getchildren():
+    #         print(i)
+    #     for i in t._inline.items():
+    #         print(i)
+    #     print('*')
+    #     for i in t._inline.iterchildren():
+    #         print(i)
+    #         print('**')
+    #         for j in i.iterchildren():
+    #             print(j)
+    #             print('***')
+    #             for k in j.iterchildren():
+    #                 print(k)
+    #                 print('****')
+    #                 for l in k.iterchildren():
+    #                     print(l)
+    #                     print('*****')
+    #                     for m in l.iterchildren():
+    #                         print(m)
+    #                         print('******')
+    #                         for n in m.iterchildren():
+    #                             print(n)
+    #                             print('*******')
+    #                             for o in n.iterchildren():
+    #                                 print(o)
+    #                                 print('********')
+    #                                 for p in o.iterchildren():
+    #                                     print(p)
+    #                                     print('*********')
+    #     print('****')
+    # print('**')
+    # search within inline shapes
+    # settings = doc.settings.element
+    # print(settings.__dir__())
+    # for i in settings.items():
+    #     print(i.__dir__())
+    # for i in settings.iterchildren():
+    #     print(i.__dir__())
 
     return all_paragraphs
 
