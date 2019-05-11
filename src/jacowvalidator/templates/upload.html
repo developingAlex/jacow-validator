@@ -12,13 +12,17 @@
                 <h1 class="title">Report for {{ filename }}</h1>
                 </div>
             {% endif %}
-            <div class="container box has-background-danger">{{ error }}</div>
+            <div class="container box" style="background-color:#{{ false|pastel_background_style }}">{{ error }}</div>
         {% endif %}
 
         {% if processed %}
             {% import "section_macro.html" as section_helper %}
             <div class="container">
             <h1 class="title"><a name="top"></a>Report for {{ filename }}</h1>
+
+            <div class="container box" style="text-align:center;font-size:14pt;background-color: #{{ 2|pastel_background_style }}">
+                <a href="https://www.jacow.org/Authors/CSEHelp" title="Author Help" target="_blank">Link to DOCX Cat Scan Editor - Help and Usage Guidelines</a>
+            </div>
 
             <div class="container box" style="box-shadow: 0 4px 6px rgba(0, 0, 255, 0.1), 0 0 0 2px rgba(0, 0, 255, 0.1)">
                 <h2 class="subtitle">Summary</h2>
