@@ -5,6 +5,7 @@
         <a name="{{section['anchor'] }}"></a>{{ section['ok']|tick_cross|safe }}
         {% if args['section_header'] %} {{ args['section_header']|safe }} {% else %}{{ section['title'] }} {% endif %}
         {% if section.showTotal %} ({{ section.details|length }}){% endif %}
+        {% if 'extra_info' in args %} - <a href="https://www.jacow.org/Authors/{{ args['extra_info'] }}" target="_target">Author Help for {{ section['title'] }}</a>{%  endif %}
     </h2>
     {% if rules or extra_rules %}
     <details style="border:1px lightgray solid;border-radius:2px">

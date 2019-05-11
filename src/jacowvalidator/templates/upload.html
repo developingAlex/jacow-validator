@@ -20,7 +20,7 @@
             <div class="container">
             <h1 class="title"><a name="top"></a>Report for {{ filename }}</h1>
 
-            <div class="container box" style="text-align:center;font-size:14pt;background-color: #{{ 2|pastel_background_style }}">
+            <div class="container box" style="text-align:center;font-size:14pt;background-color:#{{ 2|pastel_background_style }}">
                 <a href="https://www.jacow.org/Authors/CSEHelp" title="Author Help" target="_blank">Link to DOCX Cat Scan Editor - Help and Usage Guidelines</a>
             </div>
 
@@ -57,7 +57,7 @@
                 'columns': ['style', 'style_ok']}
             %}
             {{ section_helper.add_section(section,
-                    {},
+                    {'extra_info':'CSEJACoWStyles'},
                     '',
                     '<p>The latest JACoW Template must be used.<br/>
                         Standard JACoW Style’s must embedded in the document.</p>',
@@ -70,7 +70,7 @@
                 'columns': ['text', 'style', 'in_table', 'style_ok']}
             %}
             {{ section_helper.add_section(section,
-                    {},
+                    {'extra_info':'CSEParsedDocument'},
                     '',
                     '',
                     extra_info, False) }}
@@ -85,7 +85,7 @@
             %}
 
             {{ section_helper.add_section(section,
-                    {},
+                    {'extra_info':'CSEPageSizeandMargins'},
                     '',
                     '<h3 class="subtitle is-6">Documents MUST be based on A4 or US Letter</h3>
                     <table class="table is-bordered">
@@ -117,7 +117,7 @@
                 {% set extra_info = 'English proofing languages were found.' %}
             {% endif %}
             {{ section_helper.add_section(section,
-                    {},
+                    {'extra_info':'SCELanguages'},
                     '',
                     '<p>Document overall language should be set to English for proofing tools.<br/>
                     Below are the codes that should be in the list</p>
@@ -133,7 +133,6 @@
                     If you want to look up other codes, you can do so <a href="https://www.andiamo.co.uk/resources/iso-language-codes/" target="_blank">here</a>',
                     extra_info, False) }}
 
-
             {% set section = summary['Title'] %}
             {% if not title.case_ok %}
                 {% set extra_info = '<p class="has-text-weight-bold has-text-danger">Title should be at least 70% uppercase</p>' %}
@@ -141,28 +140,26 @@
                 {% set extra_info = '' %}
             {% endif %}
             {{ section_helper.add_section(section,
-                    {},
+                    {'extra_info':'SCEPaperTitle'},
                     '<tr>
                         <td>PAPER TITLE</td>
                         <td>“JACoW_Paper Title” Style, or equivalent style.</td>
                         <td>Centered</td><td>14 pt</td><td>Bold</td><td>Title should contain greater than 70% of CAPITAL Letters, can’t be simple Title Case.</td><td>0 pt</td><td>3 pt</td><td>NA</td>
                     </tr>',
-                    '',
                     extra_info) }}
 
             {% set section = summary['Authors'] %}
             {{ section_helper.add_section(section,
-                    {},
+                    {'extra_info':'SCEAuthors'},
                     '<tr>
                         <td>Author List</td>
                         <td>“JACoW_Author List” Style, or equivalent style.</td>
                         <td>Centered</td><td>12 pt</td><td>None</td><td>UPPER and lowercase</td><td>9 pt</td><td>12 pt</td><td>NA</td>
-                    </tr>',
-                    '') }}
+                    </tr>') }}
 
             {% set section = summary['Abstract'] %}
             {{ section_helper.add_section(section,
-                    {},
+                    {'extra_info':'SCEAbsract'},
                     '<tr>
                         <td>Abstract_Heading</td>
                         <td>“JACoW_Abstract_Heading” Style, or equivalent style.</td>
@@ -175,7 +172,7 @@
 
             {% set section = summary['Headings'] %}
             {{ section_helper.add_section(section,
-                        {},
+                        {'extra_info':'SCEHeadings'},
                         '<tr>
                             <td>SECTION  HEADING</td>
                             <td>“JACoW_Section Heading” Style, or equivalent style.</td>
@@ -194,7 +191,7 @@
 
             {% set section = summary['Paragraphs'] %}
             {{ section_helper.add_section(section,
-                        {'truncate_text':200},
+                        {'truncate_text':200,'extra_info':'SCEParag'},
                         '<tr>
                             <td>Paragraph</td>
                             <td>“JACoW_Body Text Indent” Style, or equivalent style.</td>
@@ -255,7 +252,7 @@
                 'columns': ['id', 'name', 'caption_ok', 'unique_ok', 'refs', 'used_ok', 'text'],'multi':true}
             %}
             {{ section_helper.add_section(section,
-                    {'style_multi':true},
+                    {'style_multi':true,'extra_info':'CSEFigures'},
                     '<tr>
                             <td>Figure Caption</td>
                             <td>“Figure Caption” Style, or equivalent style.</td>
