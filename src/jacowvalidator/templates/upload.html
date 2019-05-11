@@ -212,7 +212,7 @@
                 'columns': ['id', 'text', 'text_error', 'text_ok', 'used_ok', 'order_ok', 'unique_ok']}
             %}
             {{ section_helper.add_section(section,
-                    {'truncate_text':50},
+                    {'truncate_text':50,'extra_info':'SCEReferences'},
                     '<tr>
                         <td>Reference</td>
                         <td>“JACoW_References when ≤ 9” Style, or equivalent style.</td><td>Justified</td>
@@ -289,7 +289,7 @@
             %}
 
             {{ section_helper.add_section(section,
-                    {},
+                    {'extra_info':'CSETables'},
                         '<tr>
                             <td>Table Caption</td>
                             <td>“Table Caption” Style, or equivalent style.</td>
@@ -323,7 +323,7 @@
                 {% endif %}
 
                 {{ section_helper.add_section(section,
-                        {'section_header':title},
+                        {'section_header':title,'extra_info':'CSESPMSCeck'},
                         '',
                         '',
                         extra_info, False) }}
