@@ -7,6 +7,7 @@ import re
 from jacowvalidator.docutils.authors import get_author_list
 
 RE_MULTI_SPACE = re.compile(r' +')
+NON_BREAKING_SPACE = '\u00A0'
 
 
 class PaperNotFoundError(Exception):
@@ -151,7 +152,8 @@ def get_author_list_report(docx_text, spms_text):
             },
         ]
     """
-    docx_list = get_author_list(docx_text)
+    space_fixed_docx_text = docx_text.replace(NON_BREAKING_SPACE, ' ')
+    docx_list = get_author_list(space_fixed_docx_text)
     spms_list = get_author_list(spms_text)
     # create a copy of spms_list and docx_list so that we can remove items
     #  without mutating the originals:
