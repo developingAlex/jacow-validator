@@ -11,7 +11,7 @@ def test_references():
     doc = Document(test_dir / 'reference_test.docx')
 
     # hard code known issues for the moment
-    type_of_checks = ['used', 'order_ok', 'style_ok']
+    type_of_checks = ['used_ok', 'order_ok', 'style_ok']
     issues = {
         1: [],
         2: [],
@@ -31,7 +31,7 @@ def test_references():
         16: [],
         17: [],
         18: [],
-        19: ['used'],
+        19: ['used_ok'],
         20: ['order_ok'],
         21: ['order_ok'],
         22: ['order_ok'],
