@@ -224,8 +224,8 @@
                     <li>References in the main text can be [n], or [n1, n2, n5, etc.], or [n – n3].</li>
                     <li>A reference can be referred to multiple times in the main text as required.</li>
                     <li>All references in the reference list must be sited in the main text at least once.</li>
-                    <li>Reference lists which have 9 or less references must be “JACoW_Reference when <= 9 Refs” Style.</li>
-                    <li>When greater than 9 references the first 9 must be “JACoW_Reference #1-9 when >= 10 Refs” Style, and 10 and onwards must be “JACoW_Reference #10 onwards” Style.</li>
+                    <li>Reference lists which have 9 or less references must be “JACoW_Reference when &lt;= 9 Refs” Style.</li>
+                    <li>When greater than 9 references the first 9 must be “JACoW_Reference #1-9 when &gt;= 10 Refs” Style, and 10 and onwards must be “JACoW_Reference #10 onwards” Style.</li>
                     <li>All references must be numbered [n] and have a tab between the ] and the start of the reference text. (note many authors put spaces in which stuffs up the spacing.</li>
                     </ul>',
                     extra_info, True) }}
@@ -320,16 +320,13 @@
                         extra_info, False) }}
             </div>
             {% endif %}
-        </div>
         {% endif %}
     </section>
    <script type="application/javascript">
         function closeDetails() {
             // document.getElementsByTagName('details');
             const details = Array.from(document.querySelectorAll("details"));
-
-            // Add the onclick listeners.
-            details.forEach((targetDetail) => {
+            details.forEach(function(targetDetail) {
                 targetDetail.removeAttribute("open");
             });
         }

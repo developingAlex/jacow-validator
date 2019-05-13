@@ -162,7 +162,9 @@
 {% macro make_table(data, headers, columns, args={}, rules=false) -%}
     <table class="table is-bordered is-fullwidth">
         {{ make_table_header(rules, headers) }}
+        <tbody>
         {% for row in data %}
+            <tr>
             {% if rules %}
                  {{ make_cell('text', row['text'], loop, args) }}
                  {{ make_cell('style', row['style'], loop, args) }}
@@ -174,7 +176,6 @@
                 {% endfor %}
                 {{ make_cell('style_ok', row['style_ok'], loop, args) }}
             {% else %}
-                <tr>
                 {% for col in columns %}
                     {% set value = row[col] %}
                     {{ make_cell(col, value, loop, args) }}
@@ -182,6 +183,7 @@
             {% endif %}
             </tr>
         {% endfor %}
+        </tbody>
     </table>
 {%- endmacro %}
 
