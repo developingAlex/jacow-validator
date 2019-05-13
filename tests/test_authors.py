@@ -1,4 +1,16 @@
 from jacowvalidator.docutils.authors import get_author_list
+from jacowvalidator.spms import normalize_author_name, get_first_last_only
+
+def test_normalize():
+    author_name = 'E.-R. Olivas*'
+    normed = normalize_author_name(author_name)
+    assert normed == 'E. R. Olivas'
+
+
+def test_first_initial_version_extraction():
+    normalized_author_name = 'E. R. Olivas'
+    first_last_only = get_first_last_only(normalized_author_name)
+    assert first_last_only == 'E. Olivas'
 
 
 def test_simple_author_extraction():
