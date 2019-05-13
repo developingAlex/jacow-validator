@@ -18,7 +18,7 @@ from jacowvalidator.docutils.heading import get_headings
 from jacowvalidator.docutils.paragraph import get_paragraphs
 from jacowvalidator.docutils.figures import extract_figures
 from jacowvalidator.docutils.languages import (get_language_tags, get_language_tags_location, VALID_LANGUAGES)
-from jacowvalidator.docutils.doc import parse_paragraphs, parse_all_paragraphs
+from jacowvalidator.docutils.doc import parse_paragraphs, parse_all_paragraphs, AbstractNotFoundError
 
 from jacowvalidator.docutils.tables import (
     check_table_titles,
@@ -101,6 +101,7 @@ def upload():
 
         try:
             doc = Document(fullpath)
+            doc_summary = parse_paragraphs(doc)
             metadata = doc.core_properties
             summary = {}
 
@@ -153,35 +154,19 @@ def upload():
                 'showTotal': True,
             }
 
-            title = extract_title(doc)
-            summary['Title'] = {
-                'title': 'Title',
-                'ok': title['style_ok'] and title['case_ok'],
-                'message': 'Title issues',
-                'details': [title],
-                'anchor': 'title'
-            }
+            summary['Title'] = doc_summary['Title']
+            title = doc_summary['Title']['details'][0]
 
-            abstract, authors = get_abstract_and_author(doc)
-            summary['Authors'] = {
-                'title': 'Authors',
-                'ok': all([tick['style_ok'] for tick in authors]),
-                'message': 'Author issues',
-                'details': authors,
-                'anchor': 'author'
-            }
-            summary['Abstract'] = {
-                'title': 'Abstract Heading',
-                'ok': abstract['style_ok'],
-                'message': 'Abstract issues',
-                'details': [abstract],
-                'anchor': 'abstract'
-            }
+            summary['Authors'] = doc_summary['Authors']
+            authors = doc_summary['Authors']['details']
+
+            summary['Abstract'] = doc_summary['Abstract']
+            # summary['Headings'] = doc_summary['Headings']
 
             headings = get_headings(doc)
             summary['Headings'] = {
                 'title': 'Headings',
-                'ok': all([tick['style_ok'] == True for tick in headings]),
+                'ok': all([tick['style_ok'] is True for tick in headings]),
                 'message': 'Heading issues',
                 'details': headings,
                 'anchor': 'heading',
@@ -279,7 +264,12 @@ def upload():
                 **locals(),
                 error=f"It seems the file {filename} has no corresponding entry in the SPMS references list. "
                       f"Is your filename the same as your Paper name?")
-        except PaperNotFoundError:
+        except AbstractNotFoundError as err:
+            return render_template(
+                "upload.html",
+                filename=filename,
+                error=err)
+        except Exception:
             if app.debug:
                 raise
             else:
