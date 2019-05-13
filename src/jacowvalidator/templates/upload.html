@@ -143,26 +143,19 @@
             {{ section_helper.add_section(section,
                     {'extra_info':'SCEPaperTitle'},
                     '',
-                    'Title should contain greater than 70% of CAPITAL Letters, can’t be simple Title Case.</td><td>0 pt</td><td>3 pt</td><td>NA</td>',
+                    'Case: Title should contain greater than 70% of CAPITAL Letters, can’t be simple Title Case.',
                     extra_info) }}
 
             {% set section = summary['Authors'] %}
             {{ section_helper.add_section(section,
                     {'extra_info':'SCEAuthors'},
-                    '<tr>
-                        <td>Author List</td>
-                        <td>“JACoW_Author List” Style, or equivalent style.</td>
-                        <td>Centered</td><td>12 pt</td><td>None</td><td>UPPER and lowercase</td><td>9 pt</td><td>12 pt</td><td>NA</td>
-                    </tr>') }}
+                    '',
+                    'Case: UPPER and lowercase') }}
 
             {% set section = summary['Abstract'] %}
             {{ section_helper.add_section(section,
                     {'extra_info':'SCEAbsract'},
-                    '<tr>
-                        <td>Abstract_Heading</td>
-                        <td>“JACoW_Abstract_Heading” Style, or equivalent style.</td>
-                        <td>Left or None</td><td>12 pt</td><td>Italic</td><td></td><td>0 pt</td><td>3 pt</td><td>NA</td>
-                    </tr>',
+                    '',
                     '<ul>
                         <li>Must Say Abstract</li>
                         <li>Be in the “JACoW_Abstract_Heading” style.</li>

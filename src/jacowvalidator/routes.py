@@ -47,6 +47,12 @@ def inject_commit_details():
     return dict(commit_sha=commit_sha, commit_date=commit_date)
 
 
+@app.context_processor
+def inject_debug():
+    debug = app.env == 'development' or app.debug
+    return dict(debug=debug)
+
+
 @app.template_filter('tick_cross2')
 def tick_cross2(s):
     return "✓" if s else "✗"
