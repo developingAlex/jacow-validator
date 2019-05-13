@@ -7,7 +7,6 @@ import re
 from jacowvalidator.docutils.authors import get_author_list
 
 RE_MULTI_SPACE = re.compile(r' +')
-NON_BREAKING_SPACE = '\u00A0'
 
 
 class PaperNotFoundError(Exception):
@@ -54,10 +53,10 @@ def reference_csv_check(filename_minus_ext, title, authors):
         reader = csv.reader(f)
         reading_header_row = True
         match_found = False
-        for row in reader:
+        for spms_row in reader:
             if reading_header_row:
                 reading_header_row = False
-                header = row
+                header = spms_row
                 title_col = header.index("title")
                 paper_col = header.index("paper")
                 authors_col = header.index("authors")
@@ -67,10 +66,10 @@ def reference_csv_check(filename_minus_ext, title, authors):
                     if heading not in locals():
                         raise ColumnNotFoundError(f"could not identify {heading} column in references csv")
             else:
-                if filename_minus_ext == row[paper_col]:
-                    reference_title = RE_MULTI_SPACE.sub(' ', row[title_col].upper())
+                if filename_minus_ext == spms_row[paper_col]:
+                    reference_title = RE_MULTI_SPACE.sub(' ', spms_row[title_col].upper())
                     title_match = title.upper().strip('*') == reference_title
-                    report, authors_match = get_author_list_report(authors, row[authors_col])
+                    report, authors_match = get_author_list_report(authors, spms_row[authors_col])
 
                     summary_list = [{'type': 'Author', 'match_ok': result['match'], 'docx': result['docx'], 'spms': result['spms']} for result in report]
 
@@ -83,9 +82,9 @@ def reference_csv_check(filename_minus_ext, title, authors):
                         'author': {
                             'match': authors_match,
                             'docx': authors,
-                            'spms': row[authors_col],
+                            'spms': spms_row[authors_col],
                             'docx_list': get_author_list(authors),
-                            'spms_list': get_author_list(row[authors_col]),
+                            'spms_list': get_author_list(spms_row[authors_col]),
                             'report': report
                         },
                         'summary': [{
@@ -97,7 +96,7 @@ def reference_csv_check(filename_minus_ext, title, authors):
                             'type': 'Extracted Author List',
                             'match_ok': authors_match,
                             'docx': authors,
-                            'spms': row[authors_col],
+                            'spms': spms_row[authors_col],
                         }, *summary_list],
                     }
 
@@ -137,46 +136,157 @@ def reference_csv_check(filename_minus_ext, title, authors):
 def get_author_list_report(docx_text, spms_text):
     """Compares two lists of authors (one sourced from the uploaded docx file
     and one sourced from the corresponding paper's entry in the SPMS references
-    csv file) and produces a dict array report of the
-    form:
+    csv file) and produces a dict array report of the form:
         [
             {
             match: True,
-            docx: "T. Anderson",
-            spms: "T. Anderson"
+            exact: True,
+            docx: "Y. Z. Gómez Martínez",
+            spms: "Y. Gomez Martinez"
+            },
+            {
+            match: True,
+            exact: False,
+            docx: "T. X. Therou",
+            spms: "T. Therou"
             },
             {
             match: False,
+            exact: False,
             docx: "A. Tiller",
             spms: ""
             },
         ]
     """
-    space_fixed_docx_text = docx_text.replace(NON_BREAKING_SPACE, ' ')
-    docx_list = get_author_list(space_fixed_docx_text)
-    spms_list = get_author_list(spms_text)
-    # create a copy of spms_list and docx_list so that we can remove items
-    #  without mutating the originals:
-    fixed_spms_list = normalize_author_names(spms_list)
-    fixed_docx_list = normalize_author_names(docx_list)
-    spms_authors_to_check = clone_list(fixed_spms_list)
-    results = list()
-    all_authors_match = True
-    for author in fixed_docx_list:
-        if author in fixed_spms_list:
-            results.append({'match': True, 'docx': author, 'spms': author})
-            spms_authors_to_check.remove(author)
-        else:
-            all_authors_match = False
-            results.append({'match': False, 'docx': author, 'spms': ''})
 
-    # by now any authors remaining in the spms_authors_to_check list are ones
-    # that had no matching author in the docx list:
-    for author in spms_authors_to_check:
+    extracted_docx_authors = get_author_list(docx_text)
+    extracted_spms_authors = get_author_list(spms_text)
+    # extracted_docx_authors = ['Y. Z. Gómez Martínez', 'T. X. Therou', 'A. Tiller']
+    docx_list = build_comparison_author_objects(extracted_docx_authors)
+    spms_list = build_comparison_author_objects(extracted_spms_authors)
+    # docx_list = [
+    # {
+    #   original-value: 'Y. Z. Gómez Martínez',
+    #   compare-value: 'Y. Z. Gomez Martinez',
+    #   compare-first-last: 'Y. Gomez Martinez',
+    #   compare-last: 'Gomez Martinez'
+    # }, ... ]
+
+    # create lists needed for matching and sorting:
+
+    spms_matched = list()
+    spms_unmatched = list()
+    docx_matched = list()
+    results = list()
+
+    # perform first round of matching, looking for exact matches:
+
+    all_authors_match = True
+
+    for spms_author in spms_list:
+        docx_author = next((docx_author for docx_author in docx_list if docx_author['compare-value'] == spms_author['compare-value']), None)
+        if docx_author:
+            docx_matched.append(docx_author)
+            docx_list.remove(docx_author)
+            spms_matched.append(spms_author)
+            spms_list.remove(spms_author)
+            results.append({'docx': docx_author['original-value'],
+                            'spms': spms_author['original-value'],
+                            'exact': True,
+                            'match': True})
+        else:
+            spms_unmatched.append(spms_author)
+            spms_list.remove(spms_author)
+
+    # Move remaining authors in docx_list to docx_unmatched:
+
+    docx_unmatched = docx_list
+
+    # if any unmatched authors remain, perform second round of matching, looking for loose matches (missing initials)
+
+    for spms_author in spms_unmatched:
+        docx_author = next((docx_author for docx_author in docx_unmatched if docx_author['compare-first-last'] == spms_author['compare-first-last']), None)
+        if docx_author:
+            docx_matched.append(docx_author)
+            docx_unmatched.remove(docx_author)
+            spms_matched.append(spms_author)
+            spms_unmatched.remove(spms_author)
+            results.append({'docx': docx_author['original-value'],
+                            'spms': spms_author['original-value'],
+                            'exact': False,
+                            'match': True})
+        else:
+            spms_unmatched.append(spms_author)
+            spms_list.remove(spms_author)
+
+    # after all matching rounds completed, any authors remaining in the
+    # unmatched lists are added to results with a match value of false:
+
+    for spms_author in spms_unmatched:
+        results.append({'docx': '',
+                        'spms': spms_author['original-value'],
+                        'exact': False,
+                        'match': False})
         all_authors_match = False
-        results.append({'match': False, 'docx': '', 'spms': author})
+
+    for docx_author in docx_unmatched:
+        results.append({'docx': docx_author['original-value'],
+                        'spms': '',
+                        'exact': False,
+                        'match': False})
+        all_authors_match = False
 
     return results, all_authors_match
+
+
+def build_comparison_author_objects(author_names):
+    author_compare_objects = list()
+    for author in author_names:
+        original_value = author
+        compare_value = normalize_author_name(author)
+        compare_first_last = get_first_last_only(compare_value)
+        compare_last = get_surname(compare_first_last)
+        author_compare_objects.append(
+            {
+                'original-value': original_value,
+                'compare-value': compare_value,
+                'compare-first-last': compare_first_last,
+                'compare-last': compare_last
+            })
+    return author_compare_objects
+
+
+def normalize_author_name(author_name):
+    """returns a normalized name suitable for comparing"""
+    # ensure periods are followed by a space:
+    normalized_name = author_name.replace('.', '. ').replace('  ', ' ')
+    # convert frequently interchanged accented characters with their asci equivalents:
+    normalized_name = remove_accented_chars(normalized_name)
+    # remove hyphens (sometimes inconsistently applied):
+    normalized_name = normalized_name.replace('-', '')
+    # remove asterisks (sometimes included in docx authors text):
+    normalized_name = normalized_name.replace('*', '')
+    # strip possible extra whitespace:
+    normalized_name = normalized_name.strip()
+    return normalized_name
+
+
+def get_first_last_only(normalized_author_name):
+    """given an author name returns a version with only the first initial
+    eg: given 'T. J. Z. Bytes' returns 'T. Bytes' """
+    first_intial = normalized_author_name[:2]
+    surname = get_surname(normalized_author_name)
+    return ' '.join((first_intial, surname))
+
+
+def get_surname(author_name):
+    """finds the index of the last period in the string then returns the substring
+    starting 2 positions forward from that period"""
+    return author_name[author_name.rfind('.')+2:]
+
+
+def remove_accented_chars(name):
+    return name   # Todo
 
 
 def clone_list(list_to_clone):
@@ -197,10 +307,6 @@ def insert_spaces_after_periods(author_list_to_adjust):
 
 def normalize_author_names(author_list_to_clean):
     new_list = list()
-    for author in insert_spaces_after_periods(author_list_to_clean):
-        # ignore asterisks when comparing:
-        fixed_author = author.replace('*', '')
-        # ignore hyphens when comparing:
-        fixed_author = fixed_author.replace('-', '')
-        new_list.append(fixed_author.strip())
+    for author in author_list_to_clean:
+        new_list.append(normalize_author_name(author))
     return new_list

@@ -1,5 +1,7 @@
 import re
 
+NON_BREAKING_SPACE = '\u00A0'
+
 
 def get_author_list(text):
     """function to extract authors from some text that will also include
@@ -48,7 +50,7 @@ National Synchrotron Radiation Research Center, Hsinchu, Taiwan, R.O.C`
     (https://regexr.com/)
 
     """
-    potential_authors = text.replace(' and ', ', ').split(', ')
+    potential_authors = text.replace(NON_BREAKING_SPACE, ' ').replace(' and ', ', ').split(', ')
     filtered_authors = list()
     my_name_pattern = re.compile("(-?\\w\\.\\ ?)+([\\w]{2,}\\ ?)+")
     # the allowance of an optional hyphen preceding an initial is to satisfy a

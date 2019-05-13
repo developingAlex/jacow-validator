@@ -228,7 +228,10 @@ def upload():
 
             if "URL_TO_JACOW_REFERENCES_CSV" in os.environ:
                 reference_csv_url = os.environ["URL_TO_JACOW_REFERENCES_CSV"]
+                # authors is a list because the authors may have stretched across
+                # multiple paragraphs in the document
                 author_text = ''.join([a['text']+", " for a in authors])
+                # the reference_csv_check will find the corresponding entry in the spms file based off the paper name.
                 reference_csv_details = reference_csv_check(paper_name, title['text'], author_text)
                 summary['SPMS'] = {
                     'title': 'SPMS Abstract Title Author Check',
