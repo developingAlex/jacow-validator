@@ -1,9 +1,10 @@
 from jacowvalidator.docutils.styles import check_style
 
+
 TITLE_DETAILS = {
     'styles': {
-        'jacow': 'JACoW_Paper Heading',
-        'normal': 'Paper Heading',
+        'jacow': 'JACoW_Paper Title',
+        'normal': 'Paper Title',
     },
     'alignment': 'CENTER',
     'font_size': 14.0,
@@ -34,7 +35,7 @@ def extract_title(doc):
                 'case_ok': check_title_case(title),
             }
             title_detail.update(detail)
-            return title_detail
+        return title_detail
 
 
 def check_title_case(title):

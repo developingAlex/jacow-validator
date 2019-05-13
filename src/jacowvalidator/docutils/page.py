@@ -1,6 +1,6 @@
 from docx.shared import Inches, Mm, Twips
 from jacowvalidator.docutils.styles import check_style
-
+# from jacowvalidator.docutils.doc import AbstractNotFoundError
 
 class TrackingOnError(Exception):
     """Raised when the docx has tracking change on"""
@@ -61,6 +61,10 @@ def get_abstract_and_author(doc):
             }
             abstract.update(detail)
             break
+
+    # if abstract not found
+    # if 'start' not in abstract:
+    #    raise AbstractNotFoundError("Abstract header not found")
 
     author_paragraphs = doc.paragraphs[title_start+1: abstract['start']]
 

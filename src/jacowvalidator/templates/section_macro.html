@@ -10,16 +10,40 @@
     {% if rules or extra_rules %}
     <details style="border:1px lightgray solid;border-radius:2px">
         <summary style="padding:5px;border: 1px solid grey;border-radius:2px; background-color:#fcfcfc">Rules for {{ section['title'] }}</summary>
-        <div style="padding-left:20px"> {{ extra_rules|safe }}</div>
-        {% if rules %}
-        <table class="table is-bordered" style="width:100%">
-            <thead>
-                <tr>
-                    <th>Type</th><th>Details</th><th>Alignment</th><th>Font Size</th><th>Font Style</th><th>Case</th><th>Space Before</th><th>Space After</th><th>Indent</th>
-                </tr>
-            </thead>
-            {{ rules|safe }}
-        </table>
+        <div style="padding-left:20px">{{ extra_rules|safe }}</div>
+        {% if section.rules %}
+            <table class="table is-bordered is-fullwidth">
+                <thead>
+                    <tr>
+                        <th>Type</th><th>Details</th>
+                        {% for rule in section.rules %}
+                            {% if rule not in ['type','styles'] %}
+                                <th>{{ get_style_column_header(rule) }}</th>
+                            {% endif %}
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td>{{ section.rules['type'] }}</td>
+                      <td>'{{ section.rules['styles']['jacow'] }}' or equivalent style</td>
+                      {% for rule, value in section.rules.items() %}
+                         {% if rule not in ['type','styles'] %}
+                            <td> {{ value }} </td>
+                         {% endif %}
+                      {% endfor %}
+                    </tr>
+                </tbody>
+            </table>
+        {% elif rules %}
+            <table class="table is-bordered is-fullwidth">
+                <thead>
+                    <tr>
+                        <th>Type</th><th>Details</th><th>Alignment</th><th>Font Size</th><th>Font Style</th><th>Case</th><th>Space Before</th><th>Space After</th><th>Indent</th>
+                    </tr>
+                </thead>
+                {{ rules|safe }}
+            </table>
         {% endif %}
     </details>
     <br/>
@@ -39,14 +63,14 @@
     {% elif extra_info %}
         {{ extra_info|safe }}
     {% endif %}
-    {% if show_styles %}
+    {% if show_styles or section.rules %}
         {% if not section.showTotal or (section.showTotal and section['details']|length > 0) %}
             <details {% if section['ok'] == false %} open {% endif %} style="border:1px lightgray solid;border-radius:2px">
                 <summary style="padding:5px;border: 1px solid grey;border-radius:2px; background-color:#fcfcfc">Style Breakdown for {{ section['title'] }}</summary>
                 {% set headers = '<thead>
                     <tr>
                         <th rowspan="2" width="25%" style="text-align:center">Text</th>
-                        <th colspan="9" width="75%" style="text-align:center">Style</th>
+                        <th colspan="10" width="75%" style="text-align:center">Style</th>
                     </tr>
                     <tr>
                         <th width="20%">Text Style Name</th>
@@ -63,9 +87,9 @@
                 </thead>' %}
                 {% set columns = ['text','style','alignment','font_size','all_caps','bold','italic','space_before','space_after','first_line_indent','style_ok'] %}
                 {% if args['style_multi'] %}
-                    {{ make_table_multi(section['details'], headers, columns, args) }}
+                    {{ make_table_multi(section['details'], headers, columns, args, section.rules) }}
                 {% else %}
-                    {{ make_table(section['details'], headers, columns, args) }}
+                    {{ make_table(section['details'], headers, columns, args, section.rules) }}
                 {% endif %}
             </details>
         {% else %}
@@ -77,23 +101,93 @@
 </div>
 {%- endmacro %}
 
-{% macro make_table(data, headers, columns, args={}) -%}
-    <table class="table is-bordered" style="width:100%">
-        {{ headers|safe }}
-        {% for row in data %}
+{% macro get_style_column_header(column) -%}
+    {% set cols = {
+        'alignment':'Alignment',
+        'font_size':'Font Size',
+        'all_caps':'All Caps',
+        'bold':'Bold',
+        'italic':'Italic',
+        'space_before':'Space Before',
+        'space_after':'Space After',
+        'first_line_indent':'First Line Indent',
+        'hanging_indent':'Hanging Indent',
+    } %}
+    {% if column in cols %}
+        {{ cols[column] }}
+    {% endif %}
+{%- endmacro %}
+
+{% macro make_table_header(rules, header=False) -%}
+    {% if rules %}
+        <thead>
             <tr>
-            {% for col in columns %}
-                {% set value = row[col] %}
-                {{ make_cell(col, value, loop, args) }}
-            {% endfor %}
+                <th rowspan="2" width="25%" style="text-align:center">Text</th>
+                <th colspan="9" width="75%" style="text-align:center">Style</th>
+            </tr>
+            <tr>
+                <th width="20%">Text Style Name</th>
+                {% for rule in rules %}
+                    {% if rule not in ['type','styles'] %}
+                        <th width="7%">{{ get_style_column_header(rule) }}</th>
+                    {% endif %}
+                {% endfor %}
+                <th width="5%">Ok</th>
+            </tr>
+        </thead>
+    {% elif header %}
+        {{ header|safe }}
+    {% else %}
+        <thead>
+            <tr>
+                <th rowspan="2" width="25%" style="text-align:center">Text</th>
+                <th colspan="9" width="75%" style="text-align:center">Style</th>
+            </tr>
+            <tr>
+                <th width="20%">Text Style Name</th>
+                <th width="7%">Alignment</th>
+                <th width="7%">Font Size</th>
+                <th width="7%">All Caps</th>
+                <th width="7%">Bold</th>
+                <th width="7%">Italic</th>
+                <th width="7%">Space Before</th>
+                <th width="7%">Space After</th>
+                <th width="7%">First Line Indent</th>
+                <th width="5%">Ok</th>
+            </tr>
+        </thead>
+    {%  endif %}
+{%- endmacro %}
+
+{% macro make_table(data, headers, columns, args={}, rules=false) -%}
+    <table class="table is-bordered is-fullwidth">
+        {{ make_table_header(rules, headers) }}
+        {% for row in data %}
+            {% if rules %}
+                 {{ make_cell('text', row['text'], loop, args) }}
+                 {{ make_cell('style', row['style'], loop, args) }}
+                 {% for col in rules %}
+                     {% if col not in ['type','styles'] %}
+                         {% set value = row[col] %}
+                         {{ make_cell(col, value, loop, args) }}
+                     {% endif %}
+                {% endfor %}
+                {{ make_cell('style_ok', row['style_ok'], loop, args) }}
+            {% else %}
+                <tr>
+                {% for col in columns %}
+                    {% set value = row[col] %}
+                    {{ make_cell(col, value, loop, args) }}
+                {% endfor %}
+            {% endif %}
             </tr>
         {% endfor %}
     </table>
 {%- endmacro %}
 
-{% macro make_table_multi(data, headers, columns, args={}) -%}
-    <table class="table is-bordered" style="width:100%">
-        {{ headers|safe }}
+{% macro make_table_multi(data, headers, columns, args={}, rules=false) -%}
+    <table class="table is-bordered is-fullwidth">
+        {{ make_table_header(rules, headers) }}
         {% for id, id_row in data.items() %}
             {% for item in id_row %}
             <tr>

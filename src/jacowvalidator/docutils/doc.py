@@ -2,6 +2,13 @@ from jacowvalidator.docutils.styles import check_style_detail, VALID_STYLES, VAL
 from jacowvalidator.docutils.page import get_text, check_title_case
 from docx.oxml.shape import CT_GraphicalObject, CT_GraphicalObjectData
 
+
+class AbstractNotFoundError(Exception):
+    """Raised when the paper submitted by a user has no matching entry in the
+    spms references list of papers"""
+    pass
+
+
 DETAILS = {
     'Heading': {
         'Section': {
@@ -151,10 +158,10 @@ DETAILS = {
         }
     },
     'Title': {
-        'type': 'Paper Heading',
+        'type': 'Paper Title',
         'styles': {
-            'jacow': 'JACoW_Paper Heading',
-            'normal': 'Paper Heading',
+            'jacow': 'JACoW_Paper Title',
+            'normal': 'Paper Title',
         },
         'alignment': 'CENTER',
         'font_size': 14.0,
@@ -163,7 +170,7 @@ DETAILS = {
         'bold': True,
         'italic': None,
     },
-    'Author': {
+    'Authors': {
         'type': 'Author List',
         'styles': {
             'jacow': 'JACoW_Author List',
@@ -195,7 +202,8 @@ DETAILS = {
 def get_title_details(p):
     title = get_text(p)
     title_detail = {
-        'display_text': title,
+        'text': title,
+        'original_text': p.text,
         'case_ok': check_title_case(title, 0.7),
     }
     return title_detail
@@ -206,14 +214,16 @@ def get_author_details(p):
     for r in p.runs:
         superscript_removed_text += r.text if not r.font.superscript else ''
     author_detail = {
-        'display_text': superscript_removed_text
+        'text': superscript_removed_text,
+        'original_text': p.text,
     }
     return author_detail
 
 
 def get_abstract_detail(p):
     abstract_detail = {
-        'display_text': p.text,
+        'text': p.text,
+        'original_text': p.text,
     }
     return abstract_detail
 
@@ -233,7 +243,7 @@ def parse_all_paragraphs(doc):
                 'in_table': 'No',
             })
 
-    # search for figure captions in tables
+    # search for paragraphs in tables
     count = 1
     show_all = True
     for t in doc.tables:
@@ -258,55 +268,6 @@ def parse_all_paragraphs(doc):
                         })
                 cell_count = cell_count + 1
         count = count + 1
-
-    # search within inline shapes
-    # for t in doc.inline_shapes:
-    #     for a in t.iterchildren():
-    #         if isinstance(a, CT_GraphicalObject):
-    #             data = [b for b in a.iterchildren() if isinstance(a, CT_GraphicalData)]
-    #             # for b in a.iterchildren():
-
-    #     print(t)
-    #     print(t._inline.__dir__())
-    #     for i in t._inline.getchildren():
-    #         print(i)
-    #     for i in t._inline.items():
-    #         print(i)
-    #     print('*')
-    #     for i in t._inline.iterchildren():
-    #         print(i)
-    #         print('**')
-    #         for j in i.iterchildren():
-    #             print(j)
-    #             print('***')
-    #             for k in j.iterchildren():
-    #                 print(k)
-    #                 print('****')
-    #                 for l in k.iterchildren():
-    #                     print(l)
-    #                     print('*****')
-    #                     for m in l.iterchildren():
-    #                         print(m)
-    #                         print('******')
-    #                         for n in m.iterchildren():
-    #                             print(n)
-    #                             print('*******')
-    #                             for o in n.iterchildren():
-    #                                 print(o)
-    #                                 print('********')
-    #                                 for p in o.iterchildren():
-    #                                     print(p)
-    #                                     print('*********')
-    #     print('****')
-    # print('**')
-    # search within inline shapes
-    # settings = doc.settings.element
-    # print(settings.__dir__())
-    # for i in settings.items():
-    #     print(i.__dir__())
-    # for i in settings.iterchildren():
-    #     print(i.__dir__())
-
     return all_paragraphs
 
 
@@ -324,56 +285,100 @@ def parse_paragraphs(doc):
         # first non empty paragraph is the title
         # TODO fix since it can go over more than paragraph
         if title_index == -1:
+            title_index = i
             details = get_title_details(p)
             details.update(check_style_detail(p, DETAILS['Title']))
             title_style_ok = p.style.name == DETAILS['Title']['styles']['jacow']
-            summary['Title'] = {'details': [details]}
+            details.update({'title_style_ok': title_style_ok, 'style': p.style.name})
+            summary['Title'] = {
+                'details': [details],
+                'rules': DETAILS['Title'],
+                'title': 'Title',
+                'ok': details['style_ok'] and details['case_ok'],
+                'message': 'Title issues',
+                'anchor': 'title'
+            }
+
 
         # find abstract heading
         if text.lower() == 'abstract':
             abstract_index = i
             details = get_abstract_detail(p)
             details.update(check_style_detail(p, DETAILS['Abstract']))
-            summary['Abstract'] = {'details': [details] }
+            title_style_ok = p.style.name == DETAILS['Abstract']['styles']['jacow']
+            details.update({'title_style_ok': title_style_ok, 'style': p.style.name})
+            summary['Abstract'] = {
+                'details': [details],
+                'rules': DETAILS['Abstract'],
+                'title': 'Abstract Heading',
+                'ok': details['style_ok'],
+                'message': 'Abstract issues',
+                'anchor': 'abstract'
+            }
+
 
         # all headings, paragraphs captions, figures, tables, equations should be between these two
-        if abstract_index > 0 and reference_index == -1:
-            print(i)
-            # check if a known jacow style
-            for section_type, section_data in DETAILS.items():
-                if 'styles' in section_data:
-                    if p.style.name in section_data['styles']['jacow']:
-                        found = f"{section_type} - {p.style.name}"
-                        print(found)
-                        break
-                    elif p.style.name in section_data['styles']['normal']:
-                        found = f"{section_type} -- {p.style.name}"
-                        print(found)
-                        break
-                else:
-                    for sub_type, sub_data in section_data.items():
-                        if p.style.name in sub_data['styles']['jacow']:
-                            found = f"{section_type} - {sub_type} - {p.style.name}"
-                            print(found)
-                        elif 'normal' in sub_data['styles'] and p.style.name in sub_data['styles']['normal']:
-                            found = f"{section_type} -- {sub_type} -- {p.style.name}"
-                            print(found)
-                            break
+        # if abstract_index > 0 and reference_index == -1:
+        #     print(i)
+        #     # check if a known jacow style
+        #     for section_type, section_data in DETAILS.items():
+        #         if 'styles' in section_data:
+        #             if p.style.name in section_data['styles']['jacow']:
+        #                 found = f"{section_type} - {p.style.name}"
+        #                 print(found)
+        #                 break
+        #             elif p.style.name in section_data['styles']['normal']:
+        #                 found = f"{section_type} -- {p.style.name}"
+        #                 print(found)
+        #                 break
+        #         else:
+        #             for sub_type, sub_data in section_data.items():
+        #                 if p.style.name in sub_data['styles']['jacow']:
+        #                     found = f"{section_type} - {sub_type} - {p.style.name}"
+        #                     print(found)
+        #                 elif 'normal' in sub_data['styles'] and p.style.name in sub_data['styles']['normal']:
+        #                     found = f"{section_type} -- {sub_type} -- {p.style.name}"
+        #                     print(found)
+        #                     break
 
         # find reference heading
         if text.lower() == 'references':
             reference_index = i
             break
 
+    # if abstract not found
+    if abstract_index == -1:
+        raise AbstractNotFoundError("Abstract header not found")
+
+        # abstract_index = 2
+        # summary['Abstract'] = {
+        #     'details': [],
+        #     'rules': DETAILS['Abstract'],
+        #     'title': 'Abstract Heading',
+        #     'ok': False,
+        #     'message': 'Abstract issues',
+        #     'anchor': 'abstract'
+        # }
+
     # authors is all the text between title and abstract heading
-    summary['Author'] = {'details': [] }
+    author_details = []
     for p in doc.paragraphs[title_index+1: abstract_index]:
         if p.text.strip():
-            details = get_author_details(p)
-            details.update(check_style_detail(p, DETAILS['Author']))
-            summary['Author']['details'].append(details)
+            detail = get_author_details(p)
+            detail.update(check_style_detail(p, DETAILS['Authors']))
+            title_style_ok = p.style.name == DETAILS['Authors']['styles']['jacow']
+            detail.update({'title_style_ok': title_style_ok, 'style': p.style.name})
+            author_details.append(detail)
 
-    print(summary)
+    summary['Authors'] = {
+        'details': author_details,
+        'rules': DETAILS['Authors'],
+        'title': 'Author',
+        'ok': all([tick['style_ok'] for tick in author_details]),
+        'message': 'Author issues',
+        'anchor': 'author'
+    }
+
     return summary
 
 

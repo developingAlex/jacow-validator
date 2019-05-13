@@ -50,6 +50,7 @@
                 {% endif %}
             </div>
 
+            <p><button class="button" style="background-color:lightblue" onclick="js:closeDetails()">Close All Expanded Sections Below </button><br/><br/></p>
             {% set section = summary['Styles'] %}
             {% set extra_info = {'ok':section['ok'],'title':'Style Breakdown', 'headers': '<thead><tr>
                             <th>Style</th><th>Embedded in Document</th>
@@ -141,11 +142,8 @@
             {% endif %}
             {{ section_helper.add_section(section,
                     {'extra_info':'SCEPaperTitle'},
-                    '<tr>
-                        <td>PAPER TITLE</td>
-                        <td>“JACoW_Paper Title” Style, or equivalent style.</td>
-                        <td>Centered</td><td>14 pt</td><td>Bold</td><td>Title should contain greater than 70% of CAPITAL Letters, can’t be simple Title Case.</td><td>0 pt</td><td>3 pt</td><td>NA</td>
-                    </tr>',
+                    '',
+                    'Title should contain greater than 70% of CAPITAL Letters, can’t be simple Title Case.</td><td>0 pt</td><td>3 pt</td><td>NA</td>',
                     extra_info) }}
 
             {% set section = summary['Authors'] %}
@@ -333,24 +331,14 @@
         {% endif %}
     </section>
    <script type="application/javascript">
-        document.addEventListener('DOMContentLoaded', () => {
-          // Get all "navbar-burger" elements
-          const $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
-          // Check if there are any navbar burgers
-          if ($navbarBurgers.length > 0) {
-            // Add a click event on each of them
-            $navbarBurgers.forEach( el => {
-              el.addEventListener('click', () => {
-                // Get the target from the "data-target" attribute
-                const target = el.dataset.target;
-                const $target = document.getElementById(target);
+        function closeDetails() {
+            // document.getElementsByTagName('details');
+            const details = Array.from(document.querySelectorAll("details"));
 
-                // Toggle the "is-active" class on both the "navbar-burger" and the "navbar-menu"
-                el.classList.toggle('is-active');
-                $target.classList.toggle('is-active');
-              });
+            // Add the onclick listeners.
+            details.forEach((targetDetail) => {
+                targetDetail.removeAttribute("open");
             });
-          }
-        });
+        }
     </script>
 {% endblock %}
