@@ -71,7 +71,13 @@ def reference_csv_check(filename_minus_ext, title, authors):
                     title_match = title.upper().strip('*') == reference_title
                     report, authors_match = get_author_list_report(authors, spms_row[authors_col])
 
-                    summary_list = [{'type': 'Author', 'match_ok': result['match'], 'docx': result['docx'], 'spms': result['spms']} for result in report]
+                    # builds the data for display, match_ok determines the colour of the cell
+                    # True for green, False for red, 2 for amber.
+                    summary_list = [{
+                        'type': 'Author',
+                        'match_ok': 2 if result['match'] and not result['exact'] else result['match'],
+                        'docx': result['docx'],
+                        'spms': result['spms']} for result in report]
 
                     return {
                         'title': {
