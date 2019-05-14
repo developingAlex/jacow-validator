@@ -36,3 +36,9 @@ a.link-color:hover {
 label.file-label:hover {
     outline: #cccccc dotted thin;
 }
+a.navbar-item.is-active {
+    background-color:#ffffff;
+}
+a.navbar-item.is-active:not(:hover) {
+    background-color:#ffffff;
+}

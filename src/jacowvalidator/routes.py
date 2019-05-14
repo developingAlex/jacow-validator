@@ -317,7 +317,7 @@ def convert():
             # only happens on windows I think.
             os.remove(new_doc_path)
 
-    return render_template("convert.html", admin=admin)
+    return render_template("convert.html", admin=admin, action='convert')
 
 
 @app.route("/resources", methods=["GET"])

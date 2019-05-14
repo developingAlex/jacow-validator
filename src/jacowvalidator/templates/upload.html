@@ -4,6 +4,7 @@
         <div class="container is-clearfix">
         {% if commit_sha and commit_date %}<p class="is-size-7 is-pulled-right"><b>Updated:</b> {{ commit_date.strftime('%H:%M %d/%m/%Y') }} [<b>{{ commit_sha }}</b>]</p>{% endif %}
         </div>
+        {% set action = 'upload' %}
         {% include "_fileupload.html" ignore missing %}
 
         {% if error %}
@@ -324,8 +325,7 @@
     </section>
    <script type="application/javascript">
         function closeDetails() {
-            // document.getElementsByTagName('details');
-            const details = Array.from(document.querySelectorAll("details"));
+            const details = document.querySelectorAll("details");
             details.forEach(function(targetDetail) {
                 targetDetail.removeAttribute("open");
             });

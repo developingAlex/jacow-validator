@@ -1,5 +1,5 @@
 <div class="container box" style="box-shadow: 0 4px 6px rgba(0, 0, 255, 0.1), 0 0 0 2px rgba(0, 0, 255, 0.1)">
-    <form id="fileform" method="POST" enctype="multipart/form-data" action="{{ url_for('upload') }}">
+    <form id="fileform" method="POST" enctype="multipart/form-data" action="{{ url_for(action) }}">
         <div class="columns">
             <div class="column">
                 <div class="file has-name">
@@ -17,7 +17,7 @@
                         </span>
                     </label>
                 </div><br/>
-                <button class="button" style="background-color:lightblue" type="submit" alt="scan">Scan</button>
+                <button class="button" style="background-color:lightblue" type="submit" alt="scan">{{ 'Scan' if action == 'upload' else 'Convert' }}</button>
             </div>
             <div class="column">
                 <img src="{{ url_for('static', filename='cat.png')}}" width="104" height="122" alt="jacow validator logo">

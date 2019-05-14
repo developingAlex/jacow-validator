@@ -31,26 +31,26 @@
 <nav class="navbar" role="navigation" aria-label="main navigation" style="background-image: linear-gradient(to right, lightblue , white);padding:3px;border-bottom:1px blue solid">
   <div class="navbar-brand">
     <img src="{{ url_for('static', filename='cat.png')}}" width="52" height="61" style="height:61px" alt="jacow validator logo">
-    <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+    <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="jacowNavbar">
       <span aria-hidden="true"></span>
       <span aria-hidden="true"></span>
       <span aria-hidden="true"></span>
     </a>
   </div>
 
-  <div id="navbarBasicExample" class="navbar-menu">
+  <div id="jacowNavbar" class="navbar-menu">
     <div class="navbar-start">
-      <a href="{{ url_for('upload')}}" class="navbar-item" style="padding-left:10px;padding-right:10px;margin-left:30px">
+      <a id="upload" href="{{ url_for('upload')}}" class="navbar-item" style="padding-left:10px;padding-right:10px;margin-left:30px">
         JACoW Word (docx) Validator
       </a>
-      <a href="{{ url_for('resources')}}" class="navbar-item" style="padding-left:10px;padding-right:10px;;margin-left:30px">
+      <a id="resources" href="{{ url_for('resources')}}" class="navbar-item" style="padding-left:10px;padding-right:10px;;margin-left:30px">
         Resources
       </a>
         {% if admin %}
-      <a href="{{ url_for('convert')}}" class="navbar-item" style="padding-left:10px;padding-right:10px;;margin-left:30px">
+      <a id="convert" href="{{ url_for('convert')}}" class="navbar-item" style="padding-left:10px;padding-right:10px;;margin-left:30px">
         Convert
       </a>
-      <a href="{{ url_for('log')}}" class="navbar-item" style="padding-left:10px;padding-right:10px;;margin-left:30px">
+      <a id="log" href="{{ url_for('log')}}" class="navbar-item" style="padding-left:10px;padding-right:10px;;margin-left:30px">
         Logs
       </a>
         {% endif %}
@@ -68,17 +68,18 @@
     {% block content %}
     {% endblock %}
     <script type="application/javascript">
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', function () {
           // Get all "navbar-burger" elements
-          const $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
+          var $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
           // Check if there are any navbar burgers
+
           if ($navbarBurgers.length > 0) {
             // Add a click event on each of them
-            $navbarBurgers.forEach( el => {
-              el.addEventListener('click', () => {
+            $navbarBurgers.forEach(function (el) {
+              el.addEventListener('click', function () {
                 // Get the target from the "data-target" attribute
-                const target = el.dataset.target;
-                const $target = document.getElementById(target);
+                var target = el.dataset.target;
+                var $target = document.getElementById(target);
 
                 // Toggle the "is-active" class on both the "navbar-burger" and the "navbar-menu"
                 el.classList.toggle('is-active');
@@ -87,6 +88,16 @@
             });
           }
         });
+        {# TODO use href target instead of id to set active #}
+        // set menu item as active
+        var url = window.location.toString();
+        var page = url.split('/');
+        page = page.slice(-1).pop();
+        page = page.split('?');
+        page = page[0];
+        var element = document.getElementById(page)
+        element.className += " is-active";
+
      </script>
 <footer class="footer has-background-white">
   <div class="has-text-centered">
