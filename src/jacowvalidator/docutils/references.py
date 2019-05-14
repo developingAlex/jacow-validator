@@ -19,7 +19,7 @@ REFERENCE_DETAILS = {
     'first_line_indent': -14.75,  # 0.52 cm,
 }
 
-REFERENCE_LESS_DETAILS= {
+REFERENCE_LESS_DETAILS = {
     'styles': {
         'jacow': 'JACoW_Reference #1-9 when >= 10 Refs',
     },
@@ -27,11 +27,11 @@ REFERENCE_LESS_DETAILS= {
     'font_size': 9.0,
     'space_before': 0.0,
     'space_after': 3.0,
-    'hanging_indent': 0, # 0.16 cm,
+    'hanging_indent': 0,  # 0.16 cm,
     'first_line_indent': -14.75,  # 0.52 cm,
 }
 
-REFERENCE_MORE_DETAILS= {
+REFERENCE_MORE_DETAILS = {
     'styles': {
         'jacow': 'JACoW_Reference #10 onwards',
     },
@@ -57,7 +57,7 @@ def _ref_to_int(ref):
         raise
 
 
-def extract_references(doc):
+def extract_references(doc, strict_styles=False):
     data = iter(doc.paragraphs)
     references_in_text = []
 
@@ -85,9 +85,15 @@ def extract_references(doc):
                 )
         elif ref_list_start > 0:
             should_find = references_list[-1]['id'] + 1
-            if str(should_find) in p.text.strip()[:4]: # only look in first 4 chars
+            if str(should_find) in p.text.strip()[:4]:  # only look in first 4 chars
                 references_list.append(
-                    dict(id=should_find, text=p.text.strip(), style=p.style.name, text_ok=False, text_error=f"Number format wrong should be [{should_find}]")
+                    dict(
+                        id=should_find,
+                        text=p.text.strip(),
+                        style=p.style.name,
+                        text_ok=False,
+                        text_error=f"Number format wrong should be [{should_find}]"
+                    )
                 )
 
     # check references in body are in correct order
@@ -132,14 +138,30 @@ def extract_references(doc):
 
         if ref_count <= 9:
             style_ok, detail = check_style(p, REFERENCE_DETAILS)
-            ref['style_ok'] = ref['style'] == 'JACoW_Reference when <= 9 Refs'
+            if strict_styles:
+                ref['style_ok'] = ref['style'] == 'JACoW_Reference when <= 9 Refs'
+                if not ref['style_ok']:
+                    ref['style'] = f"{ref['style']} should be 'JACoW_Reference when <= 9 Refs'"
+            else:
+                ref['style_ok'] = style_ok
         else:
             if i <= 9:
                 style_ok, detail = check_style(p, REFERENCE_LESS_DETAILS)
-                ref['style_ok'] = ref['style'] == 'JACoW_Reference #1-9 when >= 10 Refs'
+                if strict_styles:
+                    ref['style_ok'] = ref['style'] == 'JACoW_Reference #1-9 when >= 10 Refs'
+                    if not ref['style_ok']:
+                        ref['style'] = f"{ref['style']} should be 'JACoW_Reference #1-9 when >= 10 Refs'"
+                else:
+                    ref['style_ok'] = style_ok
+
             else:
                 style_ok, detail = check_style(p, REFERENCE_MORE_DETAILS)
-                ref['style_ok'] = ref['style'] == 'JACoW_Reference #10 onwards'
+                if strict_styles:
+                    ref['style_ok'] = ref['style'] == 'JACoW_Reference #10 onwards'
+                    if not ref['style_ok']:
+                        ref['style'] = f"{ref['style']} should be 'JACoW_Reference #10 onwards'"
+                else:
+                    ref['style_ok'] = style_ok
         ref.update(detail)
 
     return references_in_text, references_list
