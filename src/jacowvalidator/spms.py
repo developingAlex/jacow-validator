@@ -164,7 +164,6 @@ def get_author_list_report(docx_text, spms_text):
             },
         ]
     """
-
     extracted_docx_authors = get_author_list(docx_text)
     extracted_spms_authors = get_author_list(spms_text)
     # extracted_docx_authors = ['Y. Z. Gómez Martínez', 'T. X. Therou', 'A. Tiller']
@@ -187,9 +186,8 @@ def get_author_list_report(docx_text, spms_text):
 
     # perform first round of matching, looking for exact matches:
 
-    all_authors_match = True
-
-    for spms_author in spms_list:
+    all_authors_match = True  # assume they all match until left with unpaired authors
+    for spms_author in spms_list[:]:
         docx_author = next((docx_author for docx_author in docx_list if docx_author['compare-value'] == spms_author['compare-value']), None)
         if docx_author:
             docx_matched.append(docx_author)
@@ -210,7 +208,7 @@ def get_author_list_report(docx_text, spms_text):
 
     # if any unmatched authors remain, perform second round of matching, looking for loose matches (missing initials)
 
-    for spms_author in spms_unmatched:
+    for spms_author in spms_unmatched[:]:
         docx_author = next((docx_author for docx_author in docx_unmatched if docx_author['compare-first-last'] == spms_author['compare-first-last']), None)
         if docx_author:
             docx_matched.append(docx_author)
@@ -221,10 +219,6 @@ def get_author_list_report(docx_text, spms_text):
                             'spms': spms_author['original-value'],
                             'exact': False,
                             'match': True})
-        else:
-            spms_unmatched.append(spms_author)
-            spms_list.remove(spms_author)
-
     # after all matching rounds completed, any authors remaining in the
     # unmatched lists are added to results with a match value of false:
 
