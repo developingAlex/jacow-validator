@@ -82,6 +82,7 @@ content:
 [Unit]
 Description=The Jacow web server for verifying research papers
 After=network.target
+Wants=clean-jacow-docs.service
 
 [Service]
 PIDFile=/run/gunicorn/pid
@@ -103,6 +104,55 @@ That file declares that the service should be restarted if it ever goes down
 so now systemd will ensure that this happens automatically for us.
 
 It also declares what the server run command is, the gunicorn command.
+
+#### Cleaning up after a crash
+
+In the above, the line `Wants=clean-jacow-docs.service` declares that the 
+service 'clean-jacow-docs' should be run whenever it is started.
+
+There was an issue where if the server crashed (or was killed for using too 
+much memory) any documents it was currently working with would not be cleared
+from the folder they get stored in when uploaded by a user. Subsequent attempts
+to upload the same document would then save it with an appended _1 so as to not
+overwrite the existing one. The below serves to address the buildup of docx
+files.
+
+#### clean-jacow-docs.service in /etc/systemd/system/
+```
+[Unit]
+Description=Service to run script before starting jacow service to clear out remnant docx files after a previous jacow crash
+
+[Service]
+User=ec2-user
+WorkingDirectory=/home/ec2-user
+ExecStart=/bin/bash clean-jacow-docs.sh
+
+[Install]
+WantedBy=jacow.service
+```
+
+#### clean-jacow-docs.sh in /home/ec2-user
+
+```
+#!/bin/bash
+#
+# this script removes docx files from the jacow servers upload directory after
+# logging them to journalctl. This script is set to run by an associated systemd
+# service whenever the jacow.service is started up. This ensures that if the 
+# jacow service is killed that the document folder is cleared out before it is 
+# restarted, which is required to ensure users don't run into the issue that 
+# their subsequent attempts to upload the same filename document don't get
+# automatically renamed to have _1 appended to the filename and then subsequently
+# fails the spms check.
+#
+#
+cd /var/tmp/document
+for filename in *.docx; do
+  [ -e "$filename" ] || continue
+  echo $filename removed from cache before restarting service | systemd-cat -p err -t jacow
+  rm $filename
+done
+```
 
 #### a note on the chosen gunicorn settings
 
