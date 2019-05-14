@@ -1,5 +1,11 @@
 import re
 
+NON_BREAKING_SPACE = '\u00A0'
+LINE_TERMINATOR_CHARS = ['\u000A', '\u000B', '\u000C', '\u000D', '\u0085', '\u2028', '\u2029', '\n', '\\n']
+# line terminator chars respectively:
+# line feed, vertical tab, form feed, carriage return,
+# next line, line separator, paragraph separator
+
 
 def get_author_list(text):
     """function to extract authors from some text that will also include
@@ -48,7 +54,10 @@ National Synchrotron Radiation Research Center, Hsinchu, Taiwan, R.O.C`
     (https://regexr.com/)
 
     """
-    potential_authors = text.replace(' and ', ', ').split(', ')
+    newline_fixed_text = text
+    for newline_char in LINE_TERMINATOR_CHARS:
+        newline_fixed_text = newline_fixed_text.replace(newline_char, ', ')
+    potential_authors = newline_fixed_text.replace(NON_BREAKING_SPACE, ' ').replace(' and ', ', ').split(', ')
     filtered_authors = list()
     my_name_pattern = re.compile("(-?\\w\\.\\ ?)+([\\w]{2,}\\ ?)+")
     # the allowance of an optional hyphen preceding an initial is to satisfy a
