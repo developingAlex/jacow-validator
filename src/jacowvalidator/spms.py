@@ -266,6 +266,8 @@ def normalize_author_name(author_name):
     normalized_name = normalized_name.replace('-', '')
     # remove asterisks (sometimes included in docx authors text):
     normalized_name = normalized_name.replace('*', '')
+    # remove formatting characters occasionally observed:
+    normalized_name = normalized_name.replace('†', '')
     # strip possible extra whitespace:
     normalized_name = normalized_name.strip()
     return normalized_name
